@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: "Siddharth Singh — AI Backend Engineer",
     description:
       "AI backend engineer building agentic LLM systems — RAG pipelines, tool-calling runtimes, and local inference.",
-    images: [{ url: "/og/home.svg", width: 1200, height: 630 }],
+    images: [{ url: "/og/home.png", width: 1200, height: 630 }],
   },
 };
 
@@ -47,9 +47,9 @@ export default function Home() {
               SIDDHARTH SINGH
             </p>
           )}
-          <p className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-8">
+          <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-8">
             I build systems that work while you sleep.
-          </p>
+          </h1>
 
           <p className="text-[--muted] text-lg max-w-[68ch] mb-2">
             AI backend engineer — agentic pipelines, LLM orchestration, local

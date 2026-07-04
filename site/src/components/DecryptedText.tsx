@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useMemo, useCallback } from "react";
-import { motion } from "motion/react";
+
 
 const styles = {
   wrapper: { display: "inline-block", whiteSpace: "pre-wrap" as const },
@@ -264,7 +264,7 @@ export default function DecryptedText({
   }, [animateOn, hasAnimated, triggerDecrypt]);
 
   return (
-    <motion.span
+    <span
       className={parentClassName}
       ref={containerRef}
       style={styles.wrapper}
@@ -284,6 +284,6 @@ export default function DecryptedText({
           );
         })}
       </span>
-    </motion.span>
+    </span>
   );
 }

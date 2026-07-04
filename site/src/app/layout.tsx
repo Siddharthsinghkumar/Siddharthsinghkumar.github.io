@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     title: "Siddharth Singh — AI Backend Engineer",
     description:
       "AI backend engineer building agentic LLM systems — RAG pipelines, tool-calling runtimes, and local inference.",
-    images: [{ url: "/og/home.svg", width: 1200, height: 630 }],
+    images: [{ url: "/og/home.png", width: 1200, height: 630 }],
   },
   twitter: { card: "summary_large_image" },
 };

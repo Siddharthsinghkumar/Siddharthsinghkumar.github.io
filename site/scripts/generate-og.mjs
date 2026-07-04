@@ -32,8 +32,13 @@ async function main() {
       const pngPath = join(publicDir, `${page}.png`);
       if (!existsSync(svgPath)) continue;
       const svg = readFileSync(svgPath, "utf-8");
+      const fontsDir = join(__dirname, "fonts");
       const png = await renderAsync(svg, {
-        font: { loadSystemFonts: true },
+        font: {
+          loadSystemFonts: false,
+          fontDirs: [fontsDir],
+          defaultFontFamily: "Space Grotesk",
+        },
       });
       writeFileSync(pngPath, png.asPng());
       console.log(`  ✓ ${page}.png generated`);

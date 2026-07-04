@@ -57,7 +57,9 @@ export default function TextPressure({
   const cursorRef = useRef({ x: 0, y: 0 });
   const enabledRef = useRef(false);
 
-  const [fontSize, setFontSize] = useState(minFontSize);
+  // null until measured — SSR uses container-query units so the server-rendered
+  // size matches the JS-measured size (no hydration jump → no CLS/LCP repaint).
+  const [fontSize, setFontSize] = useState<number | null>(null);
   const [lineHeight, setLineHeight] = useState(1);
 
   const chars = text.split("");
@@ -154,7 +156,7 @@ export default function TextPressure({
   }, [width, weight, italic, alpha]);
 
   if (!TEXTPRESSURE_ENABLED) {
-    return <h1 className={`font-display text-[--text] ${className}`}>{text}</h1>;
+    return <p className={`font-display text-[--text] ${className}`}>{text}</p>;
   }
 
   const dynamicClassName = [className, flex ? "flex" : "", stroke ? "stroke" : ""]
@@ -162,14 +164,15 @@ export default function TextPressure({
     .join(" ");
 
   return (
-    <div ref={containerRef} className="relative w-full" style={{ background: "transparent", height: "auto" }}>
-      <h1
+    <div ref={containerRef} className="relative w-full" style={{ background: "transparent", height: "auto", containerType: "inline-size" }}>
+      <p
+        aria-label={text}
         ref={titleRef}
         className={dynamicClassName}
         style={{
           fontFamily,
           textTransform: "uppercase",
-          fontSize,
+          fontSize: fontSize ?? `calc(100cqi / ${chars.length / 2})`,
           lineHeight,
           transformOrigin: "center top",
           margin: 0,
@@ -192,7 +195,7 @@ export default function TextPressure({
             {char}
           </span>
         ))}
-      </h1>
+      </p>
     </div>
   );
 }

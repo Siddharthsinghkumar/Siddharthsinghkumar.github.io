@@ -28,6 +28,16 @@ export default function Button(props: ButtonProps) {
 
   if (props.href) {
     const { href, ...linkProps } = rest as AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
+    // next/link only for internal page routes — files (.pdf) and external/mailto
+    // URLs must be plain <a> or the router prefetches them as routes (404s).
+    const isPageRoute = href.startsWith("/") && !/\.[a-z0-9]+$/i.test(href);
+    if (!isPageRoute) {
+      return (
+        <a href={href} className={classes} {...linkProps}>
+          {children}
+        </a>
+      );
+    }
     return (
       <Link href={href} className={classes} {...linkProps}>
         {children}

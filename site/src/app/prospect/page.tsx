@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     title: "Prospect — an autonomous job-prospecting engine",
     description:
       "A multi-agent LLM system that scans newspapers with OCR, matches jobs with RAG and semantic search, and delivers ranked alerts to Telegram.",
-    images: [{ url: "/og/prospect.svg", width: 1200, height: 630 }],
+    images: [{ url: "/og/prospect.png", width: 1200, height: 630 }],
   },
 };
 
@@ -81,7 +81,7 @@ export default function ProspectPage() {
 
       <Section className="border-t border-[--line]">
         <Eyebrow>Architecture</Eyebrow>
-        <div className="overflow-x-auto pb-2">
+        <div className="overflow-x-auto pb-2 focus-visible:outline-2 focus-visible:outline-[--accent]" tabIndex={0} role="region" aria-label="Architecture diagram (scrollable)">
           <div className="min-w-[720px]">
             <ProspectDiagram />
           </div>

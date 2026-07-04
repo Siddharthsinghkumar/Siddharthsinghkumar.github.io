@@ -7,7 +7,7 @@ import DecryptedText from "@/components/DecryptedText";
 export default function NotFound() {
   return (
     <section className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
-      <p className="font-mono text-[clamp(1.25rem,3vw,2rem)] uppercase tracking-[0.08em] mb-4">
+      <h1 className="font-mono text-[clamp(1.25rem,3vw,2rem)] uppercase tracking-[0.08em] mb-4">
         <DecryptedText
           text="404 — NO SIGNAL"
           animateOn="view"
@@ -19,7 +19,7 @@ export default function NotFound() {
           encryptedClassName="text-[--line]"
           parentClassName="font-mono tracking-[0.08em] uppercase"
         />
-      </p>
+      </h1>
       <p className="text-[--muted] text-lg mb-8">
         This route doesn&rsquo;t exist. The systems that do:
       </p>

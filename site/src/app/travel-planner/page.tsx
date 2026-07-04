@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: "Travel Planner Agent — agentic AI with failure-proof inference",
     description:
       "An agentic AI travel planner with deterministic memory, custom model router, and async circuit breaker with local Ollama fallback.",
-    images: [{ url: "/og/travel-planner.svg", width: 1200, height: 630 }],
+    images: [{ url: "/og/travel-planner.png", width: 1200, height: 630 }],
   },
 };
 
@@ -88,7 +88,7 @@ export default function TravelPlannerPage() {
           retrieval pipeline behind it.
         </p>
 
-        <div className="overflow-x-auto pb-2">
+        <div className="overflow-x-auto pb-2 focus-visible:outline-2 focus-visible:outline-[--accent]" tabIndex={0} role="region" aria-label="Architecture diagram (scrollable)">
           <div className="min-w-[700px]">
             <TravelPlannerDiagram />
           </div>
