@@ -6,6 +6,8 @@ import ProjectCard from "@/components/ProjectCard";
 import TimelineEntry from "@/components/TimelineEntry";
 import SkillsRow from "@/components/SkillsRow";
 import JsonLd from "@/components/JsonLd";
+import ContributionsDisplay from "@/components/ContributionsDisplay";
+import TextPressure, { TEXTPRESSURE_ENABLED } from "@/components/TextPressure";
 import contributions from "@/data/contributions.json";
 
 export const metadata: Metadata = {
@@ -36,6 +38,15 @@ export default function Home() {
         />
 
         <div className="mx-auto max-w-[1200px] w-full">
+          {TEXTPRESSURE_ENABLED ? (
+            <div className="mb-6">
+              <TextPressure text="SIDDHARTH SINGH" className="text-[--text]" />
+            </div>
+          ) : (
+            <p className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-8">
+              SIDDHARTH SINGH
+            </p>
+          )}
           <p className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-8">
             I build systems that work while you sleep.
           </p>
@@ -208,23 +219,10 @@ export default function Home() {
           </p>
           <p className="text-[--text]">
             GitHub:{" "}
-            {contributions.display ? (
-              <span className="text-[--accent] font-mono">
-                {contributions.display} contributions in the last year
-              </span>
-            ) : (
-              <span>
-                See{" "}
-                <a
-                  href="https://github.com/Siddharthsinghkumar"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[--accent] hover:underline"
-                >
-                  GitHub →
-                </a>
-              </span>
-            )}
+            <ContributionsDisplay
+              display={contributions.display}
+              fallback={!contributions.display}
+            />
           </p>
         </div>
       </Section>

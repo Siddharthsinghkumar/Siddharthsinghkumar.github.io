@@ -188,5 +188,6 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 | D14 | 2026-07-04 | Custom cursor dot+ring, `pointer:fine` only, native cursor kept visible | Award-tier detail without the a11y sin of hiding the cursor. |
 
 | D15 | 2026-07-04 | ui-ux-pro-max skill unavailable in harness; design system implemented directly from DESIGN.md tokens per D9 | Per plan: "DESIGN.md wins every conflict." Advisory file written to site/design-system/ADVISORY.md as placeholder. |
+| D16 | 2026-07-04 | TextPressure decision gate: kept behind TEXTPRESSURE_ENABLED=true flag. Component uses Space Grotesk variable font with wght/wdth/ital axes, pointer:fine + no-reduced-motion guard. Profiling at 6× CPU throttle TBD in T6 QA — if <55fps, toggle flag to false for static fallback. | Per D7 gate rules. Static Space Grotesk heading is the fallback. |
 
 *(Executor: append new rows here for every design choice made during build.)*

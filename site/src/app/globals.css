@@ -133,3 +133,57 @@ body {
     scroll-behavior: auto;
   }
 }
+
+/* ── View Transitions (crossfade + slide) ───────────────── */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: vt-fade-out 250ms var(--ease) both;
+}
+::view-transition-new(root) {
+  animation: vt-fade-in-slide 250ms var(--ease) both;
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@keyframes vt-fade-in-slide {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* ── Scroll Reveal (JS-driven via IntersectionObserver) ── */
+.scroll-reveal-visible {
+  animation: fade-up var(--dur-med) var(--ease) both;
+}
+
+/* ── Link underline slide ──────────────────────────────── */
+a.hover-line {
+  text-decoration: none;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 0% 1px;
+  background-position: 0% 100%;
+  background-repeat: no-repeat;
+  transition: background-size var(--dur-fast) var(--ease);
+}
+a.hover-line:hover {
+  background-size: 100% 1px;
+}

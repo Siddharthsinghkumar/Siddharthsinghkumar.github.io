@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import SmoothScroll from "@/components/SmoothScroll";
+import CustomCursor from "@/components/CustomCursor";
 import "./globals.css";
 
 const siteUrl = "https://Siddharthsinghkumar.github.io";
@@ -66,6 +68,8 @@ export default function RootLayout({
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
       </head>
       <body className="min-h-screen bg-[--bg] text-[--text] font-sans">
+        <SmoothScroll />
+        <CustomCursor />
         <Nav />
         <main className="pt-16">{children}</main>
         <Footer />
