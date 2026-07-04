@@ -44,6 +44,8 @@ jobs:
         working-directory: site
       - run: node scripts/lighthouse-gate.mjs
         working-directory: site
+      - run: node scripts/visual-gate.mjs
+        working-directory: site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site/out
