@@ -48,6 +48,8 @@
 
   --animate-fade-up: fade-up var(--dur-med) var(--ease) both;
   --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
+
+  --breakpoint-xs: 375px;
 }
 
 /* ── Keyframes ───────────────────────────────────────────── */

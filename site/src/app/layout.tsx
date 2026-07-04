@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -38,7 +40,9 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} antialiased`}
     >
       <body className="min-h-screen bg-[--bg] text-[--text] font-sans">
-        {children}
+        <Nav />
+        <main className="pt-16">{children}</main>
+        <Footer />
       </body>
     </html>
   );
