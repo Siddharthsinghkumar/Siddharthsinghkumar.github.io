@@ -88,6 +88,14 @@
   100% { transform: translate(0, 0) scale(1); }
 }
 
+@keyframes drift-grid {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-4px, -3px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-2px, 3px); }
+  100% { transform: translate(0, 0); }
+}
+
 /* ── Global Base Styles ──────────────────────────────────── */
 html {
   background-color: var(--bg);

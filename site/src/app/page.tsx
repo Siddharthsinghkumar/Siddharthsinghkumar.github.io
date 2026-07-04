@@ -10,6 +10,7 @@ import ContributionsDisplay from "@/components/ContributionsDisplay";
 import TextPressure, { TEXTPRESSURE_ENABLED } from "@/components/TextPressure";
 import CssHeroAtmosphere from "@/components/CssHeroAtmosphere";
 import PaperInkLoader from "@/components/PaperInkLoader";
+import GridBackdrop from "@/components/GridBackdrop";
 import contributions from "@/data/contributions.json";
 
 export const metadata: Metadata = {
