@@ -1,0 +1,186 @@
+import Section from "@/components/Section";
+import Eyebrow from "@/components/Eyebrow";
+import Button from "@/components/Button";
+import StatusPill from "@/components/StatusPill";
+import ProspectDiagram from "@/components/ProspectDiagram";
+
+const components = [
+  {
+    name: "smart-job-scanner-v2",
+    role: "11-stage OCR + LLM extraction pipeline; chews through 15–20 GB of newspaper PDFs daily; semantic matching; Telegram delivery",
+    status: "RUNNING LOCAL" as const,
+    code: "https://github.com/Siddharthsinghkumar/smart-job-scanner-v2",
+  },
+  {
+    name: "merlin-cli / bridge",
+    role: "Tool-calling runtime executing sandboxed local commands from LLM decisions; generation engine",
+    status: "RUNNING LOCAL" as const,
+    code: null,
+  },
+  {
+    name: "persona-context-engine",
+    role: "FAISS embeddings strict-mapping projects to three base resumes — no context bleeding between personas",
+    status: "RESEARCH" as const,
+    code: null,
+  },
+  {
+    name: "job-discovery-engine",
+    role: "LangGraph state machine orchestrating discovery; NVIDIA NIM integration",
+    status: "IN DEVELOPMENT" as const,
+    code: null,
+  },
+  {
+    name: "jobboard-api",
+    role: "Django REST + Postgres + Redis application tracker",
+    status: "SHIPPED" as const,
+    code: "https://github.com/Siddharthsinghkumar/jobboard-api",
+  },
+];
+
+export default function ProspectPage() {
+  return (
+    <>
+      {/* Hero */}
+      <Section className="pt-[calc(4rem+96px)]">
+        <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--muted] mb-3">
+          PROSPECT · <span className="text-[--accent]">SYSTEM / LIVE — IN ACTIVE DEVELOPMENT</span>
+        </p>
+        <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-6">
+          It reads the morning papers before I wake up.
+        </h1>
+        <p className="text-[--muted] text-lg max-w-[68ch]">
+          Prospect is an autonomous job-prospecting engine: a multi-agent system
+          that discovers job postings, matches them against persona-scoped resumes,
+          and delivers ranked alerts — end to end, without me touching it.
+        </p>
+      </Section>
+
+      {/* Why */}
+      <Section className="border-t border-[--line]">
+        <h2 className="font-display text-[clamp(1.563rem,3vw,1.953rem)] leading-tight text-[--text] mb-4">
+          Why it exists
+        </h2>
+        <p className="text-[--muted] max-w-[68ch]">
+          Job hunting is a pipeline problem. Postings are scattered across
+          newspapers, boards, and feeds; matching them against a resume is
+          retrieval; tailoring an application is generation. So I built it as a
+          pipeline: OCR at the front, RAG in the middle, Telegram at the end.
+        </p>
+      </Section>
+
+      {/* Architecture diagram */}
+      <Section className="border-t border-[--line]">
+        <Eyebrow>Architecture</Eyebrow>
+        <div className="overflow-x-auto pb-2">
+          <div className="min-w-[720px]">
+            <ProspectDiagram />
+          </div>
+        </div>
+      </Section>
+
+      {/* Component board */}
+      <Section className="border-t border-[--line]">
+        <p className="text-[--muted] text-sm mb-8">
+          Five components. Each is honest about its state.
+        </p>
+
+        <div className="space-y-0">
+          {components.map(({ name, role, status, code }) => (
+            <div
+              key={name}
+              className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 py-4 border-b border-[--line]"
+            >
+              <p className="font-mono text-[13px] font-semibold text-[--text] sm:w-[220px] shrink-0">
+                {name}
+              </p>
+              <p className="text-[--muted] text-sm flex-1">{role}</p>
+              <StatusPill status={status} className="sm:w-[160px] shrink-0" />
+              <span className="font-mono text-[11px] uppercase tracking-[0.08em] sm:w-[90px] shrink-0 text-right">
+                {code ? (
+                  <a
+                    href={code}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[--accent] hover:underline"
+                  >
+                    GitHub →
+                  </a>
+                ) : (
+                  <span className="text-[--muted]">PRIVATE</span>
+                )}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Status legend */}
+        <div className="mt-8 p-4 rounded-[--r-md] bg-[--surface] border border-[--line] text-sm text-[--muted] space-y-1">
+          <p>
+            <span className="text-[--ok] font-mono text-[11px] uppercase tracking-[0.08em]">SHIPPED</span> — running and done.
+          </p>
+          <p>
+            <span className="text-[--accent] font-mono text-[11px] uppercase tracking-[0.08em]">RUNNING LOCAL</span> — battle-tested on my hardware, not published.
+          </p>
+          <p>
+            <span className="text-[--warn] font-mono text-[11px] uppercase tracking-[0.08em]">IN DEVELOPMENT</span> — being built now.
+          </p>
+          <p>
+            <span className="text-[--muted] font-mono text-[11px] uppercase tracking-[0.08em]">RESEARCH</span> — proven in experiments, not integrated.
+          </p>
+          <p>Private components are described here and available on request.</p>
+        </div>
+      </Section>
+
+      {/* Proof */}
+      <Section className="border-t border-[--line]">
+        <Eyebrow>Proof</Eyebrow>
+
+        <div className="grid sm:grid-cols-2 gap-4 mb-4">
+          {[
+            "SCREENSHOT — Sid to capture: Telegram alert arriving with ranked matches",
+            "SCREENSHOT — Sid to capture: pipeline run — pages OCR'd, blocks extracted",
+          ].map((caption) => (
+            <div
+              key={caption}
+              className="aspect-video rounded-[--r-md] bg-[--surface-2] border border-[--line] flex items-center justify-center p-4"
+            >
+              <p className="font-mono text-[11px] text-[--muted] text-center">
+                {caption}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Honest notes */}
+      <Section className="border-t border-[--line]">
+        <Eyebrow>What I&rsquo;d tell another engineer</Eyebrow>
+        <p className="text-[--muted] max-w-[68ch]">
+          Parts of this system are boring on purpose — the Telegram bot and the
+          multi-key Gemini client are legacy code transplanted from v1 because
+          they never failed. Parts are hard — stealth crawling and LaTeX-safe
+          generation are still in development, and I say so above. A system that
+          reports its own state honestly is the point.
+        </p>
+      </Section>
+
+      {/* CTA footer */}
+      <Section className="border-t border-[--line]">
+        <p className="text-[--muted] max-w-[68ch] mb-6">
+          Want this kind of pipeline thinking on your team?
+        </p>
+        <div className="flex flex-wrap gap-3 mb-8">
+          <Button href="mailto:siddharthsingh8418@gmail.com">
+            Email me
+          </Button>
+          <Button variant="ghost" href="/resume-siddharth-singh.pdf">
+            Resume ↓
+          </Button>
+        </div>
+        <Button variant="ghost" href="/travel-planner">
+          Travel Planner Agent →
+        </Button>
+      </Section>
+    </>
+  );
+}

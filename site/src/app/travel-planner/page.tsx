@@ -1,0 +1,137 @@
+import Section from "@/components/Section";
+import Eyebrow from "@/components/Eyebrow";
+import Button from "@/components/Button";
+import TravelPlannerDiagram from "@/components/TravelPlannerDiagram";
+
+export default function TravelPlannerPage() {
+  return (
+    <>
+      {/* Hero */}
+      <Section className="pt-[calc(4rem+96px)]">
+        <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--muted] mb-3">
+          TRAVEL PLANNER AGENT ·{" "}
+          <span className="text-[--ok]">SHIPPED — OPEN SOURCE</span>
+        </p>
+        <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-6">
+          An agent that survives its own failures.
+        </h1>
+        <p className="text-[--muted] text-lg max-w-[68ch]">
+          Cloud LLM APIs degrade. Rate limits hit. This agent keeps planning
+          anyway — a custom model router and an async circuit breaker fall back
+          to local Ollama inference mid-conversation, and the user keeps
+          streaming.
+        </p>
+      </Section>
+
+      {/* Interesting problems */}
+      <Section className="border-t border-[--line]">
+        <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--muted] mb-8">
+          The interesting problems
+        </p>
+
+        <div className="space-y-6 max-w-[68ch]">
+          {[
+            {
+              num: "1",
+              title: "Deterministic memory",
+              body: "Agent state that replays identically, so a multi-step plan can be debugged like code, not vibes.",
+            },
+            {
+              num: "2",
+              title: "Model routing",
+              body: "Requests scored and routed across providers by preference, cost, and health.",
+            },
+            {
+              num: "3",
+              title: "Failure as a first-class state",
+              body: "The async circuit breaker detects API degradation and reroutes to local inference without dropping the SSE stream.",
+            },
+            {
+              num: "4",
+              title: "Human-in-the-loop booking",
+              body: "The agent plans; a human approves the spend.",
+            },
+          ].map(({ num, title, body }) => (
+            <div key={num}>
+              <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--accent] mb-1">
+                {num}
+              </p>
+              <h3 className="font-display text-lg text-[--text] mb-1">
+                {title}
+              </h3>
+              <p className="text-[--muted] text-sm">{body}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Infrastructure */}
+      <Section className="border-t border-[--line]">
+        <Eyebrow>Infrastructure</Eyebrow>
+        <p className="text-[--muted] max-w-[68ch] mb-8">
+          Runs on a k3s multi-node cluster with a full Prometheus/Grafana
+          observability stack — because an agent you can&rsquo;t observe is an
+          agent you can&rsquo;t trust. FastAPI backend, Streamlit front,
+          retrieval pipeline behind it.
+        </p>
+
+        <div className="overflow-x-auto pb-2">
+          <div className="min-w-[700px]">
+            <TravelPlannerDiagram />
+          </div>
+        </div>
+      </Section>
+
+      {/* Proof */}
+      <Section className="border-t border-[--line]">
+        <Eyebrow>Proof</Eyebrow>
+
+        <p className="text-[--text] mb-4">
+          Code:{" "}
+          <a
+            href="https://github.com/Siddharthsinghkumar/ai-travel-planner-agent"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[--accent] hover:underline"
+          >
+            github.com/Siddharthsinghkumar/ai-travel-planner-agent
+          </a>
+        </p>
+
+        <div className="grid sm:grid-cols-2 gap-4">
+          {[
+            "SCREENSHOT — Sid to capture: Grafana dashboards during a planning session",
+            "SCREENSHOT — Sid to capture: SSE stream surviving a forced provider failure",
+          ].map((caption) => (
+            <div
+              key={caption}
+              className="aspect-video rounded-[--r-md] bg-[--surface-2] border border-[--line] flex items-center justify-center p-4"
+            >
+              <p className="font-mono text-[11px] text-[--muted] text-center">
+                {caption}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* CTA footer */}
+      <Section className="border-t border-[--line]">
+        <p className="text-[--muted] max-w-[68ch] mb-6">
+          This is how I build agents: observable, degradable, honest.
+        </p>
+        <div className="flex flex-wrap gap-3 mb-8">
+          <Button href="mailto:siddharthsingh8418@gmail.com">
+            Email me
+          </Button>
+          <Button variant="ghost" href="/resume-siddharth-singh.pdf">
+            Resume ↓
+          </Button>
+        </div>
+        <Button variant="ghost" href="/prospect">
+          Prospect →
+        </Button>
+      </Section>
+    </>
+  );
+}
