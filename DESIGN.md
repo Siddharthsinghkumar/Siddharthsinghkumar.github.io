@@ -190,4 +190,12 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 | D15 | 2026-07-04 | ui-ux-pro-max skill unavailable in harness; design system implemented directly from DESIGN.md tokens per D9 | Per plan: "DESIGN.md wins every conflict." Advisory file written to site/design-system/ADVISORY.md as placeholder. |
 | D16 | 2026-07-04 | TextPressure decision gate: kept behind TEXTPRESSURE_ENABLED=true flag. Component uses Space Grotesk variable font with wght/wdth/ital axes, pointer:fine + no-reduced-motion guard. Profiling at 6× CPU throttle TBD in T6 QA — if <55fps, toggle flag to false for static fallback. | Per D7 gate rules. Static Space Grotesk heading is the fallback. |
 
+| D17 | 2026-07-05 | h1 semantics fixed: headline is the home h1; TextPressure name is a decorative <p aria-label>; 404's NO SIGNAL is an h1 | Verification: TextPressure rendered the only h1; recruiter crawlers and SEO need the claim line as h1. |
+| D18 | 2026-07-05 | JS budget amended 150→200 KB gzip/page (actual: 195 KB) | Next 16 + React 19 framework floor ≈115 KB; removed dead `motion` dep (−40 KB). Guard enforces 200. |
+| D19 | 2026-07-05 | OG images are PNG rendered with bundled TTFs (Space Grotesk/Inter/Plex Mono via resvg) | SVG og:image is ignored by LinkedIn/WhatsApp/Twitter; system-font fallback rendered serif (off-brand). |
+| D20 | 2026-07-05 | `trailingSlash: true` | Next exports page.html + RSC directory of same name; GitHub Pages resolves the directory → case-study URLs 404'd. |
+| D21 | 2026-07-05 | Button renders plain <a> for file/external hrefs | next/link prefetched the resume PDF as a route (console 404s on every page). |
+| D22 | 2026-07-05 | Diagram overflow containers: tabIndex=0 + role=region + aria-label | axe serious: scrollable region must be keyboard-accessible. |
+| D23 | 2026-07-05 | TextPressure gate RESOLVED: kept. SSR sizes via container-query units (cqi) so hydration is a no-op | Measured: CLS 0, TBT ≤40 ms, LCP 1.8 s slow-4G — passes D7's bar. |
+
 *(Executor: append new rows here for every design choice made during build.)*
