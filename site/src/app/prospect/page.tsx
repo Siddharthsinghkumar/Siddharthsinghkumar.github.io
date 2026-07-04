@@ -4,6 +4,7 @@ import Eyebrow from "@/components/Eyebrow";
 import Button from "@/components/Button";
 import StatusPill from "@/components/StatusPill";
 import ProspectDiagram from "@/components/ProspectDiagram";
+import DecryptedText from "@/components/DecryptedText";
 
 export const metadata: Metadata = {
   title: "Prospect — an autonomous job-prospecting engine",
@@ -54,8 +55,18 @@ export default function ProspectPage() {
   return (
     <>
       <Section className="pt-[calc(4rem+96px)]">
-        <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--muted] mb-3">
-          PROSPECT · <span className="text-[--accent]">SYSTEM / LIVE — IN ACTIVE DEVELOPMENT</span>
+        <p className="font-mono text-[11px] uppercase tracking-[0.08em] mb-3">
+          <DecryptedText
+            text="PROSPECT · SYSTEM / LIVE — IN ACTIVE DEVELOPMENT"
+            animateOn="view"
+            speed={35}
+            maxIterations={6}
+            sequential={true}
+            revealDirection="start"
+            className="text-[--muted]"
+            encryptedClassName="text-[--line]"
+            parentClassName="font-mono tracking-[0.08em] uppercase"
+          />
         </p>
         <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-6">
           It reads the morning papers before I wake up.

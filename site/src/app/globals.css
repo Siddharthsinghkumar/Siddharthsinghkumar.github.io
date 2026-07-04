@@ -163,19 +163,18 @@ body {
 }
 
 ::view-transition-old(root) {
-  animation: vt-fade-out 250ms var(--ease) both;
+  animation: vt-fade-out 200ms var(--ease) both;
 }
 ::view-transition-new(root) {
-  animation: vt-fade-in-slide 250ms var(--ease) both;
+  animation: vt-slide-in 250ms var(--ease) both;
 }
 
 @keyframes vt-fade-out {
   to {
     opacity: 0;
-    transform: translateY(-8px);
   }
 }
-@keyframes vt-fade-in-slide {
+@keyframes vt-slide-in {
   from {
     opacity: 0;
     transform: translateY(8px);
