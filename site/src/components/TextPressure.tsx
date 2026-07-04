@@ -2,10 +2,10 @@
 
 // TextPressure — donor from ui-component-2.md
 // Adapted per CLAUDE.md donor rule: skeleton from donor, skin from DESIGN.md, words from COPY.md.
-// Feature-flagged — decision gate: keep only if ≥55fps at 6× CPU throttle on mobile.
+// Feature-flagged — decision gate: keep only if >=55fps at 6x CPU throttle on mobile.
 // If disabled, falls back to static Space Grotesk heading.
 
-import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 const dist = (a: { x: number; y: number }, b: { x: number; y: number }) => {
   const dx = b.x - a.x;
@@ -24,7 +24,7 @@ const getAttr = (
 };
 
 interface TextPressureProps {
-  text: string;
+  text?: string;
   fontFamily?: string;
   width?: boolean;
   weight?: boolean;
@@ -32,12 +32,10 @@ interface TextPressureProps {
   alpha?: boolean;
   flex?: boolean;
   stroke?: boolean;
-  scale?: boolean;
   className?: string;
   minFontSize?: number;
 }
 
-// Feature flag — set to false to disable TextPressure
 const TEXTPRESSURE_ENABLED = true;
 
 export default function TextPressure({
@@ -49,49 +47,37 @@ export default function TextPressure({
   alpha = false,
   flex = true,
   stroke = false,
-  scale = false,
   className = "",
   minFontSize = 24,
 }: TextPressureProps) {
-  if (!TEXTPRESSURE_ENABLED) {
-    return (
-      <h1 className={`font-display text-[--text] ${className}`}>{text}</h1>
-    );
-  }
-
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const spansRef = useRef<(HTMLSpanElement | null)[]>([]);
-
   const mouseRef = useRef({ x: 0, y: 0 });
   const cursorRef = useRef({ x: 0, y: 0 });
+  const enabledRef = useRef(false);
 
   const [fontSize, setFontSize] = useState(minFontSize);
-  const [scaleY, setScaleY] = useState(1);
   const [lineHeight, setLineHeight] = useState(1);
 
   const chars = text.split("");
 
+  // Gate check ref — avoids conditional hook issues
   useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const isFine = window.matchMedia("(any-pointer: fine)").matches;
+    enabledRef.current = !mq.matches && isFine;
+  }, []);
+
+  useEffect(() => {
+    if (!enabledRef.current) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       cursorRef.current.x = e.clientX;
       cursorRef.current.y = e.clientY;
     };
-    const handleTouchMove = (e: TouchEvent) => {
-      const t = e.touches[0];
-      cursorRef.current.x = t.clientX;
-      cursorRef.current.y = t.clientY;
-    };
-
-    // Reduced-motion gate
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) return;
-
-    const isFine = window.matchMedia("(any-pointer: fine)").matches;
-    if (!isFine) return;
 
     window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("touchmove", handleTouchMove, { passive: true });
 
     if (containerRef.current) {
       const { left, top, width, height } =
@@ -104,19 +90,15 @@ export default function TextPressure({
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
 
   const setSize = useCallback(() => {
     if (!containerRef.current || !titleRef.current) return;
-
     const { width: containerW } = containerRef.current.getBoundingClientRect();
     let newFontSize = containerW / (chars.length / 2);
     newFontSize = Math.max(newFontSize, minFontSize);
-
     setFontSize(newFontSize);
-    setScaleY(1);
     setLineHeight(1);
   }, [chars.length, minFontSize]);
 
@@ -135,7 +117,9 @@ export default function TextPressure({
   }, [setSize]);
 
   useEffect(() => {
+    if (!enabledRef.current) return;
     let rafId: number;
+
     const animate = () => {
       mouseRef.current.x += (cursorRef.current.x - mouseRef.current.x) / 15;
       mouseRef.current.y += (cursorRef.current.y - mouseRef.current.y) / 15;
@@ -153,15 +137,9 @@ export default function TextPressure({
           };
           const d = dist(mouseRef.current, charCenter);
           const wdth = width ? Math.floor(getAttr(d, maxDist, 5, 200)) : 100;
-          const wght = weight
-            ? Math.floor(getAttr(d, maxDist, 100, 900))
-            : 400;
-          const italVal = italic
-            ? getAttr(d, maxDist, 0, 1).toFixed(2)
-            : "0";
-          const alphaVal = alpha
-            ? getAttr(d, maxDist, 0, 1).toFixed(2)
-            : "1";
+          const wght = weight ? Math.floor(getAttr(d, maxDist, 100, 900)) : 400;
+          const italVal = italic ? getAttr(d, maxDist, 0, 1).toFixed(2) : "0";
+          const alphaVal = alpha ? getAttr(d, maxDist, 0, 1).toFixed(2) : "1";
 
           span.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}, 'ital' ${italVal}`;
           if (alpha) span.style.opacity = alphaVal;
@@ -171,35 +149,28 @@ export default function TextPressure({
       rafId = requestAnimationFrame(animate);
     };
 
-    // Check reduced motion and pointer type before starting
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const isFine = window.matchMedia("(any-pointer: fine)").matches;
-    if (!mq.matches && isFine) {
-      animate();
-    }
-
+    animate();
     return () => cancelAnimationFrame(rafId);
   }, [width, weight, italic, alpha]);
+
+  if (!TEXTPRESSURE_ENABLED) {
+    return <h1 className={`font-display text-[--text] ${className}`}>{text}</h1>;
+  }
 
   const dynamicClassName = [className, flex ? "flex" : "", stroke ? "stroke" : ""]
     .filter(Boolean)
     .join(" ");
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full"
-      style={{ background: "transparent", height: "auto" }}
-    >
+    <div ref={containerRef} className="relative w-full" style={{ background: "transparent", height: "auto" }}>
       <h1
         ref={titleRef}
-        className={`${dynamicClassName}`}
+        className={dynamicClassName}
         style={{
           fontFamily,
           textTransform: "uppercase",
           fontSize,
           lineHeight,
-          transform: `scale(1, ${scaleY})`,
           transformOrigin: "center top",
           margin: 0,
           textAlign: "left",
@@ -213,9 +184,7 @@ export default function TextPressure({
         {chars.map((char, i) => (
           <span
             key={i}
-            ref={(el) => {
-              spansRef.current[i] = el;
-            }}
+            ref={(el) => { spansRef.current[i] = el; }}
             data-char={char}
             className="inline-block"
             style={{ color: "var(--text)" }}

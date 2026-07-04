@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import type { ReactNode } from "react";
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -11,18 +11,10 @@ interface ScrollRevealProps {
 export default function ScrollReveal({
   children,
   className = "",
-  stagger = 60,
 }: ScrollRevealProps) {
   return (
     <div
       className={`scroll-reveal opacity-0 translate-y-[12px] ${className}`}
-      style={
-        {
-          "--stagger": `${stagger}ms`,
-          viewTimeline: "--reveal",
-          animationTimeline: "--reveal",
-        } as React.CSSProperties
-      }
     >
       {children}
     </div>

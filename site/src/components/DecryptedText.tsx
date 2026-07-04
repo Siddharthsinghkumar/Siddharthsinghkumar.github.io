@@ -29,7 +29,6 @@ interface DecryptedTextProps {
   parentClassName?: string;
   encryptedClassName?: string;
   animateOn?: "view" | "hover" | "inViewHover" | "click";
-  clickMode?: "once" | "toggle";
 }
 
 export default function DecryptedText({
@@ -44,7 +43,6 @@ export default function DecryptedText({
   parentClassName = "",
   encryptedClassName = "",
   animateOn = "view",
-  clickMode = "once",
 }: DecryptedTextProps) {
   const [displayText, setDisplayText] = useState(text);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -264,18 +262,6 @@ export default function DecryptedText({
       if (currentRef) observer.unobserve(currentRef);
     };
   }, [animateOn, hasAnimated, triggerDecrypt]);
-
-  useEffect(() => {
-    if (animateOn === "click") {
-      setDisplayText(shuffleText(text, new Set()));
-      setIsDecrypted(false);
-    } else {
-      setDisplayText(text);
-      setIsDecrypted(true);
-    }
-    setRevealedIndices(new Set());
-    setDirection("forward");
-  }, [animateOn, text, shuffleText]);
 
   return (
     <motion.span
