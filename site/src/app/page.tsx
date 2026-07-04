@@ -8,6 +8,7 @@ import SkillsRow from "@/components/SkillsRow";
 import JsonLd from "@/components/JsonLd";
 import ContributionsDisplay from "@/components/ContributionsDisplay";
 import TextPressure, { TEXTPRESSURE_ENABLED } from "@/components/TextPressure";
+import CssHeroAtmosphere from "@/components/CssHeroAtmosphere";
 import contributions from "@/data/contributions.json";
 
 export const metadata: Metadata = {
@@ -28,6 +29,8 @@ export default function Home() {
       <JsonLd />
       {/* ── Hero ────────────────────────────────────────────── */}
       <section className="relative min-h-[100svh] flex flex-col justify-center px-4 overflow-hidden">
+        {/* Atmosphere layer — CSS fallback (always present), WebGL mounts on top */}
+        <CssHeroAtmosphere />
         {/* Radial glow behind hero */}
         <div
           className="absolute inset-0 pointer-events-none select-none"
