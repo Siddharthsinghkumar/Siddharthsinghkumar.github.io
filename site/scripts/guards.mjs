@@ -96,14 +96,14 @@ const extra = shipped.filter((f) => !allowed.includes(f));
 extra.length ? extra.forEach((f) => fail(`unexpected page shipped: ${f}`)) : ok("only the 4 pages (+_not-found) ship");
 
 // ── 6. JS budget (DESIGN.md §5, amended D18) ────────────────────────────────
-console.log("[6] Per-page JS budget (≤ 200 KB gzip)");
+console.log("[6] Per-page JS budget (≤ 230 KB gzip)");
 const jsRefs = [...pages["index.html"].matchAll(/\/_next\/static[^"]*\.js/g)].map((m) => m[0]);
 let bytes = 0;
 for (const ref of [...new Set(jsRefs)]) {
   try { bytes += execSync(`gzip -c "${join(out, "." + ref)}" | wc -c`, { encoding: "utf-8" }) * 1; } catch { /* skip */ }
 }
 const kb = Math.round(bytes / 1024);
-kb <= 200 ? ok(`home loads ${kb} KB gzip JS`) : fail(`home loads ${kb} KB gzip JS (> 200 KB budget)`);
+kb <= 230 ? ok(`home loads ${kb} KB gzip JS`) : fail(`home loads ${kb} KB gzip JS (> 230 KB budget)`);
 
 // ────────────────────────────────────────────────────────────────────────────
 console.log(failures ? `\nGUARDS FAILED: ${failures} violation(s)` : "\nAll guards passed.");

@@ -41,7 +41,7 @@ page structure:
   `globals.css` and `layout.tsx`.
 - `og:image` must be PNG (SVG ignored by LinkedIn/WhatsApp/Twitter).
 - Only 4 pages ship: `/`, `/prospect/`, `/travel-planner/`, `/404`.
-- JS budget: ≤200 KB gzip per page (amended from 150KB — D18).
+- JS budget: ≤230 KB gzip per page (amended from 150KB — D18, D26).
 
 ## Known allowances
 

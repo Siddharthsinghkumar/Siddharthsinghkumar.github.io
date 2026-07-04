@@ -158,7 +158,7 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 ## 5. Performance & quality budget (premium = fast)
 
 - LCP < 1.5s (hero H1 is the LCP — server-rendered text, no priority images).
-- JS < 150KB gzip on `/` (React Bits components tree-shaken; no three.js at launch).
+- JS < 230KB gzip on `/` (raw WebGL only, no three.js; D26 budget).
 - CLS < 0.05; fonts `font-display: swap` with metric-compatible fallbacks.
 - Lighthouse CI (learned.md Day 9): perf ≥ 0.9, a11y ≥ 0.95, SEO ≥ 0.95 on all 4 pages.
 - Images: AVIF/WebP, sized, no CSS resizing (learned.md perf table).
@@ -197,5 +197,9 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 | D21 | 2026-07-05 | Button renders plain <a> for file/external hrefs | next/link prefetched the resume PDF as a route (console 404s on every page). |
 | D22 | 2026-07-05 | Diagram overflow containers: tabIndex=0 + role=region + aria-label | axe serious: scrollable region must be keyboard-accessible. |
 | D23 | 2026-07-05 | TextPressure gate RESOLVED: kept. SSR sizes via container-query units (cqi) so hydration is a no-op | Measured: CLS 0, TBT ≤40 ms, LCP 1.8 s slow-4G — passes D7's bar. |
+
+| D24 | 2026-07-05 | Reference-tier atmosphere approved by Sid — overrides D6 launch-scoping. Signature WebGL hero, illuminated grid backdrop, glass nav, scroll choreography, diagram flow animation | Sid's bar is the $12–14k tier of igloo/Glyphic; the launch scoping mis-applied booking-site caution to a showpiece. |
+| D25 | 2026-07-05 | D8 relaxed: exactly ONE glassmorphism treatment (nav-on-scroll) | Single glass instance keeps the matte-industrial system coherent. |
+| D26 | 2026-07-05 | Home JS budget 200→230 KB gzip; raw WebGL only, three.js stays banned | Centerpiece cost contained; guard updated. |
 
 *(Executor: append new rows here for every design choice made during build.)*
