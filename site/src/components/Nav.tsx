@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "./Button";
@@ -12,9 +13,29 @@ const links = [
 
 export default function Nav() {
   const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    // Feature-query check: only enable glass if backdrop-filter is supported
+    const supportsBackdrop = CSS.supports("backdrop-filter", "blur(1px)");
+    if (!supportsBackdrop) return;
+
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
+    onScroll(); // check initial state
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-[--line] bg-[--bg]/92 backdrop-blur-none">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-[300ms] ease-[--ease] ${
+        scrolled
+          ? "bg-[--bg]/55 backdrop-blur-[14px] backdrop-saturate-[140%] border-b border-[--line]"
+          : "bg-[--bg]/92 backdrop-blur-none border-b border-[--line]"
+      }`}
+    >
       <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-4">
         <Link
           href="/"
