@@ -1,0 +1,7 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0B0B0D"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#FF5C1A"/>
+  <text x="80" y="300" font-family="'Space Grotesk', sans-serif" font-size="72" font-weight="700" fill="#E8E6E1" letter-spacing="-0.02em">Siddharth Singh</text>
+  <text x="80" y="380" font-family="'Inter', sans-serif" font-size="32" fill="#8A8A93">AI Backend Engineer — Agentic Systems, LLM Pipelines</text>
+  <text x="80" y="450" font-family="'IBM Plex Mono', monospace" font-size="20" fill="#FF5C1A">Siddharthsinghkumar.github.io</text>
+</svg>

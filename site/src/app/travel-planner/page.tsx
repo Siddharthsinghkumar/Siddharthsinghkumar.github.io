@@ -1,7 +1,20 @@
+import type { Metadata } from "next";
 import Section from "@/components/Section";
 import Eyebrow from "@/components/Eyebrow";
 import Button from "@/components/Button";
 import TravelPlannerDiagram from "@/components/TravelPlannerDiagram";
+
+export const metadata: Metadata = {
+  title: "Travel Planner Agent — agentic AI with failure-proof inference",
+  description:
+    "An agentic AI travel planner: deterministic memory, custom model router, async circuit breaker with local Ollama fallback, SSE streaming, deployed on k3s with Prometheus/Grafana. By Siddharth Singh.",
+  openGraph: {
+    title: "Travel Planner Agent — agentic AI with failure-proof inference",
+    description:
+      "An agentic AI travel planner with deterministic memory, custom model router, and async circuit breaker with local Ollama fallback.",
+    images: [{ url: "/og/travel-planner.svg", width: 1200, height: 630 }],
+  },
+};
 
 export default function TravelPlannerPage() {
   return (

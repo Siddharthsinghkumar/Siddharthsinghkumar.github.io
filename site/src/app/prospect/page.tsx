@@ -1,8 +1,21 @@
+import type { Metadata } from "next";
 import Section from "@/components/Section";
 import Eyebrow from "@/components/Eyebrow";
 import Button from "@/components/Button";
 import StatusPill from "@/components/StatusPill";
 import ProspectDiagram from "@/components/ProspectDiagram";
+
+export const metadata: Metadata = {
+  title: "Prospect — an autonomous job-prospecting engine",
+  description:
+    "A multi-agent LLM system that scans newspapers with OCR, matches jobs with RAG and semantic search, and delivers ranked alerts to Telegram. LangGraph state machine, FAISS persona embeddings, local inference. By Siddharth Singh.",
+  openGraph: {
+    title: "Prospect — an autonomous job-prospecting engine",
+    description:
+      "A multi-agent LLM system that scans newspapers with OCR, matches jobs with RAG and semantic search, and delivers ranked alerts to Telegram.",
+    images: [{ url: "/og/prospect.svg", width: 1200, height: 630 }],
+  },
+};
 
 const components = [
   {
@@ -40,7 +53,6 @@ const components = [
 export default function ProspectPage() {
   return (
     <>
-      {/* Hero */}
       <Section className="pt-[calc(4rem+96px)]">
         <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--muted] mb-3">
           PROSPECT · <span className="text-[--accent]">SYSTEM / LIVE — IN ACTIVE DEVELOPMENT</span>
@@ -55,7 +67,6 @@ export default function ProspectPage() {
         </p>
       </Section>
 
-      {/* Why */}
       <Section className="border-t border-[--line]">
         <h2 className="font-display text-[clamp(1.563rem,3vw,1.953rem)] leading-tight text-[--text] mb-4">
           Why it exists
@@ -68,7 +79,6 @@ export default function ProspectPage() {
         </p>
       </Section>
 
-      {/* Architecture diagram */}
       <Section className="border-t border-[--line]">
         <Eyebrow>Architecture</Eyebrow>
         <div className="overflow-x-auto pb-2">
@@ -78,7 +88,6 @@ export default function ProspectPage() {
         </div>
       </Section>
 
-      {/* Component board */}
       <Section className="border-t border-[--line]">
         <p className="text-[--muted] text-sm mb-8">
           Five components. Each is honest about its state.
@@ -113,7 +122,6 @@ export default function ProspectPage() {
           ))}
         </div>
 
-        {/* Status legend */}
         <div className="mt-8 p-4 rounded-[--r-md] bg-[--surface] border border-[--line] text-sm text-[--muted] space-y-1">
           <p>
             <span className="text-[--ok] font-mono text-[11px] uppercase tracking-[0.08em]">SHIPPED</span> — running and done.
@@ -131,7 +139,6 @@ export default function ProspectPage() {
         </div>
       </Section>
 
-      {/* Proof */}
       <Section className="border-t border-[--line]">
         <Eyebrow>Proof</Eyebrow>
 
@@ -152,7 +159,6 @@ export default function ProspectPage() {
         </div>
       </Section>
 
-      {/* Honest notes */}
       <Section className="border-t border-[--line]">
         <Eyebrow>What I&rsquo;d tell another engineer</Eyebrow>
         <p className="text-[--muted] max-w-[68ch]">
@@ -164,7 +170,6 @@ export default function ProspectPage() {
         </p>
       </Section>
 
-      {/* CTA footer */}
       <Section className="border-t border-[--line]">
         <p className="text-[--muted] max-w-[68ch] mb-6">
           Want this kind of pipeline thinking on your team?

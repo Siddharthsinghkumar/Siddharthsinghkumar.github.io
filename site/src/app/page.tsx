@@ -1,14 +1,29 @@
+import type { Metadata } from "next";
 import Section from "@/components/Section";
 import Eyebrow from "@/components/Eyebrow";
 import Button from "@/components/Button";
 import ProjectCard from "@/components/ProjectCard";
 import TimelineEntry from "@/components/TimelineEntry";
 import SkillsRow from "@/components/SkillsRow";
+import JsonLd from "@/components/JsonLd";
 import contributions from "@/data/contributions.json";
+
+export const metadata: Metadata = {
+  title: "Siddharth Singh — AI Backend Engineer · Agentic Systems, LLM Pipelines",
+  description:
+    "Siddharth Singh is an AI backend engineer in India building agentic LLM systems — RAG pipelines, tool-calling runtimes, and local inference. Creator of Prospect, an autonomous job-prospecting engine.",
+  openGraph: {
+    title: "Siddharth Singh — AI Backend Engineer",
+    description:
+      "AI backend engineer building agentic LLM systems — RAG pipelines, tool-calling runtimes, and local inference.",
+    images: [{ url: "/og/home.svg", width: 1200, height: 630 }],
+  },
+};
 
 export default function Home() {
   return (
     <>
+      <JsonLd />
       {/* ── Hero ────────────────────────────────────────────── */}
       <section className="relative min-h-[100svh] flex flex-col justify-center px-4 overflow-hidden">
         {/* Radial glow behind hero */}

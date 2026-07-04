@@ -18,7 +18,7 @@ export default function Footer() {
           <Button href="mailto:siddharthsingh8418@gmail.com">
             siddharthsingh8418@gmail.com
           </Button>
-          <Button variant="ghost" href="/resume.pdf">
+          <Button variant="ghost" href="/resume-siddharth-singh.pdf">
             Resume ↓
           </Button>
         </div>

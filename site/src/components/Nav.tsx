@@ -39,7 +39,7 @@ export default function Nav() {
 
           <Button
             variant="primary"
-            href="/resume.pdf"
+            href="/resume-siddharth-singh.pdf"
             className="text-[10px] xs:text-[11px] px-2 xs:px-3 py-1.5 whitespace-nowrap"
           >
             Resume ↓
