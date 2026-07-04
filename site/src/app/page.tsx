@@ -7,9 +7,9 @@ import TimelineEntry from "@/components/TimelineEntry";
 import SkillsRow from "@/components/SkillsRow";
 import JsonLd from "@/components/JsonLd";
 import ContributionsDisplay from "@/components/ContributionsDisplay";
-import TextPressure, { TEXTPRESSURE_ENABLED } from "@/components/TextPressure";
 import CssHeroAtmosphere from "@/components/CssHeroAtmosphere";
 import PaperInkLoader from "@/components/PaperInkLoader";
+import EngineLoader from "@/components/engine/EngineLoader";
 import GridBackdrop from "@/components/GridBackdrop";
 import ChoreoReveal, { CascadeRows } from "@/components/ChoreoReveal";
 import contributions from "@/data/contributions.json";
@@ -34,6 +34,7 @@ export default function Home() {
       <section className="relative min-h-[100svh] flex flex-col justify-center px-4 overflow-hidden">
         <CssHeroAtmosphere />
         <PaperInkLoader />
+        <EngineLoader />
         <div
           className="absolute inset-0 pointer-events-none select-none"
           style={{

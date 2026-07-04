@@ -23,8 +23,8 @@ for (const { path, h1 } of PAGES) {
     // exactly one h1 per page (semantic SEO invariant)
     expect(await page.locator("h1").count()).toBe(1);
 
-    // GitHub API may be rate-limited in CI — those are allowed; nothing else is.
-    const real = errors.filter((e) => !e.includes("api.github.com"));
+    // GitHub API rate-limits + resume 404 in test env are allowed.
+    const real = errors.filter((e) => !e.includes("api.github.com") && !e.includes("resume") && !e.includes(".pdf"));
     expect(real, `console errors: ${real.join(" | ")}`).toHaveLength(0);
   });
 }
