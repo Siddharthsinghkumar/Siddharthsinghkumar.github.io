@@ -9,6 +9,7 @@ import JsonLd from "@/components/JsonLd";
 import ContributionsDisplay from "@/components/ContributionsDisplay";
 import TextPressure, { TEXTPRESSURE_ENABLED } from "@/components/TextPressure";
 import CssHeroAtmosphere from "@/components/CssHeroAtmosphere";
+import PaperInkLoader from "@/components/PaperInkLoader";
 import contributions from "@/data/contributions.json";
 
 export const metadata: Metadata = {
