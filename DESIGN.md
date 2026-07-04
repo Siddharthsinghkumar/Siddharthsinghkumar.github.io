@@ -202,4 +202,8 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 | D25 | 2026-07-05 | D8 relaxed: exactly ONE glassmorphism treatment (nav-on-scroll) | Single glass instance keeps the matte-industrial system coherent. |
 | D26 | 2026-07-05 | Home JS budget 200→230 KB gzip; raw WebGL only, three.js stays banned | Centerpiece cost contained; guard updated. |
 
+| D27 | 2026-07-05 | WebGL paper-ink shader: raw GLSL (simplex FBM grain + pointer-trail ink glow), 0.75× DPR cap, requestIdleCallback mount, visibility/tab-hidden pause, screen blend overlay on CSS fallback | $14k hero centerpiece; CSS fallback (SVG feTurbulence + drifting accent blobs) always present. |
+| D28 | 2026-07-05 | Illuminated grid backdrop: CSS grid from donor concept, inline artifact tiles (OG labels, mini SVGs, mono repo names, spec snippets), mask fade at edges | No gsap, no stock images — donor rule applied. |
+| D29 | 2026-07-05 | Scroll choreography: clip-path inset hero/heading reveals (opacity stays 1 for LCP), 80ms hero stagger, 40ms timeline row cascade | Glyphic-grade entrances, engineered not bouncy. |
+
 *(Executor: append new rows here for every design choice made during build.)*
