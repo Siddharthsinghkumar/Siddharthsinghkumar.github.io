@@ -1,141 +1,167 @@
-export default function ProspectDiagram() {
-  return (
-    <svg
-      viewBox="0 0 800 160"
-      className="w-full h-auto"
-      role="img"
-      aria-label="Prospect pipeline: SCAN → EXTRACT → EMBED → MATCH → GENERATE → DELIVER"
-    >
-      <defs>
-        <marker
-          id="arrow-orange"
-          viewBox="0 0 10 10"
-          refX="9"
-          refY="5"
-          markerWidth="6"
-          markerHeight="6"
-          orient="auto"
-        >
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)" />
-        </marker>
-      </defs>
+"use client";
 
-      {[
-        { x: 20, w: 100, label: "SCAN", sub: "OCR engine" },
-        { x: 140, w: 100, label: "EXTRACT", sub: "LLM pipeline" },
-        { x: 260, w: 100, label: "EMBED", sub: "FAISS vectors" },
-        { x: 380, w: 100, label: "MATCH", sub: "Semantic search" },
-        { x: 500, w: 100, label: "GENERATE", sub: "Resume tailoring" },
-        { x: 620, w: 100, label: "DELIVER", sub: "Telegram alerts" },
-      ].map(({ x, w, label, sub }) => (
-        <g key={label}>
-          <rect
-            x={x}
-            y={30}
-            width={w}
-            height={56}
-            rx="6"
-            fill="var(--surface)"
-            stroke="var(--line)"
-            strokeWidth="1"
-          />
+import { useEffect, useRef, useState } from "react";
+
+const stages = [
+  { key: "SCAN", x: 20, w: 100, sub: "OCR engine" },
+  { key: "EXTRACT", x: 140, w: 100, sub: "LLM pipeline" },
+  { key: "EMBED", x: 260, w: 100, sub: "FAISS vectors" },
+  { key: "MATCH", x: 380, w: 100, sub: "Semantic search" },
+  { key: "GENERATE", x: 500, w: 100, sub: "Resume tailoring" },
+  { key: "DELIVER", x: 620, w: 100, sub: "Telegram alerts" },
+];
+
+const bottoms = [
+  { x: 70, label: "smart-job-scanner-v2" },
+  { x: 190, label: "merlin-cli/bridge" },
+  { x: 310, label: "persona-context-engine" },
+  { x: 430, label: "job-discovery-engine" },
+  { x: 550, label: "merlin-cli/bridge" },
+  { x: 670, label: "jobboard-api" },
+];
+
+export default function ProspectDiagram() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [litStage, setLitStage] = useState(-1);
+  const [motionOn, setMotionOn] = useState(true);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setMotionOn(false);
+      setLitStage(stages.length);
+      return;
+    }
+
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        // Calculate how far through the diagram we've scrolled
+        const ratio = entry.intersectionRatio;
+        // Map ratio [0, 1] to stage count. Light stages as the viewer scrolls down.
+        const stageIndex = Math.min(
+          stages.length - 1,
+          Math.floor(ratio * stages.length * 1.3),
+        );
+        setLitStage(Math.max(0, stageIndex));
+      },
+      { threshold: Array.from({ length: 21 }, (_, i) => i * 0.05) }, // 0, 0.05, 0.10, ..., 1.0
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={containerRef}>
+      <svg
+        viewBox="0 0 800 160"
+        className="w-full h-auto"
+        role="img"
+        aria-label="Prospect pipeline: SCAN → EXTRACT → EMBED → MATCH → GENERATE → DELIVER"
+      >
+        {stages.map(({ key, x, w, sub }, i) => {
+          const lit = i <= litStage || !motionOn;
+          const isLast = i === stages.length - 1;
+          const nextX = !isLast ? stages[i + 1].x : 0;
+
+          return (
+            <g key={key}>
+              <rect
+                x={x}
+                y={30}
+                width={w}
+                height={56}
+                rx="6"
+                fill={lit ? "var(--surface-2)" : "var(--surface)"}
+                stroke={lit ? "var(--accent)" : "var(--line)"}
+                strokeWidth={lit ? 1.5 : 1}
+                style={{ transition: "fill 400ms var(--ease), stroke 400ms var(--ease)" }}
+              />
+              <text
+                x={x + w / 2}
+                y={52}
+                textAnchor="middle"
+                fill={lit ? "var(--accent)" : "var(--muted)"}
+                fontFamily="var(--font-ibm-plex-mono), monospace"
+                fontSize="11"
+                fontWeight="600"
+                style={{ transition: "fill 400ms var(--ease)" }}
+              >
+                {key}
+              </text>
+              <text
+                x={x + w / 2}
+                y={72}
+                textAnchor="middle"
+                fill="var(--muted)"
+                fontFamily="var(--font-inter), sans-serif"
+                fontSize="10"
+              >
+                {sub}
+              </text>
+
+              {/* Connector line with flow particles */}
+              {!isLast && (
+                <>
+                  <line
+                    x1={x + w + 4}
+                    y1={39}
+                    x2={nextX - 4}
+                    y2={39}
+                    stroke={lit ? "var(--accent)" : "var(--line)"}
+                    strokeWidth={lit ? 1.5 : 1}
+                    style={{ transition: "stroke 400ms var(--ease)" }}
+                  />
+                  {lit && motionOn && (
+                    <>
+                      <circle r="2.5" fill="var(--accent)" opacity="0.8">
+                        <animateMotion
+                          dur="2.2s"
+                          repeatCount="indefinite"
+                          path={`M ${x + w + 8} 39 L ${nextX - 8} 39`}
+                        />
+                      </circle>
+                      <circle r="2" fill="var(--accent)" opacity="0.5">
+                        <animateMotion
+                          dur="2.2s"
+                          repeatCount="indefinite"
+                          begin="0.7s"
+                          path={`M ${x + w + 8} 39 L ${nextX - 8} 39`}
+                        />
+                      </circle>
+                      <circle r="3" fill="var(--accent)" opacity="0.6">
+                        <animateMotion
+                          dur="2.2s"
+                          repeatCount="indefinite"
+                          begin="1.4s"
+                          path={`M ${x + w + 8} 39 L ${nextX - 8} 39`}
+                        />
+                      </circle>
+                    </>
+                  )}
+                </>
+              )}
+            </g>
+          );
+        })}
+
+        {bottoms.map(({ x, label }) => (
           <text
-            x={x + w / 2}
-            y={52}
-            textAnchor="middle"
-            fill="var(--accent)"
+            key={label}
+            x={x}
+            y={120}
+            fill="var(--muted)"
             fontFamily="var(--font-ibm-plex-mono), monospace"
-            fontSize="11"
-            fontWeight="600"
+            fontSize="10"
+            textAnchor="middle"
           >
             {label}
           </text>
-          <text
-            x={x + w / 2}
-            y={72}
-            textAnchor="middle"
-            fill="var(--muted)"
-            fontFamily="var(--font-inter), sans-serif"
-            fontSize="10"
-          >
-            {sub}
-          </text>
-          {/* Arrow to next */}
-          {label !== "DELIVER" && (
-            <line
-              x1={x + w + 4}
-              y1={58}
-              x2={x + w + 16}
-              y2={58}
-              stroke="var(--accent)"
-              strokeWidth="1.5"
-              markerEnd="url(#arrow-orange)"
-            />
-          )}
-        </g>
-      ))}
-
-      {/* Bottom labels — components */}
-      <text
-        x="70"
-        y="120"
-        fill="var(--muted)"
-        fontFamily="var(--font-ibm-plex-mono), monospace"
-        fontSize="10"
-        textAnchor="middle"
-      >
-        smart-job-scanner-v2
-      </text>
-      <text
-        x="190"
-        y="120"
-        fill="var(--muted)"
-        fontFamily="var(--font-ibm-plex-mono), monospace"
-        fontSize="10"
-        textAnchor="middle"
-      >
-        merlin-cli/bridge
-      </text>
-      <text
-        x="310"
-        y="120"
-        fill="var(--muted)"
-        fontFamily="var(--font-ibm-plex-mono), monospace"
-        fontSize="10"
-        textAnchor="middle"
-      >
-        persona-context-engine
-      </text>
-      <text
-        x="430"
-        y="120"
-        fill="var(--muted)"
-        fontFamily="var(--font-ibm-plex-mono), monospace"
-        fontSize="10"
-        textAnchor="middle"
-      >
-        job-discovery-engine
-      </text>
-      <text
-        x="550"
-        y="120"
-        fill="var(--muted)"
-        fontFamily="var(--font-ibm-plex-mono), monospace"
-        fontSize="10"
-        textAnchor="middle"
-      >
-        merlin-cli/bridge
-      </text>
-      <text
-        x="670"
-        y="120"
-        fill="var(--muted)"
-        fontFamily="var(--font-ibm-plex-mono), monospace"
-        fontSize="10"
-        textAnchor="middle"
-      >
-        jobboard-api
-      </text>
-    </svg>
+        ))}
+      </svg>
+    </div>
   );
 }
