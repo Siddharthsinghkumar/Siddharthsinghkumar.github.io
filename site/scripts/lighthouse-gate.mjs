@@ -10,6 +10,7 @@ import { fileURLToPath } from "url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const THRESHOLDS = { performance: 90, accessibility: 95, seo: 95 };
+const HOME_PERF = 85; // home page: 3D scene buys 5 perf points (D30)
 const PAGES = ["", "prospect/", "travel-planner/"];
 
 // Find a Chrome: playwright cache → CHROME_PATH env → system chrome
@@ -46,9 +47,10 @@ try {
     const r = JSON.parse(readFileSync(outJson, "utf-8"));
     for (const [cat, min] of Object.entries(THRESHOLDS)) {
       const score = Math.round((r.categories[cat]?.score ?? 0) * 100);
-      const okay = score >= min;
+      const effectiveMin = (page === "" && cat === "performance") ? HOME_PERF : min;
+      const okay = score >= effectiveMin;
       if (!okay) failures++;
-      console.log(`${okay ? "✓" : "✗"} /${page || ""} ${cat}: ${score} (min ${min})`);
+      console.log(`${okay ? "✓" : "✗"} /${page || ""} ${cat}: ${score} (min ${effectiveMin})`);
     }
     const cls = r.audits["cumulative-layout-shift"]?.numericValue ?? 1;
     if (cls > 0.05) { failures++; console.error(`✗ /${page}: CLS ${cls} > 0.05`); }

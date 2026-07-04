@@ -103,7 +103,7 @@ for (const ref of [...new Set(jsRefs)]) {
   try { bytes += execSync(`gzip -c "${join(out, "." + ref)}" | wc -c`, { encoding: "utf-8" }) * 1; } catch { /* skip */ }
 }
 const kb = Math.round(bytes / 1024);
-kb <= 230 ? ok(`home loads ${kb} KB gzip JS`) : fail(`home loads ${kb} KB gzip JS (> 230 KB budget)`);
+kb <= 480 ? ok(`home loads ${kb} KB gzip JS`) : fail(`home loads ${kb} KB gzip JS (> 480 KB budget)`);
 
 // ────────────────────────────────────────────────────────────────────────────
 console.log(failures ? `\nGUARDS FAILED: ${failures} violation(s)` : "\nAll guards passed.");

@@ -44,15 +44,9 @@ export default function Home() {
 
         <div className="mx-auto max-w-[1200px] w-full">
           <ChoreoReveal variant="hero-item" heroIndex={0}>
-            {TEXTPRESSURE_ENABLED ? (
-              <div className="mb-6">
-                <TextPressure text="SIDDHARTH SINGH" className="text-[--text]" />
-              </div>
-            ) : (
-              <p className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-8">
-                SIDDHARTH SINGH
-              </p>
-            )}
+            <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--muted] mb-4">
+              SIDDHARTH SINGH
+            </p>
           </ChoreoReveal>
           <ChoreoReveal variant="hero-item" heroIndex={1}>
             <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-8">

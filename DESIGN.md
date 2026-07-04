@@ -158,7 +158,7 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 ## 5. Performance & quality budget (premium = fast)
 
 - LCP < 1.5s (hero H1 is the LCP — server-rendered text, no priority images).
-- JS < 230KB gzip on `/` (raw WebGL only, no three.js; D26 budget).
+- JS < 480KB gzip on `/` (three + R3F + drei; D30 budget).
 - CLS < 0.05; fonts `font-display: swap` with metric-compatible fallbacks.
 - Lighthouse CI (learned.md Day 9): perf ≥ 0.9, a11y ≥ 0.95, SEO ≥ 0.95 on all 4 pages.
 - Images: AVIF/WebP, sized, no CSS resizing (learned.md perf table).
@@ -205,5 +205,9 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 | D27 | 2026-07-05 | WebGL paper-ink shader: raw GLSL (simplex FBM grain + pointer-trail ink glow), 0.75× DPR cap, requestIdleCallback mount, visibility/tab-hidden pause, screen blend overlay on CSS fallback | $14k hero centerpiece; CSS fallback (SVG feTurbulence + drifting accent blobs) always present. |
 | D28 | 2026-07-05 | Illuminated grid backdrop: CSS grid from donor concept, inline artifact tiles (OG labels, mini SVGs, mono repo names, spec snippets), mask fade at edges | No gsap, no stock images — donor rule applied. |
 | D29 | 2026-07-05 | Scroll choreography: clip-path inset hero/heading reveals (opacity stays 1 for LCP), 80ms hero stagger, 40ms timeline row cascade | Glyphic-grade entrances, engineered not bouncy. |
+
+| D30 | 2026-07-05 | three.js/R3F approved; home JS budget →480 KB gzip; home perf gate 90→85 | Sid's explicit bar is the igloo/Glyphic scroll-driven 3D tier; unreachable without a real scene. |
+| D31 | 2026-07-05 | Perceptibility gate (visual-gate.mjs) added as merge gate | T9 shipped spec-compliant but imperceptible atmosphere; pixel thresholds make invisible work fail CI. |
+| D32 | 2026-07-05 | Hero TextPressure name REMOVED (was rendering broken: clipped H, collapsed space) — hero returns to COPY.md spec: mono eyebrow name + h1 headline; scene is the visual | One centerpiece per screen; the 3D engine replaces the type experiment. |
 
 *(Executor: append new rows here for every design choice made during build.)*
