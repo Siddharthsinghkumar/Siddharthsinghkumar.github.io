@@ -5,6 +5,12 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Core, GridFloor, DustField, StageNodes, DataStream, Satellite, getGlowTexture, COLORS } from "./SceneObjects";
 
+export type DeviceProfile = {
+  isFine: boolean;
+  isReducedMotion: boolean;
+  isCoarse: boolean;
+};
+
 // ── Build stream curves — 5 orange + 2 grey-white = 7 streams, 70% orange per spec ──
 // Plus exit stream: flows from core downward-forward, brighter (sorted output)
 function buildStreamCurves(): { curve: THREE.CatmullRomCurve3; color: number; isExit: boolean }[] {
@@ -60,17 +66,18 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
 }
 
 // ── Scene Inner ────────────────────────────────────────────
-function SceneInner() {
+function SceneInner({ coarse }: { coarse: boolean }) {
   const { scene, camera } = useThree();
   const coreRef = useRef<THREE.Group>(null);
   const streamGroupRef = useRef<THREE.Group>(null);
   const sceneGroupRef = useRef<THREE.Group>(null);
   const gridRef = useRef<THREE.Group>(null);
+  const satelliteRef = useRef<THREE.Group>(null);
   const timeRef = useRef(0);
   const scrollP = useRef(0);
   const smoothP = useRef(0);
   const pointerNorm = useRef({ x: 0, y: 0 });
-  const isFine = useRef(true);
+  const isFine = useRef(!coarse);
 
   const streamDefs = useMemo(() => buildStreamCurves(), []);
   const glowTex = useMemo(() => getGlowTexture(), []);
@@ -173,6 +180,11 @@ function SceneInner() {
       });
     }
 
+    // Satellite visibility: show around waypoints C-D (p 0.28–0.72)
+    if (satelliteRef.current) {
+      satelliteRef.current.visible = p > 0.28 && p < 0.72;
+    }
+
     // Core rotation + breathing (intensifies at waypoint E)
     if (coreRef.current) {
       coreRef.current.rotation.x += 0.006 * delta;
@@ -213,7 +225,7 @@ function SceneInner() {
       {/* Stage ring — spec radius ~2.6 */}
       <StageNodes radius={2.6} />
 
-      {/* Data streams — 7 curves, ~4,500 particles total */}
+      {/* Data streams — ~4,500 total; half on coarse */}
       <group ref={streamGroupRef}>
         {streamDefs.map((def, i) => (
           <DataStream
@@ -221,19 +233,19 @@ function SceneInner() {
             curve={def.curve}
             color={def.color}
             speed={0.4 + i * 0.12}
-            count={def.isExit ? 650 : 640}
+            count={coarse ? (def.isExit ? 320 : 320) : (def.isExit ? 650 : 640)}
             bright={def.isExit}
           />
         ))}
       </group>
 
       {/* Satellite system — visible around waypoint C */}
-      <Satellite position={[-8, 0.8, 3.5]} visible={scrollP.current > 0.25 && scrollP.current < 0.75} />
+      <Satellite position={[-8, 0.8, 3.5]} groupRef={satelliteRef} />
 
-      {/* Dust — two z-parallax layers */}
-      <DustField count={2000} />
+      {/* Dust — two z-parallax layers; half counts on coarse */}
+      <DustField count={coarse ? 1000 : 2000} />
       <group position={[0, 0, 3]}>
-        <DustField count={800} />
+        <DustField count={coarse ? 400 : 800} />
       </group>
 
       {/* Grid floor */}
@@ -255,24 +267,27 @@ function SceneInner() {
 // ── Canvas Wrapper ────────────────────────────────────────
 interface EngineCanvasProps {
   className?: string;
+  deviceProfile: DeviceProfile;
 }
 
-export default function EngineCanvas({ className = "" }: EngineCanvasProps) {
+export default function EngineCanvas({ className = "", deviceProfile }: EngineCanvasProps) {
+  const coarse = deviceProfile.isCoarse;
+
   return (
     <div className={`fixed inset-0 z-0 pointer-events-none ${className}`}>
       <Canvas
         gl={{
-          antialias: true,
+          antialias: !coarse,
           alpha: false,
-          powerPreference: "high-performance",
+          powerPreference: coarse ? "low-power" : "high-performance",
           stencil: false,
           depth: true,
         }}
-        dpr={[0.5, 0.75]}
+        dpr={coarse ? [0.3, 0.6] : [0.5, 0.75]}
         camera={{ position: [1.8, 0.8, 7], fov: 45 }}
         style={{ position: "fixed", inset: 0 }}
       >
-        <SceneInner />
+        <SceneInner coarse={coarse} />
       </Canvas>
     </div>
   );

@@ -318,10 +318,18 @@ export function DataStream({
 }
 
 // ── Satellite system — router node + 2 orbiting fallback nodes ──
-export function Satellite({ position, visible = true }: { position: [number, number, number]; visible?: boolean }) {
-  const groupRef = useRef<THREE.Group>(null);
+export function Satellite({ position, groupRef: externalRef }: {
+  position: [number, number, number];
+  groupRef?: React.MutableRefObject<THREE.Group | null>;
+}) {
+  const internalRef = useRef<THREE.Group>(null);
   const accentColor = useMemo(() => new THREE.Color(COLORS.accent), []);
   const whiteColor = useMemo(() => new THREE.Color(COLORS.white), []);
+
+  // expose internal ref through externalRef
+  useEffect(() => {
+    if (externalRef) externalRef.current = internalRef.current;
+  });
 
   // 2 orbiting fallback nodes
   const orbitRefs = useRef<(THREE.Mesh | null)[]>([]);
@@ -329,8 +337,7 @@ export function Satellite({ position, visible = true }: { position: [number, num
   const orbitSpeeds = useRef([0.85, 1.1]);
 
   useFrame((_, delta) => {
-    if (!groupRef.current) return;
-    groupRef.current.visible = visible;
+    if (!internalRef.current) return;
 
     orbitAngles.current.forEach((angle, i) => {
       orbitAngles.current[i] += orbitSpeeds.current[i] * delta;
@@ -344,7 +351,7 @@ export function Satellite({ position, visible = true }: { position: [number, num
   });
 
   return (
-    <group ref={groupRef} position={position} visible={visible}>
+    <group ref={internalRef} position={position} visible={true}>
       {/* Router node — central octahedron, ~14% core scale */}
       <mesh>
         <octahedronGeometry args={[0.49, 0]} />
