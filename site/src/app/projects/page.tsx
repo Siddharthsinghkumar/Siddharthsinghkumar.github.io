@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Projects | Siddharth Singh",
     description: "More systems, shipped and documented.",
-    images: [{ url: "/og/home.png", width: 1200, height: 630 }],
+    images: [{ url: "/og/projects.png", width: 1200, height: 630 }],
   },
 };
 

@@ -1,0 +1,8 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0B0B0D"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#FF5C1A"/>
+  <text x="80" y="280" font-family="'Space Grotesk', sans-serif" font-size="64" font-weight="700" fill="#E8E6E1" letter-spacing="-0.02em">About</text>
+  <text x="80" y="350" font-family="'Inter', sans-serif" font-size="28" fill="#8A8A93">AI Backend Engineer — agentic pipelines, LLM orchestration, local inference</text>
+  <text x="80" y="420" font-family="'IBM Plex Mono', monospace" font-size="18" fill="#FF5C1A">The card is real — drag it</text>
+  <text x="80" y="480" font-family="'IBM Plex Mono', monospace" font-size="16" fill="#26262A">Siddharthsinghkumar.github.io</text>
+</svg>

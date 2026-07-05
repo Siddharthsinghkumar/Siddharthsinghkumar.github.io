@@ -10,7 +10,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(__dirname, "..", "public", "og");
-const pages = ["home", "prospect", "travel-planner"];
+const pages = ["home", "prospect", "travel-planner", "projects", "about"];
 
 async function main() {
   console.log("OG image generation — SVGs are primary; PNG conversion optional.");

@@ -5,6 +5,11 @@ import LanyardLoader from "@/components/LanyardLoader";
 export const metadata: Metadata = {
   title: "About | Siddharth Singh",
   description: "AI Backend Engineer — agentic pipelines, LLM orchestration, local inference.",
+  openGraph: {
+    title: "About | Siddharth Singh",
+    description: "AI Backend Engineer — agentic pipelines, LLM orchestration, local inference.",
+    images: [{ url: "/og/about.png", width: 1200, height: 630 }],
+  },
 };
 
 export default function About() {
