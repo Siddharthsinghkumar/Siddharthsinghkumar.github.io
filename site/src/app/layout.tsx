@@ -67,8 +67,25 @@ export default function RootLayout({
         {/* theme-color for browser chrome */}
         <meta name="theme-color" content="#0B0B0D" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        {/* B2-FIX: on repeat visits, hide the SSR'd overlay BEFORE any body
+            element paints. The inline style block + script run synchronously
+            during HTML parsing (before <body>), so no frame renders with the
+            overlay visible. */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: "html.intro-skip .intro-overlay{display:none!important}",
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem("intro-shown"))document.documentElement.classList.add("intro-skip")}catch(e){}`,
+          }}
+        />
       </head>
-      <body className="min-h-screen bg-[--bg] text-[--text] font-sans">
+      <body
+        className="min-h-screen bg-[--bg] text-[--text] font-sans"
+        style={{ backgroundColor: "#0B0B0D" }}
+      >
         <SmoothScroll />
         <CustomCursor />
         <Nav />

@@ -21,9 +21,16 @@ export default function IntroScreen() {
   const maxTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const doneRef = useRef(false);
 
+  // B2-FIX: pre-hydration skip via inline script in <head>.
+  // If the html element has intro-skip class, return null immediately
+  // — the SSR'd overlay markup never paints a single frame.
+  if (typeof document !== "undefined" && document.documentElement.classList.contains("intro-skip")) {
+    return null;
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || sessionStorage.getItem("intro-shown")) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setPhase(3);
       return;
     }
@@ -178,6 +185,15 @@ export default function IntroScreen() {
         role="status"
         aria-label="Loading"
         className={`intro-overlay fixed inset-0 z-[100] flex flex-col items-center justify-center pointer-events-none bg-[--bg]`}
+        style={{
+          position: "fixed",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          zIndex: 100,
+          backgroundColor: "rgb(11,11,13)",
+        }}
       >
         {/* Eyebrow */}
         <div
