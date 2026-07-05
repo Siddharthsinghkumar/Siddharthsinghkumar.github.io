@@ -4,70 +4,74 @@
 // Sequence: black overlay → eyebrow → GooeyLoader + name + counter →
 // holds until the 3D engine signals ready → exit. No hardcoded timing.
 // Failsafe: 2.5s CSS auto-dismiss. Skips on reduced-motion / repeat visits.
+// B2/D43: counter tracks REAL asset progress (fonts→chunk→first-frame→poster).
 
 import { useEffect, useState, useRef } from "react";
 import DecryptedText from "./DecryptedText";
-import { engineReady } from "./engine/engine-ready";
+import { engineReady, onEngineProgress, reportProgress } from "./engine/engine-ready";
 
 const MAX_WAIT = 2500;
 
 export default function IntroScreen() {
   const [phase, setPhase] = useState(0); // 0: black, 1: loading, 2: exiting, 3: done
   const [counter, setCounter] = useState(0);
-  const startTime = useRef(0);
+  const phaseRef = useRef(0);
   const counterRef = useRef(0);
+  const startRef = useRef(Date.now());
   const maxTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const doneRef = useRef(false);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || sessionStorage.getItem("intro-shown")) {
       setPhase(3);
       return;
     }
 
-    startTime.current = performance.now();
     let rafId: number;
-    let done = false;
 
-    // Maximum wait failsafe
-    maxTimerRef.current = setTimeout(() => {
-      if (!done) {
-        done = true;
-        setPhase(2);
-        cancelAnimationFrame(rafId);
-      }
-    }, MAX_WAIT);
+    // ── Asset-progress milestones (B2/D43) ────────────────
+    reportProgress(0); // reset for this visit
 
-    // Wait for real engine ready; exit as soon as it fires
-    engineReady.then(() => {
-      if (!done) {
-        done = true;
-        setPhase(2);
-        cancelAnimationFrame(rafId);
-      }
+    // 15 → fonts ready
+    document.fonts.ready.then(() => { if (!doneRef.current) reportProgress(15); });
+
+    // 100 → poster decoded (also warms the cache for reduced-motion path)
+    const posterImg = new Image();
+    posterImg.src = "/poster-home.webp";
+    posterImg.decode().then(() => { if (!doneRef.current) reportProgress(100); }).catch(() => { if (!doneRef.current) reportProgress(100); });
+
+    // 45 → engine chunk (EngineLoader), 85 → first frame (signalEngineReady)
+
+    // Sync module-level progress → window bridge for rAF poll
+    const unsub = onEngineProgress((p) => {
+      (window as any).__engineProgress = p;
     });
 
-    const tick = () => {
-      if (done) return;
-      const elapsed = performance.now() - startTime.current;
+    const phase1 = () => { if (phaseRef.current === 0) { phaseRef.current = 1; setPhase(1); } };
+    const phase2 = () => { if (phaseRef.current < 2) { doneRef.current = true; setCounter(100); phaseRef.current = 2; setPhase(2); } };
 
-      // Phase 0: 0-150ms — black, eyebrow fades in
-      if (elapsed < 150) {
-        if (phase !== 0) setPhase(0);
-        setCounter(0);
+    // Maximum wait failsafe
+    maxTimerRef.current = setTimeout(() => { if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); } }, MAX_WAIT);
+
+    // Wait for real engine ready; exit as soon as it fires
+    engineReady.then(() => { if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); } });
+
+    const tick = () => {
+      if (doneRef.current) return;
+      const start = startRef.current;
+
+      // Poll module-level progress and ease counter toward it
+      const target = (window as any).__engineProgress ?? 0;
+      if (target > counterRef.current) {
+        const step = Math.min(target, counterRef.current + Math.ceil((target - counterRef.current) * 0.15));
+        counterRef.current = Math.max(counterRef.current, step);
+        setCounter(counterRef.current);
       }
-      // Phase 1: loading — GooeyLoader + name + counter. Counter advances
-      // smoothly toward 99, not 100 (100 means "ready"). Slowdown past ~80
-      // so the counter visibly rushes the last 20 when engine is actually done.
-      else {
-        if (phase !== 1) setPhase(1);
-        // Map 150ms → MAX_WAIT to counter range 0 → 99, decelerating
-        const raw = Math.min(1, (elapsed - 150) / (MAX_WAIT - 150));
-        const eased = 1 - Math.pow(1 - raw, 3); // ease-out cubic — fast start, slow near 99
-        const target = Math.floor(eased * 98);
-        if (target > counterRef.current) {
-          counterRef.current = target;
-          setCounter(target);
-        }
+
+      // Visual phase 0→1 at 150ms
+      if (phaseRef.current === 0 && Date.now() - start > 150) {
+        phase1();
       }
 
       rafId = requestAnimationFrame(tick);
@@ -75,15 +79,15 @@ export default function IntroScreen() {
     rafId = requestAnimationFrame(tick);
 
     return () => {
+      unsub();
       cancelAnimationFrame(rafId);
       if (maxTimerRef.current) clearTimeout(maxTimerRef.current);
     };
-  }, [phase]);
+  }, []);
 
-  // Phase 2: exiting — counter jumps to 100, overlay fades out
+  // Phase 2: exiting — overlay fades out
   useEffect(() => {
     if (phase !== 2) return;
-    setCounter(100);
     const id = setTimeout(() => {
       setPhase(3);
       sessionStorage.setItem("intro-shown", "1");

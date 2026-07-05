@@ -3,8 +3,17 @@
 import { useEffect, useState, Component, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import type { DeviceProfile } from "./EngineCanvas";
+import { reportProgress } from "./engine-ready";
 
-const EngineCanvas = dynamic(() => import("./EngineCanvas"), {
+// B2: report milestone 45 when the engine chunk actually loads.
+// Dynamic import returns the module — our resolver fires once on resolution.
+let chunkResolve: (() => void) | null = null;
+const engineChunkImport = new Promise<void>((r) => { chunkResolve = r; });
+
+const EngineCanvas = dynamic(() => import("./EngineCanvas").then((mod) => {
+  chunkResolve?.();
+  return mod;
+}), {
   ssr: false,
   loading: () => null,
 });
@@ -73,6 +82,8 @@ export default function EngineLoader() {
     if (!profile || profile.isReducedMotion) return;
     // rIC timeout (1500ms) guarantees canvasReady flips — no rIC-never-fires gap.
     scheduleIdle(() => setCanvasReady(true), 1500);
+    // B2 milestone 45: engine chunk resolved (dynamic import completed)
+    engineChunkImport.then(() => { reportProgress(45); });
   }, [profile]);
 
   return (
