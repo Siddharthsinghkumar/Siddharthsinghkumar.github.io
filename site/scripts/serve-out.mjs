@@ -19,6 +19,7 @@ const types = {
 };
 
 createServer((req, res) => {
+  const isHead = req.method === "HEAD";
   let path = normalize(decodeURIComponent(req.url.split("?")[0])).replace(/^(\.\.[/\\])+/, "");
   let file = join(out, path);
   if (existsSync(file) && statSync(file).isDirectory()) file = join(file, "index.html");
@@ -26,9 +27,17 @@ createServer((req, res) => {
   if (!existsSync(file)) {
     file = join(out, "404.html");
     res.writeHead(404, { "Content-Type": "text/html" });
-    res.end(existsSync(file) ? readFileSync(file) : "Not found");
+    if (!isHead) res.end(existsSync(file) ? readFileSync(file) : "Not found");
+    else res.end();
     return;
   }
-  res.writeHead(200, { "Content-Type": types[extname(file)] || "application/octet-stream" });
-  res.end(readFileSync(file));
+  const contentType = types[extname(file)] || "application/octet-stream";
+  if (isHead) {
+    const stats = statSync(file);
+    res.writeHead(200, { "Content-Type": contentType, "Content-Length": stats.size });
+    res.end();
+  } else {
+    res.writeHead(200, { "Content-Type": contentType });
+    res.end(readFileSync(file));
+  }
 }).listen(port, () => console.log(`serving out/ on http://localhost:${port}`));

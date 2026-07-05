@@ -49,3 +49,5 @@ page structure:
   smoke tests — the snapshot fallback renders instead.
 - Contributions counter shows "GitHub →" fallback when the GH_TOKEN/GraphQL
   token is absent.
+- `THREE.Clock` deprecation warning: originates in `@react-three/drei` internals,
+  not our code. Tracked upstream — no action needed on our side (F13.4).
