@@ -8,14 +8,12 @@
 
 import { useEffect, useState, useRef } from "react";
 import DecryptedText from "./DecryptedText";
-import { useProgress } from "@react-three/drei";
 
 const CSS_SAFETY = 2200;
 
 export default function IntroScreen() {
-  const [phase, setPhase] = useState(0); // 0: black, 1: assembling, 2: exiting, 3: done
+  const [phase, setPhase] = useState(0);
   const [counter, setCounter] = useState(0);
-  const { progress } = useProgress();
   const startTime = useRef(0);
   const counterRef = useRef(0);
 
@@ -34,17 +32,20 @@ export default function IntroScreen() {
       // Phase 0: 0-150ms — black overlay, eyebrow fades in
       if (elapsed < 150) {
         setPhase(0);
+        setCounter(0);
       }
       // Phase 1: 150-1200ms — GooeyLoader + decrypt + counter
       else if (elapsed < 1200) {
         if (phase !== 1) setPhase(1);
-        // Monotonic counter — never stalls, jumps to 100 when ready
-        const target = Math.max(counterRef.current, progress);
-        counterRef.current = target;
-        setCounter((prev) => {
-          if (prev >= 100) return 100;
-          return prev < target ? prev + 1 : prev;
-        });
+        // Honest monotonic counter: map elapsed 150→1200ms to 0→100, slightly
+        // eased-in so it accelerates naturally
+        const raw = (elapsed - 150) / (1200 - 150);
+        const eased = Math.round(raw * raw * 100);
+        const target = Math.min(100, Math.max(0, eased));
+        if (target > counterRef.current) {
+          counterRef.current = target;
+          setCounter(target);
+        }
       }
       // Phase 2: 1200-1600ms — exit animation
       else if (elapsed < 1600) {
@@ -63,7 +64,7 @@ export default function IntroScreen() {
     rafId = requestAnimationFrame(tick);
 
     return () => cancelAnimationFrame(rafId);
-  }, [progress, phase]);
+  }, [phase]);
 
   if (phase === 3) return null;
 
