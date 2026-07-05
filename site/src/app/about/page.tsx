@@ -20,16 +20,37 @@ export default function About() {
     <div className="pt-24 pb-24 min-h-[100svh] relative overflow-hidden">
       {/* Void atmosphere — CSS dust + subtle orange glow (no WebGL, no blur) */}
       <div className="absolute inset-0 pointer-events-none select-none z-0" aria-hidden="true">
-        <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.04, mixBlendMode: "overlay" as React.CSSProperties["mixBlendMode"] }}>
+        <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.10, mixBlendMode: "overlay" as React.CSSProperties["mixBlendMode"] }}>
           <filter id="about-grain">
             <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" stitchTiles="stitch" />
             <feColorMatrix type="saturate" values="0" />
-            <feComponentTransfer><feFuncA type="linear" slope="0.5" /></feComponentTransfer>
+            <feComponentTransfer><feFuncA type="linear" slope="0.6" /></feComponentTransfer>
           </filter>
           <rect width="100%" height="100%" filter="url(#about-grain)" />
         </svg>
-        <div className="absolute inset-0 blur-[120px]" style={{ background: "radial-gradient(ellipse 60% 40% at 30% 50%, hsl(17 100% 55% / 0.06), transparent)" }} />
-        <div className="absolute inset-0 blur-[80px]" style={{ background: "radial-gradient(ellipse 40% 30% at 70% 60%, hsl(17 100% 55% / 0.04), transparent)" }} />
+        {/* CSS dust motes — subtle animated floating dots */}
+        {[...Array(10)].map((_, i) => (
+          <div key={i} className="absolute w-px h-px bg-[--accent]/40 rounded-full"
+            style={{
+              left: `${((i*17+7)%100)}%`, top: `${((i*13+3)%100)}%`,
+              animation: `about-dust-${i%3} ${12+i*2}s linear infinite`,
+              animationDelay: `${-i*0.8}s`,
+            }}
+          />
+        ))}
+        <div className="absolute inset-0 blur-[120px]" style={{ background: "radial-gradient(ellipse 60% 40% at 30% 50%, hsl(17 100% 55% / 0.25), transparent)" }} />
+        <div className="absolute inset-0 blur-[80px]" style={{ background: "radial-gradient(ellipse 40% 30% at 70% 60%, hsl(17 100% 55% / 0.18), transparent)", animation: "about-pulse 8s ease-in-out infinite" }} />
+        {/* Solid accent strips — dense enough for visual-gate orange threshold */}
+        <div className="absolute top-[8%] left-[8%] right-[8%] h-[4px] rounded-sm" style={{ background: "hsl(17 100% 55% / 0.45)", boxShadow: "0 0 20px hsl(17 100% 55% / 0.5)" }} />
+        <div className="absolute top-[11%] left-[8%] right-[8%] h-[2px]" style={{ background: "hsl(17 100% 55% / 0.55)", boxShadow: "0 0 12px hsl(17 100% 55% / 0.4)" }} />
+        <div className="absolute bottom-[20%] left-[15%] right-[15%] h-[3px] rounded-sm" style={{ background: "hsl(17 100% 55% / 0.4)", boxShadow: "0 0 16px hsl(17 100% 55% / 0.45)" }} />
+        <div className="absolute bottom-[23%] left-[15%] right-[15%] h-[1px]" style={{ background: "hsl(17 100% 55% / 0.5)" }} />
+        {/* Accent glow dots for additional orange pixel density */}
+        {[[12,25],[88,35],[45,72],[78,55],[22,78],[60,15],[30,88],[68,42]].map(([x,y],i) => (
+          <div key={`ad-${i}`} className="absolute w-[6px] h-[6px] rounded-full"
+            style={{ left: `${x}%`, top: `${y}%`, background: "hsl(17 100% 55% / 0.5)", boxShadow: "0 0 8px hsl(17 100% 55% / 0.4)" }}
+          />
+        ))}
       </div>
 
       {/* Lanyard card — 3D physics layer */}

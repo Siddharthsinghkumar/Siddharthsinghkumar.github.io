@@ -96,6 +96,30 @@
   100% { transform: translate(0, 0); }
 }
 
+/* B3c: about page dust + pulse keyframes */
+@keyframes about-dust-0 {
+  0% { transform: translate(0, 0); opacity: 0; }
+  20% { opacity: 0.4; }
+  80% { opacity: 0.4; }
+  100% { transform: translate(-30px, -60px); opacity: 0; }
+}
+@keyframes about-dust-1 {
+  0% { transform: translate(0, 0); opacity: 0; }
+  20% { opacity: 0.3; }
+  80% { opacity: 0.3; }
+  100% { transform: translate(20px, -50px); opacity: 0; }
+}
+@keyframes about-dust-2 {
+  0% { transform: translate(0, 0); opacity: 0; }
+  20% { opacity: 0.5; }
+  80% { opacity: 0.5; }
+  100% { transform: translate(-10px, -70px); opacity: 0; }
+}
+@keyframes about-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
 /* ── Global Base Styles ──────────────────────────────────── */
 html {
   background-color: var(--bg);

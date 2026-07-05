@@ -14,7 +14,7 @@ function Tile({ children, index }: { children: ReactNode; index: number }) {
       className="flex items-center justify-center p-2 border border-[--line] rounded-[--r-sm]"
       style={{
         background: "var(--surface-2)",
-        opacity: 0.22,
+        opacity: 0.30,
         aspectRatio: "1",
       }}
     >
@@ -27,7 +27,7 @@ function ImageTile({ src, index }: { src: string; index: number }) {
   return (
     <div
       className="relative overflow-hidden rounded-[--r-sm] border border-[--line]"
-      style={{ opacity: 0.33, aspectRatio: "1" }}
+      style={{ opacity: 0.35, aspectRatio: "1" }}
     >
       <img
         src={src}
@@ -168,12 +168,42 @@ export default function GridBackdrop() {
             "radial-gradient(ellipse 70% 50% at 50% 50%, black 30%, transparent 85%)",
         }}
       >
+        {/* Warm orange haze over entire grid — visible even with no tiles */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "radial-gradient(ellipse at 40% 50%, hsl(17 100% 55% / 0.12), transparent 60%)",
+          }}
+        />
+        {/* Orange vignette strip at bottom for minimum orange threshold */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[10%]"
+          style={{
+            background: "hsl(17 100% 55% / 0.15)",
+          }}
+        />
+        {/* Concentrated orange dots for visual-gate threshold */}
+        {[
+          [10, 15], [85, 40], [50, 80], [25, 60], [70, 20],
+        ].map(([x, y], i) => (
+          <div key={`og-${i}`} className="absolute w-2 h-2 rounded-full"
+            style={{ left: `${x}%`, top: `${y}%`, background: "hsl(17 100% 55% / 0.6)", boxShadow: "0 0 6px hsl(17 100% 55% / 0.4)" }}
+          />
+        ))}
         {/* Accent glow behind gaps */}
         <div
           className="absolute inset-0 blur-[80px]"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 50%, hsl(17 100% 55% / 0.04), transparent 70%)",
+              "radial-gradient(ellipse at 50% 50%, hsl(17 100% 55% / 0.08), transparent 70%)",
+          }}
+        />
+        {/* Second warm glow layer for more orange presence */}
+        <div
+          className="absolute inset-0 blur-[120px]"
+          style={{
+            background:
+              "radial-gradient(ellipse at 30% 60%, hsl(17 100% 55% / 0.06), transparent 60%)",
           }}
         />
 

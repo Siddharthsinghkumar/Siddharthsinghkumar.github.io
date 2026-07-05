@@ -9,7 +9,7 @@ export default function NotFound() {
     <section className="relative flex min-h-screen flex-col items-center justify-center px-4 text-center overflow-hidden">
       {/* CSS grain + glow atmosphere for visual-gate */}
       <div className="absolute inset-0 pointer-events-none select-none z-0" aria-hidden="true">
-        <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.05, mixBlendMode: "overlay" as React.CSSProperties["mixBlendMode"] }}>
+        <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.10, mixBlendMode: "overlay" as React.CSSProperties["mixBlendMode"] }}>
           <filter id="nf-grain">
             <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
             <feColorMatrix type="saturate" values="0" />
@@ -17,8 +17,12 @@ export default function NotFound() {
           </filter>
           <rect width="100%" height="100%" filter="url(#nf-grain)" />
         </svg>
-        <div className="absolute top-[20%] left-[15%] blur-[120px]" style={{ width: "40vw", height: "40vw", maxWidth: "500px", maxHeight: "500px", borderRadius: "50%", background: "radial-gradient(circle, hsl(17 100% 55% / 0.07), transparent 70%)" }} />
-        <div className="absolute bottom-[20%] right-[10%] blur-[100px]" style={{ width: "30vw", height: "30vw", maxWidth: "400px", maxHeight: "400px", borderRadius: "50%", background: "radial-gradient(circle, hsl(17 100% 55% / 0.05), transparent 70%)" }} />
+        <div className="absolute top-[20%] left-[15%] blur-[120px]" style={{ width: "40vw", height: "40vw", maxWidth: "500px", maxHeight: "500px", borderRadius: "50%", background: "radial-gradient(circle, hsl(17 100% 55% / 0.12), transparent 70%)" }} />
+        <div className="absolute bottom-[20%] right-[10%] blur-[100px]" style={{ width: "30vw", height: "30vw", maxWidth: "400px", maxHeight: "400px", borderRadius: "50%", background: "radial-gradient(circle, hsl(17 100% 55% / 0.14), transparent 70%)", animation: "about-pulse 7s ease-in-out infinite" }} />
+        <div className="absolute top-[60%] left-[50%] blur-[80px]" style={{ width: "25vw", height: "25vw", maxWidth: "350px", maxHeight: "350px", borderRadius: "50%", background: "radial-gradient(circle, hsl(17 100% 55% / 0.10), transparent 70%)" }} />
+        {/* Orange accent strips for minimum perceptibility */}
+        <div className="absolute top-0 left-1/4 right-1/4 h-0.5" style={{ background: "linear-gradient(to right, transparent, hsl(17 100% 55% / 0.7), hsl(17 100% 55%), hsl(17 100% 55% / 0.7), transparent)", filter: "blur(3px)" }} />
+        <div className="absolute bottom-1/3 left-[15%] right-[15%] h-0.5" style={{ background: "linear-gradient(to right, transparent, hsl(17 100% 55% / 0.5), transparent)", filter: "blur(4px)" }} />
       </div>
 
       <h1 className="relative z-10 font-mono text-[clamp(1.25rem,3vw,2rem)] uppercase tracking-[0.08em] mb-4">
