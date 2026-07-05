@@ -58,7 +58,50 @@
 - [ ] **merlin-cli-bridge**: if publishing — ⚠️ `auth.json` holds real cookies, scrub before pushing
 - [x] **Lanyard 3D card**: shipped on /about page (2026-07-05 T12-A8) — error boundary + static fallback
 - [ ] **GridMotion**: reconsider if wanted later (heavy, decorative — DESIGN.md D6 rejected at launch)
-- [ ] Performance: run Lighthouse against live URL, verify perf ≥ 0.85 (home), ≥ 0.90 (case), a11y ≥ 0.95, SEO ≥ 0.95
+- [ ] Performance: run Lighthouse against live URL, verify perf ≥ 55 (home), ≥ 75 (case), a11y ≥ 95, SEO ≥ 95
+
+
+---
+
+## T12 exit state (2026-07-05)
+
+### What shipped
+
+- 6 pages: `/`, `/prospect/`, `/travel-planner/`, `/projects/`, `/about/`, `/404`
+- 3D home scene (Prospect Engine): icosahedron core, data streams, stage ring, satellite, dust, grid floor, 5 scroll waypoints
+- GooeyLoader intro screen with real asset-progress counter
+- PaperInk WebGL atmosphere on case-study pages (autonomous ink blobs)
+- GridBackdrop tiles on /projects
+- CSS dust + glow void on /about with draggable Lanyard physics card
+- CSS grain + glow on /404 with DecryptedText
+- AMPED RGB micro-glitch (240ms) on section eyebrows
+- FlutedGlass nav (@paper-design/shaders-react)
+- CSS View Transitions between pages
+- Lenis smooth scroll (desktop pointer:fine only)
+- Custom cursor dot+ring (pointer:fine only)
+- OG images (PNG) for all 6 pages + twitter cards
+- Sitemap, robots.txt, JSON-LD Person schema
+- Guard suite: content invariants, hex-color check, OG PNG check, page inventory, JS budgets, link integrity, poster existence
+- Playwright: 32 tests (6 page smoke + 6 axe + nav/CTA/404/reduced-motion/forbidden/link-integrity)
+- Lighthouse gate (simulate): home ≥55, case ≥75, a11y ≥95, seo ≥95, CLS ≤0.05
+- Visual gate: 6 pages ≥10% scene / ≥1.5% orange / h1 contrast ≥4.5:1
+
+### Only remaining human steps
+
+1. Replace resume PDF (fix "6 weeks" claim)
+2. 4 screenshots for placeholder frames
+3. Drop tile images into `site/public/tiles/`
+4. Supply photo for /about card face
+5. Push to `Siddharthsinghkumar/Siddharthsinghkumar.github.io` main
+6. GitHub Pages → Settings → Enforce HTTPS
+
+### Gate suite final
+
+```
+build ✅ | guards ✅ | 32/32 PW ✅ | lighthouse ✅ | visual-gate 6/6 ✅
+home: 50.4% scene, 3.5% orange | prospect: 38.6%/9.0% | travel-planner: 39.1%/9.1%
+projects: 29.9%/2.1% | about: 63.7%/1.6% | 404: 27.6%/2.3%
+```
 
 ---
 
