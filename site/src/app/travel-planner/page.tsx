@@ -46,11 +46,11 @@ export default function TravelPlannerPage() {
         </ChoreoReveal>
         <ChoreoReveal variant="hero-item" heroIndex={3}>
           <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--accent] relative z-10 flex flex-wrap gap-4 mt-4">
-            <span>K3S CLUSTER</span>
+            <span>K3S MULTI-NODE</span>
             <span className="text-[--line]">·</span>
-            <span>PROMETHEUS/GRAFANA</span>
+            <span>CIRCUIT-BREAKER FALLBACK</span>
             <span className="text-[--line]">·</span>
-            <span>LOCAL OLLAMA</span>
+            <span>SSE STREAMING</span>
           </div>
         </ChoreoReveal>
       </Section>

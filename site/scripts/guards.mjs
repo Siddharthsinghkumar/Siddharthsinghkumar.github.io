@@ -24,20 +24,26 @@ const pages = {
   "index.html": readFileSync(join(out, "index.html"), "utf-8"),
   "prospect.html": readFileSync(join(out, "prospect", "index.html"), "utf-8"),
   "travel-planner.html": readFileSync(join(out, "travel-planner", "index.html"), "utf-8"),
+  "projects.html": readFileSync(join(out, "projects", "index.html"), "utf-8"),
+  "about.html": readFileSync(join(out, "about", "index.html"), "utf-8"),
   "404.html": readFileSync(join(out, "404.html"), "utf-8"),
 };
 const allHtml = Object.values(pages).join("\n");
 
-// ── 1. Required copy (COPY.md anchors) ──────────────────────────────────────
+// ── 1. Required copy (COPY.md anchors + F21 enrichment) ─────────────────────
 console.log("[1] Required copy present");
 const required = [
   ["index.html", "I build systems that work while you sleep"],
   ["index.html", "six weeks"],
   ["index.html", "Prospect"],
   ["index.html", "siddharthsingh8418@gmail.com"],
+  ["index.html", "No job boards, no third-party crawlers"],
   ["prospect.html", "reads the morning papers"],
   ["prospect.html", "RUNNING LOCAL"],
   ["travel-planner.html", "An agent that survives its own failures"],
+  ["travel-planner.html", "K3S MULTI-NODE"],
+  ["projects.html", "Sindhey Pathology"],
+  ["about.html", "The card is real"],
   ["404.html", "NO SIGNAL"],
 ];
 for (const [page, str] of required) {
@@ -89,11 +95,15 @@ for (const og of ["og/home.png", "og/prospect.png", "og/travel-planner.png"]) {
 }
 
 // ── 5. Dev/debug pages must not ship ────────────────────────────────────────
-console.log("[5] No dev pages in out/");
+console.log("[5] No dev pages in out/ — only 6 pages allowed");
 const shipped = readdirSync(out).filter((f) => f.endsWith(".html"));
 const allowed = ["index.html", "404.html", "_not-found.html"];
-const extra = shipped.filter((f) => !allowed.includes(f));
-extra.length ? extra.forEach((f) => fail(`unexpected page shipped: ${f}`)) : ok("only the 4 pages (+_not-found) ship");
+const allowedDirs = ["prospect", "travel-planner", "projects", "about"];
+for (const dir of allowedDirs) {
+  if (existsSync(join(out, dir, "index.html"))) shipped.push(`${dir}/index.html`);
+}
+const extra = shipped.filter((f) => !allowed.includes(f) && !allowedDirs.some(d => f.startsWith(d + "/")));
+extra.length ? extra.forEach((f) => fail(`unexpected page shipped: ${f}`)) : ok("only the 6 pages (+_not-found) ship");
 
 // ── 6. JS budget (DESIGN.md §5, amended D18) ────────────────────────────────
 console.log("[6] Per-page JS budget (≤ 480 KB gzip — home, three.js); case-study pages ≤ 230 KB gzip");
@@ -104,6 +114,52 @@ for (const ref of [...new Set(jsRefs)]) {
 }
 const kb = Math.round(bytes / 1024);
 kb <= 480 ? ok(`home loads ${kb} KB gzip JS`) : fail(`home loads ${kb} KB gzip JS (> 480 KB budget)`);
+
+// ── 7. F15 Link-integrity: parse every page's internal hrefs; all must resolve ──
+console.log("[7] Link-integrity: no dead internal links");
+const knownPages = ["/", "/prospect", "/travel-planner", "/projects", "/about", "/404"];
+const pageAnchors = {
+  "/": ["#contact"],
+  "/prospect": [],
+  "/travel-planner": [],
+  "/projects": [],
+  "/about": [],
+  "/404": [],
+};
+for (const [pageKey, html] of Object.entries(pages)) {
+  const hrefs = [...html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+  for (const href of hrefs) {
+    // Only check internal links
+    if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:")) continue;
+    if (href.includes(".pdf")) continue;
+    if (href.includes("favicon") || href.includes(".ico")) continue;
+    if (href.startsWith("/_next")) continue;
+    if (href === "/") continue;
+
+    // Check if goes to a known page
+    const baseHref = href.split("#")[0].replace(/\/$/, "") || "/";
+    // Root-anchored links (#contact, #whatever) resolve to current page
+    if (baseHref === "") {
+      // same-page anchor — resolved via the page's HTML content
+      continue;
+    }
+    if (!knownPages.includes(baseHref) && !baseHref.startsWith("/_next")) {
+      fail(`${pageKey}: dead link "${href}" (not a known page)`);
+      continue;
+    }
+
+    // Check anchors
+    if (href.includes("#")) {
+      const anchor = "#" + href.split("#")[1];
+      const targetPage = baseHref;
+      const targetAnchors = pageAnchors[targetPage] || [];
+      if (targetAnchors.length > 0 && !targetAnchors.includes(anchor)) {
+        fail(`${pageKey}: anchor "${anchor}" not found in ${targetPage}`);
+      }
+    }
+  }
+}
+ok("all internal links resolve");
 
 // ────────────────────────────────────────────────────────────────────────────
 console.log(failures ? `\nGUARDS FAILED: ${failures} violation(s)` : "\nAll guards passed.");

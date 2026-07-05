@@ -73,10 +73,17 @@ async function main() {
     const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 
     const waypoints = [
+      // Home — 4 waypoints, strict thresholds (35% hero per F1)
       { url: "http://localhost:4173/", label: "home-wp-0", minScene: 35, minOrange: 1.5, scrollFraction: 0 },
       { url: "http://localhost:4173/", label: "home-wp-20", minScene: 10, minOrange: 1.5, scrollFraction: 0.20 },
       { url: "http://localhost:4173/", label: "home-wp-55", minScene: 10, minOrange: 1.5, scrollFraction: 0.55 },
       { url: "http://localhost:4173/", label: "home-wp-95", minScene: 10, minOrange: 1.5, scrollFraction: 0.95 },
+      // F19/D41: all 6 pages must have atmosphere — ≥10% scene / ≥1.5% orange at p=0
+      { url: "http://localhost:4173/prospect", label: "prospect-p0", minScene: 10, minOrange: 1.5, scrollFraction: 0 },
+      { url: "http://localhost:4173/travel-planner", label: "travel-planner-p0", minScene: 10, minOrange: 1.5, scrollFraction: 0 },
+      { url: "http://localhost:4173/projects", label: "projects-p0", minScene: 10, minOrange: 1.5, scrollFraction: 0 },
+      { url: "http://localhost:4173/about", label: "about-p0", minScene: 10, minOrange: 1.5, scrollFraction: 0 },
+      { url: "http://localhost:4173/this-route-does-not-exist", label: "404-p0", minScene: 10, minOrange: 1.5, scrollFraction: 0 },
     ];
 
     for (const { url, label, minScene, minOrange, scrollFraction } of waypoints) {

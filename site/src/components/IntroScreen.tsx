@@ -1,21 +1,22 @@
 "use client";
 
 // F18: Loading screen v3 — Sid-supplied GooeyLoader, brand-skinned.
-// Replaces F10's particle-assembly concept after two failed attempts.
-// Sequence: black overlay → eyebrow fades in → GooeyLoader centered →
-// SIDDHARTH SINGH decrypts → counter ties to real progress → dismiss.
-// Skips on reduced-motion, repeat visits, 2.2s failsafe.
+// Sequence: black overlay → eyebrow → GooeyLoader + name + counter →
+// holds until the 3D engine signals ready → exit. No hardcoded timing.
+// Failsafe: 2.5s CSS auto-dismiss. Skips on reduced-motion / repeat visits.
 
 import { useEffect, useState, useRef } from "react";
 import DecryptedText from "./DecryptedText";
+import { engineReady } from "./engine/engine-ready";
 
-const CSS_SAFETY = 2200;
+const MAX_WAIT = 2500;
 
 export default function IntroScreen() {
-  const [phase, setPhase] = useState(0);
+  const [phase, setPhase] = useState(0); // 0: black, 1: loading, 2: exiting, 3: done
   const [counter, setCounter] = useState(0);
   const startTime = useRef(0);
   const counterRef = useRef(0);
+  const maxTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || sessionStorage.getItem("intro-shown")) {
@@ -25,59 +26,83 @@ export default function IntroScreen() {
 
     startTime.current = performance.now();
     let rafId: number;
+    let done = false;
+
+    // Maximum wait failsafe
+    maxTimerRef.current = setTimeout(() => {
+      if (!done) {
+        done = true;
+        setPhase(2);
+        cancelAnimationFrame(rafId);
+      }
+    }, MAX_WAIT);
+
+    // Wait for real engine ready; exit as soon as it fires
+    engineReady.then(() => {
+      if (!done) {
+        done = true;
+        setPhase(2);
+        cancelAnimationFrame(rafId);
+      }
+    });
 
     const tick = () => {
+      if (done) return;
       const elapsed = performance.now() - startTime.current;
 
-      // Phase 0: 0-150ms — black overlay, eyebrow fades in
+      // Phase 0: 0-150ms — black, eyebrow fades in
       if (elapsed < 150) {
-        setPhase(0);
+        if (phase !== 0) setPhase(0);
         setCounter(0);
       }
-      // Phase 1: 150-1200ms — GooeyLoader + decrypt + counter
-      else if (elapsed < 1200) {
+      // Phase 1: loading — GooeyLoader + name + counter. Counter advances
+      // smoothly toward 99, not 100 (100 means "ready"). Slowdown past ~80
+      // so the counter visibly rushes the last 20 when engine is actually done.
+      else {
         if (phase !== 1) setPhase(1);
-        // Honest monotonic counter: map elapsed 150→1200ms to 0→100, slightly
-        // eased-in so it accelerates naturally
-        const raw = (elapsed - 150) / (1200 - 150);
-        const eased = Math.round(raw * raw * 100);
-        const target = Math.min(100, Math.max(0, eased));
+        // Map 150ms → MAX_WAIT to counter range 0 → 99, decelerating
+        const raw = Math.min(1, (elapsed - 150) / (MAX_WAIT - 150));
+        const eased = 1 - Math.pow(1 - raw, 3); // ease-out cubic — fast start, slow near 99
+        const target = Math.floor(eased * 98);
         if (target > counterRef.current) {
           counterRef.current = target;
           setCounter(target);
         }
-      }
-      // Phase 2: 1200-1600ms — exit animation
-      else if (elapsed < 1600) {
-        if (phase !== 2) setPhase(2);
-        setCounter(100);
-      }
-      // Phase 3: done
-      else if (elapsed >= 1600) {
-        setPhase(3);
-        sessionStorage.setItem("intro-shown", "1");
-        return;
       }
 
       rafId = requestAnimationFrame(tick);
     };
     rafId = requestAnimationFrame(tick);
 
-    return () => cancelAnimationFrame(rafId);
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (maxTimerRef.current) clearTimeout(maxTimerRef.current);
+    };
+  }, [phase]);
+
+  // Phase 2: exiting — counter jumps to 100, overlay fades out
+  useEffect(() => {
+    if (phase !== 2) return;
+    setCounter(100);
+    const id = setTimeout(() => {
+      setPhase(3);
+      sessionStorage.setItem("intro-shown", "1");
+    }, 300);
+    return () => clearTimeout(id);
   }, [phase]);
 
   if (phase === 3) return null;
 
   return (
     <>
-      {/* CSS auto-dismiss safety — if JS fails, this hides the overlay after 2.2s */}
+      {/* CSS auto-dismiss safety */}
       <style>{`
         @keyframes intro-overlay-out {
           0%, 98% { opacity: 1; pointer-events: auto; }
           100% { opacity: 0; pointer-events: none; }
         }
         .intro-overlay {
-          animation: intro-overlay-out ${CSS_SAFETY}ms forwards;
+          animation: intro-overlay-out ${MAX_WAIT + 300}ms forwards;
         }
         @keyframes intro-exit {
           from { opacity: 1; transform: translateY(0); }
@@ -89,7 +114,6 @@ export default function IntroScreen() {
         }
       `}</style>
 
-      {/* SVG gooey filter — donor values exactly, hidden from layout */}
       <svg className="absolute w-0 h-0" aria-hidden="true">
         <defs>
           <filter id="gooey-loader-filter">
@@ -146,15 +170,12 @@ export default function IntroScreen() {
         }
       `}</style>
 
-      {/* Overlay container */}
       <div
         role="status"
         aria-label="Loading"
-        className={`intro-overlay fixed inset-0 z-[100] flex flex-col items-center justify-center pointer-events-none ${
-          phase === 0 ? "bg-[--bg]" : "bg-[--bg]"
-        }`}
+        className={`intro-overlay fixed inset-0 z-[100] flex flex-col items-center justify-center pointer-events-none bg-[--bg]`}
       >
-        {/* Eyebrow — top-left */}
+        {/* Eyebrow */}
         <div
           className={`absolute top-[20%] left-0 right-0 text-center transition-opacity duration-200 ${
             phase >= 1 ? "opacity-100" : "opacity-0"
@@ -165,7 +186,7 @@ export default function IntroScreen() {
           </p>
         </div>
 
-        {/* GooeyLoader — centered */}
+        {/* GooeyLoader */}
         <div
           className={`transition-opacity duration-200 ${
             phase >= 1 ? "opacity-100" : "opacity-0"
@@ -174,7 +195,7 @@ export default function IntroScreen() {
           <div className="gooey-loader" />
         </div>
 
-        {/* Decrypting name — below loader */}
+        {/* Decrypting name */}
         <div
           className={`mt-8 transition-opacity duration-200 ${
             phase >= 1 ? "opacity-100" : "opacity-0"
@@ -197,7 +218,7 @@ export default function IntroScreen() {
           </div>
         </div>
 
-        {/* Mono percent counter — bottom-left */}
+        {/* Counter — bottom-left */}
         <div
           className={`absolute bottom-8 left-8 transition-opacity duration-200 ${
             phase >= 1 ? "opacity-100" : "opacity-0"

@@ -4,6 +4,7 @@ import { useRef, useMemo, useEffect, useCallback } from "react";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Core, GridFloor, DustField, StageNodes, DataStream, Satellite, getGlowTexture, COLORS } from "./SceneObjects";
+import { signalEngineReady } from "./engine-ready";
 
 export type DeviceProfile = {
   isFine: boolean;
@@ -74,6 +75,7 @@ function SceneInner({ coarse }: { coarse: boolean }) {
   const gridRef = useRef<THREE.Group>(null);
   const satelliteRef = useRef<THREE.Group>(null);
   const timeRef = useRef(0);
+  const firstFrameDone = useRef(false);
   const scrollP = useRef(0);
   const smoothP = useRef(0);
   const pointerNorm = useRef({ x: 0, y: 0 });
@@ -118,6 +120,12 @@ function SceneInner({ coarse }: { coarse: boolean }) {
   useFrame((_, delta) => {
     const t = timeRef.current;
     timeRef.current += delta;
+
+    // Signal ready on first render frame — engine assets are loaded
+    if (!firstFrameDone.current) {
+      firstFrameDone.current = true;
+      signalEngineReady();
+    }
 
     // Lerp smoothP toward scrollP
     smoothP.current += (scrollP.current - smoothP.current) * 0.06;

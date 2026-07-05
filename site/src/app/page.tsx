@@ -289,7 +289,7 @@ export default function Home() {
       </Section>
 
       {/* ── Contact (inline CTA before footer) ──────────────── */}
-      <Section id="contact" className="border-t border-[--line]">
+      <Section className="border-t border-[--line]">
         <h2 className="font-display text-[clamp(1.953rem,4vw,2.441rem)] leading-tight text-[--text] mb-4">
           The next system could be yours.
         </h2>

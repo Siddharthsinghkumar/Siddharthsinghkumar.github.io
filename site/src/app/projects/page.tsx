@@ -21,12 +21,12 @@ export default function Projects() {
       <Section className="relative overflow-hidden min-h-screen">
         <GridBackdrop />
         <div className="relative z-[1]">
-          <Eyebrow>More systems, shipped and documented</Eyebrow>
+          <Eyebrow>INDEX / ALL SYSTEMS</Eyebrow>
           <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-8">
             Projects
           </h1>
-          <p className="text-[--muted] text-sm mb-8 max-w-[68ch]">
-            Live data from GitHub — stars and last-push are fetched, not typed.
+          <p className="text-[--muted] text-[clamp(1.25rem,2.5vw,1.563rem)] mb-8 max-w-[68ch]">
+            Systems beyond the flagships — a shipped client platform, published hardware, security research, and the lab work that taught me the most.
           </p>
 
           <div className="grid sm:grid-cols-2 gap-4">
