@@ -9,8 +9,17 @@ const EngineCanvas = dynamic(() => import("./EngineCanvas"), {
   loading: () => null,
 });
 
+function scheduleIdle(cb: () => void, timeoutMs: number) {
+  if (typeof requestIdleCallback !== "undefined") {
+    requestIdleCallback(cb, { timeout: timeoutMs });
+  } else {
+    setTimeout(cb, 200);
+  }
+}
+
 export default function EngineLoader() {
   const [profile, setProfile] = useState<DeviceProfile | null>(null);
+  const [canvasReady, setCanvasReady] = useState(false);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -23,7 +32,12 @@ export default function EngineLoader() {
     });
   }, []);
 
-  if (!profile || profile.isReducedMotion) return null;
+  useEffect(() => {
+    if (!profile || profile.isReducedMotion) return;
+    scheduleIdle(() => setCanvasReady(true), 1500);
+  }, [profile]);
+
+  if (!canvasReady || !profile) return null;
 
   return <EngineCanvas deviceProfile={profile} />;
 }
