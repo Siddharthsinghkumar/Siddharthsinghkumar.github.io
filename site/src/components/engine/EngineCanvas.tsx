@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, useEffect, useCallback } from "react";
+import { useRef, useMemo, useEffect, useCallback, useState } from "react";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Core, GridFloor, DustField, StageNodes, DataStream, Satellite, getGlowTexture, COLORS } from "./SceneObjects";
@@ -280,6 +280,15 @@ interface EngineCanvasProps {
 
 export default function EngineCanvas({ className = "", deviceProfile }: EngineCanvasProps) {
   const coarse = deviceProfile.isCoarse;
+  const [frameloop, setFrameloop] = useState<"always" | "never">("always");
+
+  useEffect(() => {
+    const onVisibility = () => {
+      setFrameloop(document.hidden ? "never" : "always");
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
 
   return (
     <div className={`fixed inset-0 z-0 pointer-events-none ${className}`}>
@@ -294,6 +303,7 @@ export default function EngineCanvas({ className = "", deviceProfile }: EngineCa
         dpr={coarse ? [0.3, 0.6] : [0.5, 0.75]}
         camera={{ position: [1.8, 0.8, 7], fov: 45 }}
         style={{ position: "fixed", inset: 0 }}
+        frameloop={frameloop}
       >
         <SceneInner coarse={coarse} />
       </Canvas>
