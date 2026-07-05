@@ -5,7 +5,8 @@
 // Tiles: real artifacts — OG thumbnail labels, SVG diagram crops, mono repo names,
 // spec-sheet text blocks. All rendered inline, no external image loads.
 
-import { useRef, useEffect, useState, type ReactNode } from "react";
+import { useRef, useEffect, useState, useMemo, type ReactNode } from "react";
+import manifest from "@/data/tiles-manifest.json";
 
 function Tile({ children, index }: { children: ReactNode; index: number }) {
   return (
@@ -22,7 +23,28 @@ function Tile({ children, index }: { children: ReactNode; index: number }) {
   );
 }
 
-const tiles: ReactNode[] = [
+function ImageTile({ src, index }: { src: string; index: number }) {
+  return (
+    <div
+      className="relative overflow-hidden rounded-[--r-sm] border border-[--line]"
+      style={{ opacity: 0.33, aspectRatio: "1" }}
+    >
+      <img
+        src={src}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ filter: "blur(8px)" }}
+        loading="lazy"
+      />
+      <div
+        className="absolute inset-0"
+        style={{ background: "hsl(17 100% 55% / 0.15)", mixBlendMode: "overlay" as React.CSSProperties["mixBlendMode"] }}
+      />
+    </div>
+  );
+}
+
+const generatedTiles: ReactNode[] = [
   // OG thumbnails
   <span key="og-home" className="font-mono text-[8px] text-[--accent] tracking-[0.08em] text-center leading-tight">OG<br/>HOME</span>,
   <span key="og-prospect" className="font-mono text-[8px] text-[--accent] tracking-[0.08em] text-center leading-tight">OG<br/>PROSP</span>,
@@ -65,12 +87,21 @@ const tiles: ReactNode[] = [
 ];
 
 const COLS = 6;
-const ROWS = Math.ceil(tiles.length / COLS);
 
 export default function GridBackdrop() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [enabled, setEnabled] = useState(true);
+
+  const tiles = useMemo<ReactNode[]>(() => {
+    const imageTiles: ReactNode[] = manifest.tiles.map((src, i) => (
+      <ImageTile key={`img-${i}`} src={src} index={i} />
+    ));
+    const all = [...imageTiles, ...generatedTiles];
+    return all;
+  }, []);
+
+  const ROWS = Math.ceil(tiles.length / COLS);
 
   useEffect(() => {
     const rmq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -107,11 +138,16 @@ export default function GridBackdrop() {
     };
   }, []);
 
-  const grid = [];
-  for (let i = 0; i < tiles.length; i++) {
+  const grid: ReactNode[] = [];
+  for (let i = 0; i < manifest.tiles.length; i++) {
     grid.push(
-      <Tile key={i} index={i}>
-        {tiles[i]}
+      <ImageTile key={`img-${i}`} src={manifest.tiles[i]} index={i} />,
+    );
+  }
+  for (let i = 0; i < generatedTiles.length; i++) {
+    grid.push(
+      <Tile key={`gen-${i}`} index={manifest.tiles.length + i}>
+        {generatedTiles[i]}
       </Tile>,
     );
   }
