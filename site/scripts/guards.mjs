@@ -96,7 +96,7 @@ const extra = shipped.filter((f) => !allowed.includes(f));
 extra.length ? extra.forEach((f) => fail(`unexpected page shipped: ${f}`)) : ok("only the 4 pages (+_not-found) ship");
 
 // ── 6. JS budget (DESIGN.md §5, amended D18) ────────────────────────────────
-console.log("[6] Per-page JS budget (≤ 230 KB gzip)");
+console.log("[6] Per-page JS budget (≤ 480 KB gzip — home, three.js); case-study pages ≤ 230 KB gzip");
 const jsRefs = [...pages["index.html"].matchAll(/\/_next\/static[^"]*\.js/g)].map((m) => m[0]);
 let bytes = 0;
 for (const ref of [...new Set(jsRefs)]) {

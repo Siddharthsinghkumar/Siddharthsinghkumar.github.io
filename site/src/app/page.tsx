@@ -10,6 +10,7 @@ import ContributionsDisplay from "@/components/ContributionsDisplay";
 import CssHeroAtmosphere from "@/components/CssHeroAtmosphere";
 import PaperInkLoader from "@/components/PaperInkLoader";
 import EngineLoader from "@/components/engine/EngineLoader";
+import IntroScreen from "@/components/IntroScreen";
 import TextPressure, { TEXTPRESSURE_ENABLED } from "@/components/TextPressure";
 import GridBackdrop from "@/components/GridBackdrop";
 import ChoreoReveal, { CascadeRows } from "@/components/ChoreoReveal";
@@ -31,11 +32,20 @@ export default function Home() {
   return (
     <>
       <JsonLd />
+      <IntroScreen />
       {/* ── Hero ────────────────────────────────────────────── */}
       <section className="relative min-h-[100svh] flex flex-col justify-center px-4 overflow-hidden">
         <CssHeroAtmosphere />
         <PaperInkLoader />
         <EngineLoader />
+        {/* F8: radial scrim behind hero text — ≤30% darkening for legibility */}
+        <div
+          className="absolute pointer-events-none select-none"
+          style={{
+            left: 0, top: "10%", width: "55%", height: "80%",
+            background: "radial-gradient(ellipse at 30% 50%, rgba(11,11,13,0.28), transparent 70%)",
+          }}
+        />
         <div
           className="absolute inset-0 pointer-events-none select-none"
           style={{

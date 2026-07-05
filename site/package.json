@@ -9,7 +9,7 @@
     "lint": "eslint",
     "guards": "node scripts/guards.mjs",
     "test": "playwright test",
-    "prebuild": "node scripts/fetch-contributions.mjs && node scripts/generate-og.mjs"
+    "prebuild": "node scripts/fetch-contributions.mjs && node scripts/scan-tiles.mjs && node scripts/generate-og.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
