@@ -61,6 +61,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} antialiased`}
+      data-scroll-behavior="smooth"
     >
       <head>
         {/* theme-color for browser chrome */}

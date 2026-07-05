@@ -4,6 +4,8 @@ import Eyebrow from "@/components/Eyebrow";
 import Button from "@/components/Button";
 import TravelPlannerDiagram from "@/components/TravelPlannerDiagram";
 import DecryptedText from "@/components/DecryptedText";
+import PaperInkLoader from "@/components/PaperInkLoader";
+import ChoreoReveal from "@/components/ChoreoReveal";
 
 export const metadata: Metadata = {
   title: "Travel Planner Agent — agentic AI with failure-proof inference",
@@ -21,20 +23,36 @@ export default function TravelPlannerPage() {
   return (
     <>
       {/* Hero */}
-      <Section className="pt-[calc(4rem+96px)]">
-        <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--muted] mb-3">
-          TRAVEL PLANNER AGENT ·{" "}
-          <span className="text-[--ok]">SHIPPED — OPEN SOURCE</span>
-        </p>
-        <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-6">
-          An agent that survives its own failures.
-        </h1>
-        <p className="text-[--muted] text-lg max-w-[68ch]">
-          Cloud LLM APIs degrade. Rate limits hit. This agent keeps planning
-          anyway — a custom model router and an async circuit breaker fall back
-          to local Ollama inference mid-conversation, and the user keeps
-          streaming.
-        </p>
+      <Section className="pt-[calc(4rem+96px)] relative overflow-hidden min-h-[75svh] flex flex-col justify-center">
+        <PaperInkLoader />
+        <ChoreoReveal variant="hero-item" heroIndex={0}>
+          <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--muted] mb-3 relative z-10">
+            TRAVEL PLANNER AGENT ·{" "}
+            <span className="text-[--ok]">SHIPPED — OPEN SOURCE</span>
+          </p>
+        </ChoreoReveal>
+        <ChoreoReveal variant="hero-item" heroIndex={1}>
+          <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-6 relative z-10">
+            An agent that survives its own failures.
+          </h1>
+        </ChoreoReveal>
+        <ChoreoReveal variant="hero-item" heroIndex={2}>
+          <p className="text-[--muted] text-lg max-w-[68ch] relative z-10 mb-8">
+            Cloud LLM APIs degrade. Rate limits hit. This agent keeps planning
+            anyway — a custom model router and an async circuit breaker fall back
+            to local Ollama inference mid-conversation, and the user keeps
+            streaming.
+          </p>
+        </ChoreoReveal>
+        <ChoreoReveal variant="hero-item" heroIndex={3}>
+          <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--accent] relative z-10 flex flex-wrap gap-4 mt-4">
+            <span>K3S CLUSTER</span>
+            <span className="text-[--line]">·</span>
+            <span>PROMETHEUS/GRAFANA</span>
+            <span className="text-[--line]">·</span>
+            <span>LOCAL OLLAMA</span>
+          </div>
+        </ChoreoReveal>
       </Section>
 
       {/* Interesting problems */}
@@ -66,7 +84,7 @@ export default function TravelPlannerPage() {
               body: "The agent plans; a human approves the spend.",
             },
           ].map(({ num, title, body }) => (
-            <div key={num}>
+            <div key={num} className="p-4 rounded-[--r-md] hover:bg-[--surface-2] transition-colors duration-[--dur-fast] border border-transparent hover:border-[--line]">
               <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--accent] mb-1">
                 {num}
               </p>

@@ -5,80 +5,112 @@
 // IS the scene — no swap, no cut. Skipped on reduced-motion and repeat visits
 // (sessionStorage). No-JS safety: CSS keyframe auto-dismiss at 2.2s.
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import DecryptedText from "./DecryptedText";
+import { useProgress } from "@react-three/drei";
 
-const INTRO_DURATION = 1600; // ms — JS dismisses at this max
-const CSS_SAFETY = 2200; // ms — CSS auto-dismiss if JS fails
+const INTRO_DURATION = 1600;
 
 export default function IntroScreen() {
-  const [visible, setVisible] = useState(true);
+  const [phase, setPhase] = useState(0); // 0: black, 1: assembling, 2: exiting, 3: done
   const [counter, setCounter] = useState(0);
+  const { progress } = useProgress();
+  const startTime = useRef(0);
 
   useEffect(() => {
-    // Skip on reduced-motion
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setVisible(false);
-      return;
-    }
-    // Skip on repeat visits
-    if (sessionStorage.getItem("intro-shown")) {
-      setVisible(false);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || sessionStorage.getItem("intro-shown")) {
+      setPhase(3);
       return;
     }
 
-    sessionStorage.setItem("intro-shown", "1");
+    startTime.current = performance.now();
+    let rafId: number;
+    let targetCounter = 0;
 
-    // Percent counter
-    const start = performance.now();
     const tick = () => {
-      const elapsed = performance.now() - start;
-      const pct = Math.min(100, Math.floor((elapsed / INTRO_DURATION) * 100));
-      setCounter(pct);
-      if (pct < 100) requestAnimationFrame(tick);
+      const elapsed = performance.now() - startTime.current;
+      
+      // Phase 0: 0-150ms
+      if (elapsed < 150) {
+        setPhase(0);
+      } 
+      // Phase 1: 150-1200ms
+      else if (elapsed >= 150 && elapsed < 1200) {
+        setPhase(1);
+        // Monotonic counter tied to progress
+        targetCounter = Math.max(targetCounter, progress);
+        setCounter(prev => {
+          if (prev < targetCounter) return prev + 1;
+          return prev;
+        });
+      }
+      // Phase 2: 1200-1600ms
+      else if (elapsed >= 1200 && elapsed < 1600) {
+        if (phase !== 2) setPhase(2);
+        setCounter(100);
+      }
+      // Phase 3: >1600ms
+      else if (elapsed >= 1600) {
+        setPhase(3);
+        sessionStorage.setItem("intro-shown", "1");
+        return;
+      }
+      
+      rafId = requestAnimationFrame(tick);
     };
-    requestAnimationFrame(tick);
+    rafId = requestAnimationFrame(tick);
 
-    // Dismiss after duration
-    const timer = setTimeout(() => setVisible(false), INTRO_DURATION);
-    return () => clearTimeout(timer);
-  }, []);
+    return () => cancelAnimationFrame(rafId);
+  }, [progress, phase]);
 
-  if (!visible) return null;
+  if (phase === 3) return null;
 
   return (
     <>
-      {/* Overlay — CSS auto-dismiss safety at 2.2s */}
+      {/* Container */}
       <div
-        className="fixed inset-0 z-[100] bg-[--bg] flex flex-col items-center justify-center animate-[intro-fade-out_0.5s_var(--ease)_2.2s_forwards]"
-        aria-hidden={!visible}
+        className={`fixed inset-0 z-[100] flex flex-col items-center justify-center pointer-events-none transition-colors duration-[150ms] ${
+          phase === 0 ? "bg-[--bg]" : "bg-transparent"
+        }`}
       >
-        {/* Decrypting name — LCP element */}
-        <div className="text-[clamp(2rem,6vw,3.5rem)] font-mono tracking-[0.08em] text-[--text] mb-4 text-center px-4">
-          <DecryptedText
-            text="SIDDHARTH SINGH"
-            animateOn="view"
-            speed={30}
-            maxIterations={8}
-            sequential={true}
-            revealDirection="center"
-            className="text-[--text]"
-            encryptedClassName="text-[--muted]"
-            parentClassName="font-mono tracking-[0.08em] uppercase"
-          />
+        {/* Eyebrow */}
+        <div className={`absolute top-[20%] transition-opacity duration-200 ${phase >= 1 ? "opacity-100" : "opacity-0"} ${phase === 2 ? "animate-[intro-exit_250ms_forwards]" : ""}`}>
+          <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--muted]">
+            INITIALIZING — PROSPECT ENGINE
+          </p>
         </div>
 
-        {/* Mono percent counter */}
-        <p className="font-mono text-[13px] tracking-[0.08em] text-[--accent]">
-          LOADING SYSTEM {String(counter).padStart(3, "0")}%
-        </p>
+        {/* Decrypting name — Below the core (which is center) */}
+        <div className={`absolute top-[65%] transition-opacity duration-200 ${phase >= 1 ? "opacity-100" : "opacity-0"} ${phase === 2 ? "animate-[intro-exit_250ms_forwards]" : ""}`}>
+          <div className="text-[clamp(1.5rem,4vw,2.5rem)] font-mono tracking-[0.08em] text-[--text] text-center px-4">
+            {phase >= 1 && (
+              <DecryptedText
+                text="SIDDHARTH SINGH"
+                animateOn="view"
+                speed={30}
+                maxIterations={10}
+                sequential={true}
+                revealDirection="center"
+                className="text-[--text]"
+                encryptedClassName="text-[--muted]"
+                parentClassName="font-mono tracking-[0.08em] uppercase"
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Mono percent counter bottom-left */}
+        <div className={`absolute bottom-8 left-8 transition-opacity duration-200 ${phase >= 1 ? "opacity-100" : "opacity-0"} ${phase === 2 ? "animate-[intro-exit_250ms_forwards]" : ""}`}>
+          <p className="font-mono text-[13px] tracking-[0.08em] text-[--accent]">
+            {String(counter).padStart(3, "0")}
+          </p>
+        </div>
       </div>
 
-      {/* CSS keyframe for no-JS safety */}
       <style jsx>{`
-        @keyframes intro-fade-out {
-          from { opacity: 1; }
-          to { opacity: 0; pointer-events: none; }
+        @keyframes intro-exit {
+          from { opacity: 1; transform: translateY(0); }
+          to { opacity: 0; transform: translateY(-8px); }
         }
       `}</style>
     </>

@@ -66,7 +66,7 @@ void main() {
   // Paper-grain base
   vec3 paper = vec3(0.043, 0.043, 0.051); // base bg in linear sRGB
   float grain = fbm(vUv * uResolution * 0.5 / uDpr + uTime * 0.03);
-  grain = grain * 0.08 - 0.04;
+  grain = grain * 0.16 - 0.08;
   vec3 color = paper * (1.0 + grain);
 
   // Ink-glow trail from pointer history
@@ -79,11 +79,11 @@ void main() {
     if (t.z <= 0.0) continue;
     // t.z = age [0..1], older = dimmer
     float dist = length(vUv - t.xy) * uDpr;
-    float influence = exp(-dist * 18.0) * t.z * t.w;
+    float influence = exp(-dist * 12.8) * t.z * t.w;
     inkGlow += influence;
     maxGlow = max(maxGlow, influence);
   }
-  inkGlow = clamp(inkGlow, 0.0, 0.14);
+  inkGlow = clamp(inkGlow, 0.0, 0.35);
   color = mix(color, inkColor, inkGlow);
 
   // Subtle vignette from pointer

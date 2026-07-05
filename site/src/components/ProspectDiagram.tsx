@@ -148,9 +148,9 @@ export default function ProspectDiagram() {
           );
         })}
 
-        {bottoms.map(({ x, label }) => (
+        {bottoms.map(({ x, label }, idx) => (
           <text
-            key={label}
+            key={`${label}-${idx}`}
             x={x}
             y={120}
             fill="var(--muted)"

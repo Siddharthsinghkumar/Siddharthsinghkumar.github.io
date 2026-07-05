@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "./Button";
+import { FlutedGlass } from "@paper-design/shaders-react";
 
 const links = [
   { href: "/prospect", label: "Prospect" },
   { href: "/travel-planner", label: "Travel Planner" },
+  { href: "/projects", label: "Projects" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -30,15 +32,31 @@ export default function Nav() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-[300ms] ease-[--ease] ${
-        scrolled
-          ? "bg-[--bg]/55 backdrop-blur-[14px] backdrop-saturate-[140%] border-b border-[--line]"
-          : "bg-[--bg]/92 backdrop-blur-none border-b border-[--line]"
+      className={`fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-[300ms] ease-[--ease] border-b border-[--line] ${
+        scrolled ? "" : "bg-[--bg]/92"
       }`}
     >
-      <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-4">
+      {scrolled && (
+        <div className="absolute inset-0 z-[-1] overflow-hidden pointer-events-none">
+          <FlutedGlass
+            colorBack="rgba(0,0,0,0.92)"
+            colorShadow="rgba(255,89,0,0.31)"
+            colorHighlight="rgb(232, 232, 232)"
+            size={0.62}
+            shadows={0.25}
+            highlights={0.1}
+            shape="lines"
+            angle={0}
+            distortionShape="prism"
+            distortion={0.5}
+            blur={0}
+            edges={0.25}
+          />
+        </div>
+      )}
+      <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-4 relative z-10">
         <Link
-          href="/"
+          href="/about"
           className="font-mono text-[10px] xs:text-[11px] md:text-[13px] uppercase tracking-[0.08em] text-[--text] hover:text-[--accent] transition-colors duration-[--dur-fast] whitespace-nowrap"
         >
           <span className="hidden xs:inline">Siddharth Singh</span>

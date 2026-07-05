@@ -5,6 +5,8 @@ import Button from "@/components/Button";
 import StatusPill from "@/components/StatusPill";
 import ProspectDiagram from "@/components/ProspectDiagram";
 import DecryptedText from "@/components/DecryptedText";
+import PaperInkLoader from "@/components/PaperInkLoader";
+import ChoreoReveal from "@/components/ChoreoReveal";
 
 export const metadata: Metadata = {
   title: "Prospect — an autonomous job-prospecting engine",
@@ -54,28 +56,44 @@ const components = [
 export default function ProspectPage() {
   return (
     <>
-      <Section className="pt-[calc(4rem+96px)]">
-        <p className="font-mono text-[11px] uppercase tracking-[0.08em] mb-3">
-          <DecryptedText
-            text="PROSPECT · SYSTEM / LIVE — IN ACTIVE DEVELOPMENT"
-            animateOn="view"
-            speed={35}
-            maxIterations={6}
-            sequential={true}
-            revealDirection="start"
-            className="text-[--muted]"
-            encryptedClassName="text-[--line]"
-            parentClassName="font-mono tracking-[0.08em] uppercase"
-          />
-        </p>
-        <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-6">
-          It reads the morning papers before I wake up.
-        </h1>
-        <p className="text-[--muted] text-lg max-w-[68ch]">
-          Prospect is an autonomous job-prospecting engine: a multi-agent system
-          that discovers job postings, matches them against persona-scoped resumes,
-          and delivers ranked alerts — end to end, without me touching it.
-        </p>
+      <Section className="pt-[calc(4rem+96px)] relative overflow-hidden min-h-[75svh] flex flex-col justify-center">
+        <PaperInkLoader />
+        <ChoreoReveal variant="hero-item" heroIndex={0}>
+          <p className="font-mono text-[11px] uppercase tracking-[0.08em] mb-3 relative z-10">
+            <DecryptedText
+              text="PROSPECT · SYSTEM / LIVE — IN ACTIVE DEVELOPMENT"
+              animateOn="view"
+              speed={35}
+              maxIterations={6}
+              sequential={true}
+              revealDirection="start"
+              className="text-[--muted]"
+              encryptedClassName="text-[--line]"
+              parentClassName="font-mono tracking-[0.08em] uppercase"
+            />
+          </p>
+        </ChoreoReveal>
+        <ChoreoReveal variant="hero-item" heroIndex={1}>
+          <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-6 relative z-10">
+            It reads the morning papers before I wake up.
+          </h1>
+        </ChoreoReveal>
+        <ChoreoReveal variant="hero-item" heroIndex={2}>
+          <p className="text-[--muted] text-lg max-w-[68ch] relative z-10 mb-8">
+            Prospect is an autonomous job-prospecting engine: a multi-agent system
+            that discovers job postings, matches them against persona-scoped resumes,
+            and delivers ranked alerts — end to end, without me touching it.
+          </p>
+        </ChoreoReveal>
+        <ChoreoReveal variant="hero-item" heroIndex={3}>
+          <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--accent] relative z-10 flex flex-wrap gap-4 mt-4">
+            <span>11 STAGES</span>
+            <span className="text-[--line]">·</span>
+            <span>15–20 GB/DAY</span>
+            <span className="text-[--line]">·</span>
+            <span>RUNNING LOCAL</span>
+          </div>
+        </ChoreoReveal>
       </Section>
 
       <Section className="border-t border-[--line]">
@@ -108,7 +126,7 @@ export default function ProspectPage() {
           {components.map(({ name, role, status, code }) => (
             <div
               key={name}
-              className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 py-4 border-b border-[--line]"
+              className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 py-4 px-2 border-b border-[--line] hover:bg-[--surface] transition-colors duration-[--dur-fast]"
             >
               <p className="font-mono text-[13px] font-semibold text-[--text] sm:w-[220px] shrink-0">
                 {name}

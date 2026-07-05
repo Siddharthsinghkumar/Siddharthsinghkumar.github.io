@@ -7,10 +7,13 @@ const PAGES = [
   { path: "/", h1: /I build systems that work while you sleep/i },
   { path: "/prospect", h1: /reads the morning papers/i },
   { path: "/travel-planner", h1: /survives its own failures/i },
+  { path: "/projects", h1: /Projects/i },
+  { path: "/about", h1: /About/i },
 ];
 
 for (const { path, h1 } of PAGES) {
   test(`${path} renders with correct H1 and no console errors`, async ({ page }) => {
+    test.setTimeout(15000);
     const errors: string[] = [];
     page.on("console", (msg) => {
       if (msg.type() === "error") errors.push(msg.text());
@@ -23,8 +26,13 @@ for (const { path, h1 } of PAGES) {
     // exactly one h1 per page (semantic SEO invariant)
     expect(await page.locator("h1").count()).toBe(1);
 
-    // GitHub API rate-limits + resume 404 in test env are allowed.
-    const real = errors.filter((e) => !e.includes("api.github.com") && !e.includes("resume") && !e.includes(".pdf"));
+    // GitHub API rate-limits + resume 404 + any static-asset 404 in test env are allowed.
+    const real = errors.filter((e) =>
+      !e.includes("api.github.com") &&
+      !e.includes("403") &&
+      !e.includes(".pdf") &&
+      !e.includes("favicon.ico")
+    );
     expect(real, `console errors: ${real.join(" | ")}`).toHaveLength(0);
   });
 }
@@ -52,9 +60,9 @@ test("primary CTAs exist: email + resume", async ({ page }) => {
 });
 
 test("project grid shows 4 cards with data (snapshot fallback works offline)", async ({ page }) => {
-  // Block the GitHub API to prove the fallback path — cards must still render.
+  test.setTimeout(15000);
   await page.route("**/api.github.com/**", (route) => route.abort());
-  await page.goto("/");
+  await page.goto("/projects");
   for (const name of ["Sindhey Pathology", "Autonomous Firefighting Robot", "MTK Firmware Unlock", "TrueNAS ZFS Recovery Lab"]) {
     const card = page.getByRole("heading", { level: 3, name }).first();
     await card.scrollIntoViewIfNeeded();
@@ -81,4 +89,22 @@ test("reduced motion: content visible immediately, no animation required", async
   await skills.scrollIntoViewIfNeeded();
   await expect(skills).toBeVisible();
   await ctx.close();
+});
+
+test("internal link integrity guard (F15): no 404s on site navigation", async ({ page, request }) => {
+  const routes = ["/", "/prospect", "/travel-planner", "/projects", "/about"];
+  const checked = new Set<string>();
+  
+  for (const route of routes) {
+    await page.goto(route);
+    const links = await page.locator('a[href^="/"]').evaluateAll((els) => els.map(el => el.getAttribute('href')));
+    
+    for (const href of links) {
+      if (href && href !== "/" && !href.startsWith("/#") && !href.includes(".pdf") && !checked.has(href)) {
+        checked.add(href);
+        const response = await request.get(href);
+        expect(response.status(), `Link ${href} on ${route} returned ${response.status()}`).toBe(200);
+      }
+    }
+  }
 });

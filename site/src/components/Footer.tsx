@@ -4,7 +4,7 @@ const BUILD_DATE = new Date().toISOString().slice(0, 10);
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[--line] px-4 py-16 md:py-24">
+    <footer id="contact" className="border-t border-[--line] px-4 py-16 md:py-24">
       <div className="mx-auto max-w-[1200px]">
         <h2 className="font-display text-2xl md:text-3xl text-[--text] mb-4">
           The next system could be yours.
