@@ -79,7 +79,7 @@ export default function ProspectPage() {
           </h1>
         </ChoreoReveal>
         <ChoreoReveal variant="hero-item" heroIndex={2}>
-          <p className="text-[--muted] text-lg max-w-[68ch] relative z-10 mb-8">
+          <p className="text-[--muted] text-[clamp(1.25rem,2.5vw,1.563rem)] max-w-[60ch] relative z-10 mb-8">
             Prospect is an autonomous job-prospecting engine: a multi-agent system
             that discovers job postings, matches them against persona-scoped resumes,
             and delivers ranked alerts — end to end, without me touching it.
@@ -89,7 +89,7 @@ export default function ProspectPage() {
           <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--accent] relative z-10 flex flex-wrap gap-4 mt-4">
             <span>11 STAGES</span>
             <span className="text-[--line]">·</span>
-            <span>15–20 GB/DAY</span>
+            <span>15–20 GB / DAY</span>
             <span className="text-[--line]">·</span>
             <span>RUNNING LOCAL</span>
           </div>

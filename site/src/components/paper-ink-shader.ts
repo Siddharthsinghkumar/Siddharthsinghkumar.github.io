@@ -79,7 +79,7 @@ void main() {
     if (t.z <= 0.0) continue;
     // t.z = age [0..1], older = dimmer
     float dist = length(vUv - t.xy) * uDpr;
-    float influence = exp(-dist * 12.8) * t.z * t.w;
+    float influence = exp(-dist * 9.14) * t.z * t.w;
     inkGlow += influence;
     maxGlow = max(maxGlow, influence);
   }

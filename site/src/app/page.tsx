@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Section from "@/components/Section";
 import Eyebrow from "@/components/Eyebrow";
 import Button from "@/components/Button";
-import ProjectCard from "@/components/ProjectCard";
 import TimelineEntry from "@/components/TimelineEntry";
 import SkillsRow from "@/components/SkillsRow";
 import JsonLd from "@/components/JsonLd";
@@ -12,8 +11,8 @@ import PaperInkLoader from "@/components/PaperInkLoader";
 import EngineLoader from "@/components/engine/EngineLoader";
 import IntroScreen from "@/components/IntroScreen";
 import TextPressure, { TEXTPRESSURE_ENABLED } from "@/components/TextPressure";
-import GridBackdrop from "@/components/GridBackdrop";
 import ChoreoReveal, { CascadeRows } from "@/components/ChoreoReveal";
+import StatusPill from "@/components/StatusPill";
 import contributions from "@/data/contributions.json";
 
 export const metadata: Metadata = {
@@ -72,7 +71,7 @@ export default function Home() {
             </h1>
           </ChoreoReveal>
           <ChoreoReveal variant="hero-item" heroIndex={2}>
-            <p className="text-[--muted] text-lg max-w-[68ch] mb-2">
+            <p className="text-[--muted] text-[clamp(1.25rem,2.5vw,1.563rem)] max-w-[60ch] mb-2">
               AI backend engineer — agentic pipelines, LLM orchestration, local
               inference. Creator of{" "}
               <strong className="text-[--text] font-medium">Prospect</strong>, an
@@ -81,7 +80,12 @@ export default function Home() {
             </p>
           </ChoreoReveal>
           <ChoreoReveal variant="hero-item" heroIndex={3}>
-            <div className="flex flex-wrap gap-3 mt-8">
+            <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--accent] mt-6 mb-6">
+              11-STAGE PIPELINE · 15–20 GB SCANNED DAILY · RUNS ON MY OWN HARDWARE
+            </p>
+          </ChoreoReveal>
+          <ChoreoReveal variant="hero-item" heroIndex={4}>
+            <div className="flex flex-wrap gap-3">
               <Button href="mailto:siddharthsingh8418@gmail.com">
                 Email me
               </Button>
@@ -90,7 +94,7 @@ export default function Home() {
               </Button>
             </div>
           </ChoreoReveal>
-          <ChoreoReveal variant="hero-item" heroIndex={4}>
+          <ChoreoReveal variant="hero-item" heroIndex={5}>
             <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--line] mt-6">
               Noida, India · open to remote worldwide
             </p>
@@ -98,7 +102,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Prospect Teaser ─────────────────────────────────── */}
+      {/* ── Prospect Teaser (RICHER per F11/F21) ─────────────── */}
       <Section className="border-t border-[--line]">
         <Eyebrow>SYSTEM / 01 — PROSPECT</Eyebrow>
         <ChoreoReveal variant="heading">
@@ -106,22 +110,41 @@ export default function Home() {
             An autonomous job-prospecting engine.
           </h2>
         </ChoreoReveal>
-        <p className="text-[--muted] max-w-[68ch] mb-4">
+        <p className="text-[--muted] text-[clamp(1.25rem,2.5vw,1.563rem)] max-w-[60ch] mb-4">
           Every morning, Prospect scans newspapers with OCR, extracts job
           postings with LLMs, matches them against persona-scoped resumes with
           semantic search, and delivers ranked alerts to Telegram. A multi-agent
           system — scanner, context engine, generation runtime, tracker — built
           and run on my own hardware.
         </p>
-        <p className="font-mono text-[13px] tracking-[0.04em] text-[--accent] mb-6">
+        <p className="text-[--muted] text-[clamp(1.25rem,2.5vw,1.563rem)] max-w-[60ch] mb-6">
+          No job boards, no third-party crawlers. Prospect reads the same
+          newspapers a human would — then does the part humans skip. It OCRs
+          every page, extracts each posting with an LLM, embeds and scores it
+          against persona-scoped resumes, and writes the ranked shortlist to my
+          phone. Eleven stages, running unattended on hardware I own.
+        </p>
+        <p className="font-mono text-[13px] tracking-[0.04em] text-[--accent] mb-4">
           SCAN → EXTRACT → EMBED → MATCH → GENERATE → DELIVER
         </p>
+        <div className="flex flex-wrap gap-3 mb-4">
+          <StatusPill status="RUNNING LOCAL" />
+          <StatusPill status="IN DEVELOPMENT" />
+          <StatusPill status="RESEARCH" />
+        </div>
+        <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--muted] mb-6 flex flex-wrap gap-4">
+          <span>11 STAGES</span>
+          <span className="text-[--line]">·</span>
+          <span>15–20 GB / DAY</span>
+          <span className="text-[--line]">·</span>
+          <span>5 COMPONENTS</span>
+        </div>
         <Button variant="ghost" href="/prospect">
           Read the system breakdown →
         </Button>
       </Section>
 
-      {/* ── Travel Planner Teaser ────────────────────────────── */}
+      {/* ── Travel Planner Teaser (RICHER per F11/F21) ────────── */}
       <Section className="border-t border-[--line]">
         <Eyebrow>SYSTEM / 02 — TRAVEL PLANNER AGENT</Eyebrow>
         <ChoreoReveal variant="heading">
@@ -129,13 +152,28 @@ export default function Home() {
             An agent that survives its own failures.
           </h2>
         </ChoreoReveal>
-        <p className="text-[--muted] max-w-[68ch] mb-6">
+        <p className="text-[--muted] text-[clamp(1.25rem,2.5vw,1.563rem)] max-w-[60ch] mb-4">
           An agentic AI travel planner with a deterministic memory layer, a
           custom model router, and an async circuit breaker — when cloud APIs
           degrade, it falls back to local Ollama inference and keeps streaming.
           Deployed on a k3s multi-node cluster with full Prometheus/Grafana
           observability.
         </p>
+        <p className="text-[--muted] text-[clamp(1.25rem,2.5vw,1.563rem)] max-w-[60ch] mb-6">
+          Cloud APIs degrade. Rate limits hit. This agent is built for that
+          moment: a deterministic memory layer so retries never repeat work, a
+          router that picks the right model per task, and an async circuit
+          breaker that swaps to local Ollama inference mid-stream — the response
+          never stops. Deployed on a k3s multi-node cluster with Prometheus and
+          Grafana watching every request.
+        </p>
+        <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--muted] mb-6 flex flex-wrap gap-4">
+          <span>K3S MULTI-NODE</span>
+          <span className="text-[--line]">·</span>
+          <span>CIRCUIT BREAKER</span>
+          <span className="text-[--line]">·</span>
+          <span>SSE STREAMING</span>
+        </div>
         <Button variant="ghost" href="/travel-planner">
           Read the system breakdown →
         </Button>
@@ -176,47 +214,6 @@ export default function Home() {
         </CascadeRows>
       </Section>
 
-      {/* ── Publication & Open Source ───────────────────────── */}
-      <Section className="border-t border-[--line]">
-        <Eyebrow>Verifiable elsewhere</Eyebrow>
-
-        <div className="space-y-4 max-w-[68ch]">
-          <p className="text-[--text]">
-            Peer-reviewed:{" "}
-            <em>
-              <a
-                href="https://www.ijfmr.com/research-paper.php?id=32630"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[--accent] hover:underline"
-              >
-                Autonomous Firefighting Vehicle
-              </a>
-            </em>
-            , IJFMR 2024.
-          </p>
-          <p className="text-[--text]">
-            Open source: added llama.cpp and NVIDIA NIM provider support to{" "}
-            <a
-              href="https://github.com/interviewstreet/hiring-agent/pulls?q=is%3Apr+author%3ASiddharthsinghkumar"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[--accent] hover:underline"
-            >
-              interviewstreet/hiring-agent
-            </a>
-            .
-          </p>
-          <p className="text-[--text]">
-            GitHub:{" "}
-            <ContributionsDisplay
-              display={contributions.display}
-              fallback={!contributions.display}
-            />
-          </p>
-        </div>
-      </Section>
-
       {/* ── Skills ──────────────────────────────────────────── */}
       <Section className="border-t border-[--line]">
         <Eyebrow>Stack</Eyebrow>
@@ -250,12 +247,53 @@ export default function Home() {
         </div>
       </Section>
 
+      {/* ── Publication & Open Source ───────────────────────── */}
+      <Section className="border-t border-[--line]">
+        <Eyebrow>Verifiable elsewhere</Eyebrow>
+
+        <div className="space-y-4 max-w-[68ch]">
+          <p className="text-[--text] text-[clamp(1rem,2vw,1.25rem)]">
+            Peer-reviewed:{" "}
+            <em>
+              <a
+                href="https://www.ijfmr.com/research-paper.php?id=32630"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[--accent] hover:underline"
+              >
+                Autonomous Firefighting Vehicle
+              </a>
+            </em>
+            , IJFMR 2024.
+          </p>
+          <p className="text-[--text] text-[clamp(1rem,2vw,1.25rem)]">
+            Open source: added llama.cpp and NVIDIA NIM provider support to{" "}
+            <a
+              href="https://github.com/interviewstreet/hiring-agent/pulls?q=is%3Apr+author%3ASiddharthsinghkumar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[--accent] hover:underline"
+            >
+              interviewstreet/hiring-agent
+            </a>
+            .
+          </p>
+          <p className="text-[--text] text-[clamp(1rem,2vw,1.25rem)]">
+            GitHub:{" "}
+            <ContributionsDisplay
+              display={contributions.display}
+              fallback={!contributions.display}
+            />
+          </p>
+        </div>
+      </Section>
+
       {/* ── Contact (inline CTA before footer) ──────────────── */}
       <Section id="contact" className="border-t border-[--line]">
         <h2 className="font-display text-[clamp(1.953rem,4vw,2.441rem)] leading-tight text-[--text] mb-4">
           The next system could be yours.
         </h2>
-        <p className="text-[--muted] max-w-[68ch] mb-8">
+        <p className="text-[--muted] text-[clamp(1.25rem,2.5vw,1.563rem)] max-w-[60ch] mb-8">
           I&rsquo;m open to AI backend roles — India or remote, full-time or
           contract. Email gets answered fastest.
         </p>
