@@ -5,24 +5,33 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Core, GridFloor, DustField, StageNodes, DataStream, Satellite, getGlowTexture, COLORS } from "./SceneObjects";
 
-// ── Build stream curves — entering from ALL frame edges, flow toward core ──
-function buildStreamCurves(): THREE.CatmullRomCurve3[] {
-  return [
-    { from: [-10, 6, -3], mid: [-3, 1.5, 0], to: [0, 0.2, 0.5] },
-    { from: [8, 5, -4], mid: [2, 1.8, -1], to: [-0.3, -0.1, 0.3] },
-    { from: [-7, -5, 2], mid: [-2, -1.5, 0.5], to: [0.2, 0, -0.2] },
-    { from: [9, -4, -2], mid: [3, -1, -0.5], to: [-0.1, 0.1, 0] },
-    { from: [-9, 1, -5], mid: [-2.5, 0.5, -1.5], to: [0, 0, 0.1] },
-    { from: [6, 2, 4], mid: [1.5, 0.8, 1], to: [0.3, -0.2, -0.4] },
-    // Exit stream — core → forward-down
-    { from: [0, -0.3, 1], mid: [1.5, -2, 4], to: [4, -5, 8] },
-  ].map(({ from, mid, to }) =>
-    new THREE.CatmullRomCurve3([
+// ── Build stream curves — 5 orange + 2 grey-white = 7 streams, 70% orange per spec ──
+// Plus exit stream: flows from core downward-forward, brighter (sorted output)
+function buildStreamCurves(): { curve: THREE.CatmullRomCurve3; color: number; isExit: boolean }[] {
+  const accent = COLORS.accent;
+  const grey = COLORS.white;
+  const raw = [
+    // 5 orange streams entering from edges
+    { from: [-10, 6, -3], mid: [-3, 1.5, 0], to: [0, 0.2, 0.5], color: accent },
+    { from: [8, 5, -4], mid: [2, 1.8, -1], to: [-0.3, -0.1, 0.3], color: accent },
+    { from: [-7, -5, 2], mid: [-2, -1.5, 0.5], to: [0.2, 0, -0.2], color: accent },
+    { from: [9, -4, -2], mid: [3, -1, -0.5], to: [-0.1, 0.1, 0], color: accent },
+    { from: [6, 2, 4], mid: [1.5, 0.8, 1], to: [0.3, -0.2, -0.4], color: accent },
+    // 2 grey-white streams
+    { from: [-9, 1, -5], mid: [-2.5, 0.5, -1.5], to: [0, 0, 0.1], color: grey },
+    { from: [2, -6, 3], mid: [-0.5, -2.5, 1], to: [0.1, -0.1, -0.3], color: grey },
+    // Exit stream — brighter, core → forward-down
+    { from: [0, -0.3, 1], mid: [1.5, -2, 4], to: [4, -5, 8], color: accent },
+  ];
+  return raw.map(({ from, mid, to, color }) => ({
+    curve: new THREE.CatmullRomCurve3([
       new THREE.Vector3(...from),
       new THREE.Vector3(...mid),
       new THREE.Vector3(...to),
-    ])
-  );
+    ]),
+    color,
+    isExit: from[0] === 0 && from[1] === -0.3 && from[2] === 1,
+  }));
 }
 
 // ── Waypoint camera config ────────────────────────────────
@@ -38,11 +47,11 @@ interface Waypoint {
 }
 
 const WAYPOINTS: Waypoint[] = [
-  { name: "A", pMin: 0.00, pMax: 0.12, camPos: new THREE.Vector3(1.8, 0.8, 7), camLook: new THREE.Vector3(0, 0, 0), sceneOpacity: 1.0, streamBrightness: 0.6, satelliteVisible: false },
+  { name: "A", pMin: 0.00, pMax: 0.12, camPos: new THREE.Vector3(1.8, 0.2, 7), camLook: new THREE.Vector3(0, 0, 0), sceneOpacity: 1.0, streamBrightness: 0.6, satelliteVisible: false },
   { name: "B", pMin: 0.12, pMax: 0.32, camPos: new THREE.Vector3(0.6, 1.2, 4.2), camLook: new THREE.Vector3(0.4, 0, 0), sceneOpacity: 1.0, streamBrightness: 1.0, satelliteVisible: false },
   { name: "C", pMin: 0.32, pMax: 0.48, camPos: new THREE.Vector3(-2.5, 0.6, 5.5), camLook: new THREE.Vector3(-3.5, 0.2, 2), sceneOpacity: 0.95, streamBrightness: 0.9, satelliteVisible: true },
   { name: "D", pMin: 0.48, pMax: 0.72, camPos: new THREE.Vector3(0.5, 2.5, 9), camLook: new THREE.Vector3(0, -1.5, 0), sceneOpacity: 0.45, streamBrightness: 0.4, satelliteVisible: true },
-  { name: "E", pMin: 0.72, pMax: 1.00, camPos: new THREE.Vector3(0, 0.6, 5), camLook: new THREE.Vector3(0, 0, 0), sceneOpacity: 0.75, streamBrightness: 0.8, satelliteVisible: false },
+  { name: "E", pMin: 0.72, pMax: 1.00, camPos: new THREE.Vector3(0, 0.2, 5), camLook: new THREE.Vector3(0, 0, 0), sceneOpacity: 0.75, streamBrightness: 0.8, satelliteVisible: false },
 ];
 
 function smoothstep(edge0: number, edge1: number, x: number): number {
@@ -52,22 +61,22 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
 
 // ── Scene Inner ────────────────────────────────────────────
 function SceneInner() {
-  const { scene, camera, gl } = useThree();
+  const { scene, camera } = useThree();
   const coreRef = useRef<THREE.Group>(null);
   const streamGroupRef = useRef<THREE.Group>(null);
   const sceneGroupRef = useRef<THREE.Group>(null);
   const gridRef = useRef<THREE.Group>(null);
   const timeRef = useRef(0);
-  const scrollP = useRef(0); // damped scroll progress
-  const smoothP = useRef(0); // lerped toward scrollP
+  const scrollP = useRef(0);
+  const smoothP = useRef(0);
   const pointerNorm = useRef({ x: 0, y: 0 });
   const isFine = useRef(true);
 
-  const streamCurves = useMemo(() => buildStreamCurves(), []);
+  const streamDefs = useMemo(() => buildStreamCurves(), []);
   const glowTex = useMemo(() => getGlowTexture(), []);
   const accentColor = useMemo(() => new THREE.Color(COLORS.accent), []);
 
-  // ── Scroll tracking ─────────────────────────────────────
+  // ── Scroll tracking — native scrollY with damped lerp (0.06) smooths it ──
   const updateScroll = useCallback(() => {
     const maxScroll = Math.max(0, document.body.scrollHeight - window.innerHeight);
     scrollP.current = maxScroll > 0 ? window.scrollY / maxScroll : 0;
@@ -147,12 +156,12 @@ function SceneInner() {
     );
     camera.lookAt(lookTarget);
 
-    // Scene opacity blend
+    // Scene opacity blend — applies to grid (LineSegments) + stream particles
     const sceneOpacity = wpA.sceneOpacity + (wpB.sceneOpacity - wpA.sceneOpacity) * blend;
     if (streamGroupRef.current) {
       streamGroupRef.current.children.forEach((child) => {
-        if (child instanceof THREE.Points) {
-          child.material.opacity = sceneOpacity * 0.7;
+        if (child instanceof THREE.Points && child.material instanceof THREE.ShaderMaterial) {
+          child.material.uniforms.uOpacity.value = sceneOpacity * 0.7;
         }
       });
     }
@@ -164,12 +173,33 @@ function SceneInner() {
       });
     }
 
-    // Core rotation + breathing
+    // Core rotation + breathing (intensifies at waypoint E)
     if (coreRef.current) {
       coreRef.current.rotation.x += 0.006 * delta;
       coreRef.current.rotation.y += 0.01 * delta;
-      const breathe = 1 + 0.015 * Math.sin(t * (Math.PI * 2 / 8));
+      // E-phase: intensified pulse
+      const eIntensity = p >= 0.72 ? (p < 0.95 ? (p - 0.72) / 0.23 : 1) : 0;
+      const baseBreathe = 1 + 0.015 * Math.sin(t * (Math.PI * 2 / 8));
+      const ePulse = 1 + 0.04 * Math.sin(t * (Math.PI * 2 / 3));
+      const breathe = baseBreathe * (1 - eIntensity) + ePulse * eIntensity;
       coreRef.current.scale.setScalar(breathe);
+    }
+
+    // Waypoint E p>0.95: emit bright stream toward camera
+    const brightStreamIdx = 7; // exit/TOWARD stream
+    if (streamGroupRef.current && streamGroupRef.current.children[brightStreamIdx]) {
+      const exitStream = streamGroupRef.current.children[brightStreamIdx] as THREE.Points;
+      const eFade = p >= 0.72 ? Math.min(1, (p - 0.72) / 0.18) : 0;
+      const mat = (exitStream.material as unknown) as THREE.ShaderMaterial;
+      if (mat.uniforms) mat.uniforms.uOpacity.value = eFade;
+    }
+
+    // p > 0.95: slow drift hold
+    if (p > 0.95) {
+      camera.position.lerp(
+        new THREE.Vector3(WAYPOINTS[4].camPos.x + driftX * 0.3, WAYPOINTS[4].camPos.y + driftY * 0.3, WAYPOINTS[4].camPos.z),
+        0.02
+      );
     }
   });
 
@@ -180,18 +210,19 @@ function SceneInner() {
         <Core radius={3.5} />
       </group>
 
-      {/* Stage ring */}
-      <StageNodes radius={5} />
+      {/* Stage ring — spec radius ~2.6 */}
+      <StageNodes radius={2.6} />
 
-      {/* Data streams */}
+      {/* Data streams — 7 curves, ~4,500 particles total */}
       <group ref={streamGroupRef}>
-        {streamCurves.map((curve, i) => (
+        {streamDefs.map((def, i) => (
           <DataStream
             key={i}
-            curve={curve}
-            color={i === 6 ? COLORS.accent : (i % 3 === 0 ? COLORS.accent : COLORS.white)}
+            curve={def.curve}
+            color={def.color}
             speed={0.4 + i * 0.12}
-            count={i === 6 ? 600 : 500}
+            count={def.isExit ? 650 : 640}
+            bright={def.isExit}
           />
         ))}
       </group>

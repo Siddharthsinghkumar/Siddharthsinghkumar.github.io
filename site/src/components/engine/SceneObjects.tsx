@@ -236,14 +236,16 @@ export function StageNodes({ radius = 5 }: { radius?: number }) {
 // ── Animated Data stream — flowing particles along curve ──
 export function DataStream({
   curve,
-  count = 500,
+  count = 570,
   color = COLORS.accent,
   speed = 0.35,
+  bright = false,
 }: {
   curve: THREE.CatmullRomCurve3;
   count?: number;
   color?: number;
   speed?: number;
+  bright?: boolean;
 }) {
   const pointsRef = useRef<THREE.Points>(null);
   const tValues = useRef(new Float32Array(count));
@@ -279,15 +281,15 @@ export function DataStream({
       vertexShader: particleVertexShader,
       fragmentShader: particleFragmentShader,
       uniforms: {
-        uSize: { value: 0.18 },
+        uSize: { value: bright ? 0.24 : 0.18 },
         uColor: { value: c },
-        uOpacity: { value: 0.85 },
+        uOpacity: { value: bright ? 1.0 : 0.85 },
       },
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
     });
-  }, [color]);
+  }, [color, bright]);
 
   useFrame((_, delta) => {
     if (!pointsRef.current) return;
@@ -315,16 +317,16 @@ export function DataStream({
   );
 }
 
-// ── Satellite system — router node + orbiting fallback nodes ──
+// ── Satellite system — router node + 2 orbiting fallback nodes ──
 export function Satellite({ position, visible = true }: { position: [number, number, number]; visible?: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
   const accentColor = useMemo(() => new THREE.Color(COLORS.accent), []);
   const whiteColor = useMemo(() => new THREE.Color(COLORS.white), []);
 
-  // Orbiting nodes
+  // 2 orbiting fallback nodes
   const orbitRefs = useRef<(THREE.Mesh | null)[]>([]);
-  const orbitAngles = useRef([0, Math.PI * 0.6, Math.PI * 1.3]);
-  const orbitSpeeds = useRef([0.8, 1.2, 0.95]);
+  const orbitAngles = useRef([0, Math.PI * 0.7]);
+  const orbitSpeeds = useRef([0.85, 1.1]);
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;
@@ -332,37 +334,31 @@ export function Satellite({ position, visible = true }: { position: [number, num
 
     orbitAngles.current.forEach((angle, i) => {
       orbitAngles.current[i] += orbitSpeeds.current[i] * delta;
-      const orbitRadius = 1.6 + i * 0.5;
+      const orbitRadius = 1.6 + i * 0.4;
       const x = Math.cos(orbitAngles.current[i]) * orbitRadius;
       const z = Math.sin(orbitAngles.current[i]) * orbitRadius;
-      const y = Math.sin(orbitAngles.current[i] * 1.7) * 0.4;
-
+      const y = Math.sin(orbitAngles.current[i] * 1.7) * 0.35;
       const mesh = orbitRefs.current[i];
-      if (mesh) {
-        mesh.position.set(x, y, z);
-      }
+      if (mesh) mesh.position.set(x, y, z);
     });
   });
 
   return (
     <group ref={groupRef} position={position} visible={visible}>
-      {/* Router node — central octahedron */}
+      {/* Router node — central octahedron, ~14% core scale */}
       <mesh>
-        <octahedronGeometry args={[0.4, 0]} />
+        <octahedronGeometry args={[0.49, 0]} />
         <meshBasicMaterial color={accentColor} opacity={0.9} transparent />
       </mesh>
-      <sprite scale={[2, 2, 1]}>
+      <sprite scale={[2.5, 2.5, 1]}>
         <spriteMaterial map={getGlowTexture() || undefined} color={accentColor} opacity={0.35} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
       </sprite>
 
-      {/* Orbiting fallback nodes */}
-      {[accentColor, whiteColor, accentColor].map((col, i) => (
-        <mesh
-          key={i}
-          ref={(el) => { orbitRefs.current[i] = el; }}
-        >
-          <octahedronGeometry args={[0.14, 0]} />
-          <meshBasicMaterial color={col} opacity={0.75} transparent />
+      {/* 2 orbiting fallback nodes */}
+      {[accentColor, whiteColor].map((col, i) => (
+        <mesh key={i} ref={(el) => { orbitRefs.current[i] = el; }}>
+          <octahedronGeometry args={[0.18, 0]} />
+          <meshBasicMaterial color={col} opacity={0.8} transparent />
         </mesh>
       ))}
 
@@ -371,12 +367,8 @@ export function Satellite({ position, visible = true }: { position: [number, num
         <edgesGeometry args={[new THREE.TorusGeometry(1.6, 0.02, 8, 64)]} />
         <lineBasicMaterial color={COLORS.line} opacity={0.4} transparent />
       </lineSegments>
-      <lineSegments rotation={[Math.PI / 2, 0.3, 0]}>
-        <edgesGeometry args={[new THREE.TorusGeometry(1.4, 0.02, 8, 48)]} />
-        <lineBasicMaterial color={COLORS.line} opacity={0.25} transparent />
-      </lineSegments>
 
-      {/* Arc connector between two orbiting nodes */}
+      {/* Thin particle arc between the two fallback nodes */}
       <DataStream
         curve={new THREE.CatmullRomCurve3([
           new THREE.Vector3(1.2, 0.3, 0.8),
@@ -384,9 +376,10 @@ export function Satellite({ position, visible = true }: { position: [number, num
           new THREE.Vector3(-0.8, -0.2, -1.0),
           new THREE.Vector3(-1.3, -0.4, 0.2),
         ])}
-        count={120}
+        count={100}
         color={COLORS.accent}
-        speed={0.55}
+        speed={0.45}
+        bright={false}
       />
     </group>
   );
