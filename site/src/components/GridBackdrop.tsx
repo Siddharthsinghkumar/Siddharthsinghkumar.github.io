@@ -13,7 +13,7 @@ function Tile({ children, index }: { children: ReactNode; index: number }) {
       className="flex items-center justify-center p-2 border border-[--line] rounded-[--r-sm]"
       style={{
         background: "var(--surface-2)",
-        opacity: 0.12,
+        opacity: 0.22,
         aspectRatio: "1",
       }}
     >

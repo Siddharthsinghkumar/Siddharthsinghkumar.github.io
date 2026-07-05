@@ -350,16 +350,168 @@ URL (like the fluted-glass link above), the executor must open/read it and
 implement from its actual parameters/API — never approximate from the URL
 text alone. If it can't be fetched, say so at the STOP and ask.
 
+## ⛔ STOP 2 FEEDBACK — ROUND 3 (Sid, 2026-07-05) — apply F17–F24
+
+Sid approved the scene direction ("it is good now") — the 3D world stays as
+built. Everything below is about what surrounds it. His words, now doctrine:
+**"Understanding what I want is important, but understanding what I DON'T
+want is more important."**
+
+### F17 — THE DON'T-WANT LIST (binding anti-requirements — check EVERY task against this)
+
+Compiled from every piece of Sid feedback across T9–T10. Violating any row at
+a STOP = rejected work, regardless of green gates:
+
+| # | Sid does NOT want | Origin |
+|---|---|---|
+| N1 | Invisible/imperceptibly-subtle effects ("spec-compliant but can't see it") | T9 failure |
+| N2 | A 3D object floating on black posing as a world | STOP 1 |
+| N3 | Generic filler copy; thin, timid, small text on showcase sections | Round 3 |
+| N4 | Dead scroll space: no stretch of home > ~40vh with neither content nor a deliberate scene moment | Round 3 |
+| N5 | Pages that are structurally complete but FEEL like wireframes — structure ≠ done; a page without its atmosphere layer + choreography is unfinished and must not be presented | Round 3 |
+| N6 | Backdrop-blur glass (the fluted-glass shader replaced it — never regress) | Round 2 |
+| N7 | shadcn boilerplate, `lib/utils`/`cn` imports, lucide icons, Unsplash/stock images arriving via donor snippets — take mechanics, strip their ecosystem | Donor rule |
+| N8 | Fake or stalling progress counters | F10 |
+| N9 | Sound/autoplay audio | F8 |
+| N10 | STOP presentations without green gates + pasted proof | F10-zero |
+| N11 | Dead links or nav items that do nothing observable | Round 2 |
+| N12 | Education, phone number, invented metrics — anywhere, ever | Founding rules |
+| N13 | Colors outside black/grey/orange (no rainbow, no purple, no lava-lamp) | T10 rules |
+| N14 | Scroll-jacking that breaks native scroll, ctrl-F, or anchors | DESIGN.md |
+| N15 | Toys cluttering the home page (physics card lives on /about only) | Round 1 |
+| N16 | "Gates green" offered as proof of visual quality — for visual work the proof is screenshots/recordings | T9 lesson |
+
+### F18 — Loading screen v3: Sid-supplied GooeyLoader (replaces F10's particle assembly — that concept is dead after two failures)
+
+Sid supplied the component. Donor mechanics (SVG gooey filter + two blobby
+circles rolling along a baseline) — adapt EXACTLY this, skinned to brand.
+Essential donor code (self-contained; the snippet's shadcn/unsplash/lucide
+instructions are VOID per N7 — no `cn`, no `lib/utils`, plain template class
+strings):
+
+- SVG filter: `feGaussianBlur stdDeviation=12` → `feColorMatrix` alpha matrix
+  `18 -7`-class goo → `feComposite atop` (use the donor's exact values:
+  `1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 48 -7`).
+- `.gooey-loader`: `12em × 3em`, overflow hidden, `border-bottom: 8px solid
+  var(--line)` (#26262A), `filter: url(#gooey-loader-filter)`.
+- `::before`: 22em×18em circle, **`--accent` #FF5C1A**, `wee1` 2 s linear
+  infinite (translateX −10em→7em, rotate 0→180°).
+- `::after`: 16em×12em circle, **`--accent-dim` #DB4A0F**, `wee2` 2 s linear
+  infinite 0.75 s delay (translateX −8em→8em, rotate 0→180°).
+- `role="status" aria-label="Loading"`.
+
+Overlay composition (keeps F10's non-visual rules): black `#0B0B0D` overlay →
+mono eyebrow `INITIALIZING — PROSPECT ENGINE` (top-left, fades in 200 ms) →
+**GooeyLoader centered** (sized ~0.9em base font so ≈11 rem wide) →
+`SIDDHARTH SINGH` decrypting below it (DecryptedText, display size) → mono
+counter `00→100` bottom-left tied to REAL progress (N8). Dismiss when
+scene-ready (≤1.6 s target): overlay fades 250 ms, loader scales out 0.96,
+scene already rendering beneath. Skips: reduced-motion, repeat visit
+(sessionStorage), 2.2 s failsafe. LCP rule unchanged (big name paints early).
+**Done when:** recording saved to `docs/qa/t10/` AND Sid approves it — a
+loading screen without his explicit yes does not ship (third strike rule).
+
+### F19 — Every page gets its atmosphere BEFORE any further STOP (kills N5)
+
+Current state per Sid: subpages have **no background** and read as wireframes.
+Mandatory layers (most already specced — this makes them blocking):
+- `/prospect`, `/travel-planner`: amped PaperInk hero (T10.6/F14 settings) +
+  scroll choreography + scroll-lit pipeline/particles + hover states + mono
+  stat strips (F21 copy).
+- `/projects`: GridBackdrop illuminated tiles (F7/F11) behind the cards.
+- `/about`: the void treatment (dust + subtle glow, reuse scene environment
+  elements cheaply or CSS variant) behind the Lanyard card + bio.
+- `/404`: existing decrypt treatment + CSS grain.
+Visual-gate extends to ALL pages: every page ≥10% scene pixels + ≥1.5% orange
+at p=0. A page failing this is unfinished (N5) and cannot be presented.
+
+### F20 — Typography & density pass (kills N3/N4: "so much empty space, text too small, not optimized")
+
+- Section lead paragraphs: `1.25rem` minimum, `1.563rem` on ≥768 px (not body
+  1rem). Leads max 60ch; body stays 68ch.
+- SYSTEM/01 and SYSTEM/02 sections must FILL their viewport: expanded copy
+  (F21), the 6-stage pipeline strip, live status pills, mono stat row,
+  "Read the system breakdown →" CTA — composed so no >40vh gap exists (N4).
+  Where space IS intentionally open, the 3D scene must be doing something
+  there (a waypoint moment), or it's a violation.
+- Timeline/skills/contact: tighten vertical rhythm (section padding stays,
+  but intra-section dead gaps close); skills rows get their category labels
+  at eyebrow scale, items at 1rem minimum.
+- Audit at 1280 AND 375: screenshot every section; any frame that is mostly
+  empty black with a small text island fails (N3/N4).
+
+### F21 — Copy enrichment (verbatim-usable; append to COPY.md §Home / §Prospect / §Travel-Planner / §Projects / §About in the same commit — COPY.md stays the single copy source)
+
+All lines below use ONLY verified claims (V1–V8 register). Executor may not
+alter or extend them:
+
+- **Hero stat strip** (mono, under the sub-paragraph):
+  `11-STAGE PIPELINE · 15–20 GB SCANNED DAILY · RUNS ON MY OWN HARDWARE`
+- **SYSTEM/01 second paragraph** (after the existing lead):
+  "No job boards, no third-party crawlers. Prospect reads the same newspapers
+  a human would — then does the part humans skip. It OCRs every page, extracts
+  each posting with an LLM, embeds and scores it against persona-scoped
+  resumes, and writes the ranked shortlist to my phone. Eleven stages, running
+  unattended on hardware I own."
+- **SYSTEM/02 second paragraph**:
+  "Cloud APIs degrade. Rate limits hit. This agent is built for that moment: a
+  deterministic memory layer so retries never repeat work, a router that picks
+  the right model per task, and an async circuit breaker that swaps to local
+  Ollama inference mid-stream — the response never stops. Deployed on a
+  k3s multi-node cluster with Prometheus and Grafana watching every request."
+- **`/prospect` hero stat strip**: `11 STAGES · 15–20 GB / DAY · RUNNING LOCAL`
+- **`/travel-planner` hero stat strip**:
+  `K3S MULTI-NODE · CIRCUIT-BREAKER FALLBACK · SSE STREAMING`
+- **`/projects` intro** (under an `INDEX / ALL SYSTEMS` eyebrow):
+  "Systems beyond the flagships — a shipped client platform, published
+  hardware, security research, and the lab work that taught me the most."
+- **`/about` bio** (first person, 5 lines, education excluded per N12):
+  "I'm Siddharth — an AI backend engineer in Noida. I build agentic systems
+  that keep working when no one's watching: pipelines that read, match, and
+  deliver on their own schedule, and agents that survive their own failures.
+  Before that I led the build of an autonomous firefighting robot, and took a
+  healthcare platform from zero to production in six weeks. I like honest
+  status labels, observable systems, and tools that earn their place.
+  The card is real — drag it."
+
+### F22 — Page-completeness table at every STOP
+
+Every STOP presentation includes this table, one row per page:
+`page | sections present | atmosphere layer | choreography | visual-gate % | gates`.
+"Not all subpages built" must never again be a question Sid has to ask — the
+table answers it before he does.
+
+### F23 — Approval cadence (Sid's explicit demand)
+
+After EVERY task that changes anything visible, the executor asks Sid to look
+(dev URL + screenshots; recording for motion work) and waits. Small tasks may
+be batched into one presentation ONLY if none of them touch the hero, the
+loader, or a page's atmosphere. The ask must state in one line what changed
+since the last look.
+
+### F24 — Decision-log rows for this round
+
+```
+| D38 | 2026-07-05 | Don't-want list (N1–N16) codified as binding anti-requirements | Sid: knowing what he doesn't want matters more than what he wants. |
+| D39 | 2026-07-05 | Loading screen v3 = Sid-supplied GooeyLoader, brand-skinned (orange/dim-orange goo, --line baseline); particle-assembly concept retired after two failed attempts | Sid's explicit pick; donor mechanics kept, shadcn ecosystem stripped (N7). |
+| D40 | 2026-07-05 | Typography density floor: leads ≥1.25rem, no >40vh dead scroll gaps, per-section screenshot audit at 1280+375 | Sid: "so much empty space, text too small, no richness." |
+| D41 | 2026-07-05 | Visual-gate extended to all 6 pages (≥10% scene / ≥1.5% orange each) | Sid: subpages have no background and feel like wireframes. |
+```
+
 ## Kickoff prompt (Sid: paste to DeepSeek/GLM)
 
 ```
 Read /home/sidd/project/freelance/portfolio-website/CLAUDE.md, DESIGN.md, and
 reference-website-1.md, then execute
-/home/sidd/project/freelance/portfolio-website/T10-ENGINE.md task by task at
-maximum effort. This is a scroll-driven 3D WebGL centerpiece at igloo.inc tier.
-Key rules: when in doubt make it MORE visible, never less — invisible-but-
-spec-compliant is the failure mode this plan exists to kill; the perceptibility
-gate and both ⛔ STOP-for-Sid-approval points are mandatory; scene colors only
-from DESIGN.md tokens; one commit per task, no attribution trailers, never
-push. Address the user as Sid.
+/home/sidd/project/freelance/portfolio-website/T10-ENGINE.md at maximum
+effort: the base tasks plus ALL THREE feedback rounds (F1–F24), in order,
+skipping anything already shipped and approved. Before writing any code, read
+the F17 DON'T-WANT LIST — every task is checked against it, and violating it
+rejects the work even with green gates. The approved 3D scene stays as-is;
+this round is the loading screen (F18 — Sid's GooeyLoader, his explicit
+pick), atmosphere on every subpage (F19), typography/density (F20), and the
+new copy (F21 — verbatim, no edits). Gates green + pasted proof before every
+presentation; screenshots/recordings are the proof for visual work; ask Sid
+to look after every visible change (F23). One commit per task, no attribution
+trailers, never push. Address the user as Sid.
 ```
