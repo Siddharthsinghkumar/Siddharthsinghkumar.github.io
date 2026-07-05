@@ -76,6 +76,8 @@ his. T11 (authored .glb centerpiece) stays future — out of scope, do not touch
 | N19 | Work claimed done without file evidence. T10.7's commit claimed a poster; **no poster file exists in the repo.** Every STOP message must include `ls`/`grep` proof lines for files it claims created | DeepSeek false self-report, caught twice |
 | N20 | Spec numbers treated as targets. They are FLOORS. Shipping a spec-compliant value that is invisible on screen = failed task (N1, hardened). The acceptance test is the screenshot/recording and the visual-gate %, never the number | T9 + PaperInk at "amped" values still invisible |
 | N21 | Scope additions at STOPs. Accept or reject only — rejected work is redone, nothing new is invented | Sid's freeze |
+| N22 | Executor edits to gate scripts or thresholds (`guards.mjs`, `visual-gate.mjs`, `lighthouse-gate.mjs`) without Sid's written approval pasted verbatim in the STOP thread. The 2026-07-05 recalibration (home 55 / case 75, simulate) was ratified by Sid after the fact — the NEXT unratified gate edit is rejected work, full stop | 1f16bab, ratified retroactively |
+| N23 | Continuing past a ⛔ STOP or ⛔ SWITCH MODEL marker. DeepSeek ran B1+B2 past STOP-A and past the GLM switch; Sid accepted the work but the breach stands on record — the next marker violation = work rejected regardless of quality | Batch A/B boundary breach |
 
 ## §3. Gates, verification, and proof
 
@@ -138,6 +140,21 @@ test summary line pasted BEFORE presenting (N10).
 | D45 | 2026-07-05 | Poster re-cut as hard artifact w/ file-existence guard; T10.7's claimed poster never existed in-tree | N19: claimed work must show files. |
 | D46 | 2026-07-05 | Case-page atmosphere = visibility redesign (autonomous ink motion, no-pointer perceptibility gate), not parameter bump | PaperInk at T10.6 "amped" values measured imperceptible (±4 RGB pts on #0B0B0D). |
 ```
+
+## §6. STATUS LEDGER (updated 2026-07-05 evening — read before resuming)
+
+| Item | Verdict | Notes |
+|---|---|---|
+| Batch A (A1–A10) | **ACCEPTED by Sid** | Commits 98a85c4…3559e6f verified real by Claude (files exist, numbers honest) |
+| B1 poster | **ACCEPTED** | `poster-home.webp` 33 KB exists, guards §8 check live, reduced-motion 47.4%/3.5% |
+| B2 loader milestones | **ACCEPTED, conditional on B2-FIX** | Milestones real; third-strike yes transfers to the B2-FIX recordings |
+| Gate recalibration | **RATIFIED as Sid decision** | Sid: "not forgettable > fast to load." Home perf ≥55, case ≥75, simulate throttling. a11y ≥95 / seo ≥95 / CLS ≤0.05 unchanged and NOT negotiable |
+| B4 verdict | **AMPED** (Sid, from glitch-demo.html) | D44 = ACCEPTED-amped; implement the 240ms/3px double-flicker variant |
+| Process breaches | Logged as N22/N23 | Ratified this once; zero tolerance next time |
+| Open defect | **Content flash before loader** (Sid observed in dev) | → B2-FIX, mandatory, next task |
+| Open defect | 2 flaky Playwright tests waved as "pass on retry" | → B2-TESTS, mandatory |
+
+**Batch B resumes at B2-FIX with GLM 5.2 1M MAX** (B1/B2 are done; B3 onward per plan).
 
 ---
 
@@ -307,6 +324,41 @@ to `docs/qa/t12/loader-cold.webm` showing the counter stepping with real
 loads, plus a normal-speed load recording. Gates + lighthouse green.
 **⛔ STOP-B2 — loader recording to Sid. THIRD-STRIKE RULE: without his
 explicit yes the loader does not ship. WAIT.**
+*(Status: presented 2026-07-05; Sid accepted CONDITIONAL on B2-FIX below —
+the third-strike yes now applies to the B2-FIX recordings.)*
+
+**B2-FIX — kill the content flash before the overlay (mandatory, do FIRST on resume).**
+Sid's observation (dev): the page content paints for a split second BEFORE the
+loader overlay covers it. Files:
+`/home/sidd/project/freelance/portfolio-website/site/src/components/IntroScreen.tsx`,
+`src/app/page.tsx` (IntroScreen mount position), possibly `src/app/layout.tsx`.
+Requirements:
+1. **Reproduce on a PRODUCTION build first** (`npm run build` + serve `out/` —
+   dev-only artifacts don't count; if prod is clean, show Sid the prod
+   recording and record the dev-only diagnosis in TESTING.md).
+2. If real: the overlay must be part of first paint — SSR'd markup with
+   **inline** `background-color: #0B0B0D` (no dependency on CSS-variable or
+   stylesheet timing), mounted so no content pixel can paint before it.
+3. Also fix the REVERSE flash: on repeat visits (sessionStorage skip) the
+   SSR'd overlay must not appear-then-vanish — gate the skip pre-hydration
+   (inline script setting an attribute/class before first paint), not via
+   useEffect after mount.
+4. LCP rule holds: the decrypting name inside the loader is the LCP; the
+   overlay must not suppress LCP past 2.0s observed.
+**Done:** THREE prod-build recordings to `docs/qa/t12/`: cold load (throttled),
+warm load, repeat visit — zero flash in all three. Gates green.
+**⛔ STOP-B2-FIX — recordings to Sid; his explicit yes = the loader's
+third-strike approval. WAIT.**
+
+**B2-TESTS — flaky tests fixed properly (no retries-as-green).**
+The two Playwright tests waved through ("about rapier timeout", "projects
+mobile GitHub 404 race") get real fixes: deterministic wait/mocked GitHub
+response or build-snapshot fallback assertion — whatever removes the race,
+not `retries++`. Also append the THREE.Clock note to
+`/home/sidd/project/freelance/portfolio-website/site/TESTING.md`: deprecation
+warning originates in R3F/drei internals, not our code (F13.4 closure).
+**Done:** 32/32 pass 3 consecutive runs (`npx playwright test` ×3, paste all
+three summary lines).
 
 **B3 — Subpages come alive (W2/D46 — the centerpiece).**
 Sid's verdict: "no background, no motion, just black with white text — worse
@@ -364,10 +416,9 @@ whose screenshot could be mistaken for plain black-with-text (N5/N20).
   table + visual-gate 6-page numbers. WAIT.**
 
 **B4 — RGB micro-glitch — DECISION GATE (D44).**
-Sid's verdict from `docs/qa/glitch-demo.html`: **<PENDING — Sid fills this
-line before Batch B starts: REJECTED / SPEC / AMPED>**.
-- REJECTED (or line still pending): skip, log D44 as rejected, done.
-- SPEC or AMPED: implement exactly the chosen variant from the demo file
+Sid's verdict from `docs/qa/glitch-demo.html`: **AMPED (240ms, 3px, double
+flicker) — decided 2026-07-05, D44 = ACCEPTED-amped.**
+- Implement exactly the AMPED variant from the demo file
   (its keyframes are the reference implementation) on section eyebrows, fired
   once per camera-waypoint arrival on home + once per section-entry on case
   pages; orange/grey only (N13); slow-mo + real-speed recording at the next
@@ -394,13 +445,27 @@ rebuild works (cron `30 22 * * *` UTC — verified present in
 screenshots auto-appear (drop into `public/tiles/`), gate suite one-liner.
 Short, factual, no marketing.
 
-**C2 — Static-export dry run (GH-Pages simulation).**
+**C2 — Static-export dry run (GH-Pages simulation) + Sid's launch checks.**
 From `site/`: `npm run build`, serve `out/` with `node scripts/serve-out.mjs`,
 then verify and PASTE results: all 6 pages 200 with trailing slashes; direct
 deep-load of `/prospect/` and `/about/` (not client-nav) renders; resume PDF
 200; `poster-home.webp` 200; og PNGs 200; guards' link-integrity green against
 the final build; no console errors on any page (Playwright smoke already
 asserts this — run it against the served build).
+Plus (Sid's 2026-07-05 additions, verified partially by Claude — close the gaps):
+- **OG completeness:** every page has og:title/description/image (absolute
+  https — verified ✓) — additionally add/verify `twitter:card =
+  summary_large_image` on all 6 pages (currently unverified).
+- **Responsive audit:** screenshots of ALL 6 pages at 375 / 768 / 1280 px to
+  `docs/qa/t12/responsive/` — check nav, hero, tables/boards, footer at each;
+  any horizontal scroll or broken layout = fix before proceeding. Paste the
+  18-image index.
+- **External CTA check:** script or manual pass hitting every external href
+  (mailto:, github.com ×2, linkedin.com) + `/resume-siddharth-singh.pdf` —
+  paste the status list. (LinkedIn may block HEAD — a browser-open note is
+  acceptable proof there.)
+- **SSL:** nothing code-side (all URLs https ✓); add "Settings → Pages →
+  Enforce HTTPS" as a launch-day checkbox in LAUNCH-CHECKLIST.md.
 
 **C3 — Final F22 + handoff note.** Paste the final completeness table, the
 full green gate output, and a 10-line handoff in
@@ -430,7 +495,10 @@ as Sid.
 ```
 Read /home/sidd/project/freelance/portfolio-website/CLAUDE.md, then DESIGN.md,
 then T10-ENGINE.md §F17 (the don't-want list N1–N16), then T12-FINISH.md
-§0–§5 and Batch B. Confirm Batch A is committed (git log) before starting.
+§0–§6 and Batch B. §6 STATUS LEDGER is authoritative: Batch A + B1 + B2 are
+done and accepted — do NOT redo them. START AT B2-FIX (the loader content
+flash), then B2-TESTS, then B3 onward. Never edit gate scripts or thresholds
+(N22). Never continue past a ⛔ marker (N23).
 Your batch is visual: the acceptance test is never a number — it is the
 screenshot, the recording, and Sid's explicit yes at each ⛔ STOP. A page
 whose screenshot could be mistaken for black-with-white-text is failed work
