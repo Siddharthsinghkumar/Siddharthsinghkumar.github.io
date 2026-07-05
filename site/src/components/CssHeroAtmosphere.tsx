@@ -30,7 +30,7 @@ export default function CssHeroAtmosphere() {
       {/* Paper-grain SVG overlay */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none select-none"
-        style={{ opacity: 0.05, mixBlendMode: "overlay" as React.CSSProperties["mixBlendMode"] }}
+        style={{ opacity: 0.10, mixBlendMode: "overlay" as React.CSSProperties["mixBlendMode"] }}
         aria-hidden="true"
       >
         <filter id="paper-grain">
