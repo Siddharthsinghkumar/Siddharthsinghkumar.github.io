@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Section from "@/components/Section";
 import Eyebrow from "@/components/Eyebrow";
 import Button from "@/components/Button";
@@ -55,6 +56,12 @@ export default function Home() {
 
         <div className="mx-auto max-w-[1200px] w-full">
           <ChoreoReveal variant="hero-item" heroIndex={0}>
+            <Link
+              href="/about"
+              aria-label="About Siddharth Singh"
+              className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-[--accent] focus-visible:outline-offset-4"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
             {TEXTPRESSURE_ENABLED ? (
               <div className="mb-6">
                 <TextPressure text="SIDDHARTH SINGH" className="text-[--text]" />
@@ -64,6 +71,7 @@ export default function Home() {
                 SIDDHARTH SINGH
               </p>
             )}
+            </Link>
           </ChoreoReveal>
           <ChoreoReveal variant="hero-item" heroIndex={1}>
             <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-8">
