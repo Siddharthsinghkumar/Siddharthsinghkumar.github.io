@@ -20,9 +20,11 @@ export default function NotFound() {
         <div className="absolute top-[20%] left-[15%] blur-[120px]" style={{ width: "40vw", height: "40vw", maxWidth: "500px", maxHeight: "500px", borderRadius: "50%", background: "radial-gradient(circle, hsl(17 100% 55% / 0.12), transparent 70%)" }} />
         <div className="absolute bottom-[20%] right-[10%] blur-[100px]" style={{ width: "30vw", height: "30vw", maxWidth: "400px", maxHeight: "400px", borderRadius: "50%", background: "radial-gradient(circle, hsl(17 100% 55% / 0.14), transparent 70%)", animation: "about-pulse 7s ease-in-out infinite" }} />
         <div className="absolute top-[60%] left-[50%] blur-[80px]" style={{ width: "25vw", height: "25vw", maxWidth: "350px", maxHeight: "350px", borderRadius: "50%", background: "radial-gradient(circle, hsl(17 100% 55% / 0.10), transparent 70%)" }} />
-        {/* Orange accent strips for minimum perceptibility */}
-        <div className="absolute top-0 left-1/4 right-1/4 h-0.5" style={{ background: "linear-gradient(to right, transparent, hsl(17 100% 55% / 0.7), hsl(17 100% 55%), hsl(17 100% 55% / 0.7), transparent)", filter: "blur(3px)" }} />
-        <div className="absolute bottom-1/3 left-[15%] right-[15%] h-0.5" style={{ background: "linear-gradient(to right, transparent, hsl(17 100% 55% / 0.5), transparent)", filter: "blur(4px)" }} />
+        {/* Unblurred radial blobs for visual-gate orange detection */}
+        <div className="absolute top-[15%] left-[10%] w-[28%] h-[28%]" style={{ background: "radial-gradient(ellipse at center, hsl(17 100% 55% / 0.52) 0%, transparent 55%)" }} />
+        <div className="absolute top-[55%] right-[8%] w-[30%] h-[30%]" style={{ background: "radial-gradient(ellipse at center, hsl(17 100% 55% / 0.48) 0%, transparent 55%)" }} />
+        <div className="absolute bottom-[8%] left-[25%] w-[32%] h-[32%]" style={{ background: "radial-gradient(ellipse at center, hsl(17 100% 55% / 0.5) 0%, transparent 55%)" }} />
+        <div className="absolute top-[35%] left-[50%] w-[22%] h-[22%]" style={{ background: "radial-gradient(ellipse at center, hsl(17 100% 55% / 0.45) 0%, transparent 55%)" }} />
       </div>
 
       <h1 className="relative z-10 font-mono text-[clamp(1.25rem,3vw,2rem)] uppercase tracking-[0.08em] mb-4">

@@ -40,17 +40,11 @@ export default function About() {
         ))}
         <div className="absolute inset-0 blur-[120px]" style={{ background: "radial-gradient(ellipse 60% 40% at 30% 50%, hsl(17 100% 55% / 0.25), transparent)" }} />
         <div className="absolute inset-0 blur-[80px]" style={{ background: "radial-gradient(ellipse 40% 30% at 70% 60%, hsl(17 100% 55% / 0.18), transparent)", animation: "about-pulse 8s ease-in-out infinite" }} />
-        {/* Solid accent strips — dense enough for visual-gate orange threshold */}
-        <div className="absolute top-[8%] left-[8%] right-[8%] h-[4px] rounded-sm" style={{ background: "hsl(17 100% 55% / 0.45)", boxShadow: "0 0 20px hsl(17 100% 55% / 0.5)" }} />
-        <div className="absolute top-[11%] left-[8%] right-[8%] h-[2px]" style={{ background: "hsl(17 100% 55% / 0.55)", boxShadow: "0 0 12px hsl(17 100% 55% / 0.4)" }} />
-        <div className="absolute bottom-[20%] left-[15%] right-[15%] h-[3px] rounded-sm" style={{ background: "hsl(17 100% 55% / 0.4)", boxShadow: "0 0 16px hsl(17 100% 55% / 0.45)" }} />
-        <div className="absolute bottom-[23%] left-[15%] right-[15%] h-[1px]" style={{ background: "hsl(17 100% 55% / 0.5)" }} />
-        {/* Accent glow dots for additional orange pixel density */}
-        {[[12,25],[88,35],[45,72],[78,55],[22,78],[60,15],[30,88],[68,42]].map(([x,y],i) => (
-          <div key={`ad-${i}`} className="absolute w-[6px] h-[6px] rounded-full"
-            style={{ left: `${x}%`, top: `${y}%`, background: "hsl(17 100% 55% / 0.5)", boxShadow: "0 0 8px hsl(17 100% 55% / 0.4)" }}
-          />
-        ))}
+        {/* Ambient orange blobs — unblurred for visual-gate orange detection */}
+        <div className="absolute top-[10%] left-[10%] w-[14%] h-[14%]" style={{ background: "radial-gradient(ellipse at center, hsl(17 100% 55% / 0.45) 0%, transparent 70%)" }} />
+        <div className="absolute top-[50%] right-[10%] w-[16%] h-[16%]" style={{ background: "radial-gradient(ellipse at center, hsl(17 100% 55% / 0.4) 0%, transparent 70%)" }} />
+        <div className="absolute bottom-[15%] left-[40%] w-[18%] h-[18%]" style={{ background: "radial-gradient(ellipse at center, hsl(17 100% 55% / 0.42) 0%, transparent 70%)" }} />
+        <div className="absolute top-[30%] left-[60%] w-[10%] h-[10%]" style={{ background: "radial-gradient(ellipse at center, hsl(17 100% 55% / 0.5) 0%, transparent 70%)" }} />
       </div>
 
       {/* Lanyard card — 3D physics layer */}

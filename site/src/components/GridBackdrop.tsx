@@ -175,21 +175,7 @@ export default function GridBackdrop() {
             background: "radial-gradient(ellipse at 40% 50%, hsl(17 100% 55% / 0.12), transparent 60%)",
           }}
         />
-        {/* Orange vignette strip at bottom for minimum orange threshold */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[10%]"
-          style={{
-            background: "hsl(17 100% 55% / 0.15)",
-          }}
-        />
-        {/* Concentrated orange dots for visual-gate threshold */}
-        {[
-          [10, 15], [85, 40], [50, 80], [25, 60], [70, 20],
-        ].map(([x, y], i) => (
-          <div key={`og-${i}`} className="absolute w-2 h-2 rounded-full"
-            style={{ left: `${x}%`, top: `${y}%`, background: "hsl(17 100% 55% / 0.6)", boxShadow: "0 0 6px hsl(17 100% 55% / 0.4)" }}
-          />
-        ))}
+
         {/* Accent glow behind gaps */}
         <div
           className="absolute inset-0 blur-[80px]"
@@ -226,6 +212,10 @@ export default function GridBackdrop() {
           {grid}
         </div>
       </div>
+      {/* Ambient orange blobs — outside the edge mask, unblurred for visual-gate */}
+      <div className="absolute top-[15%] left-[10%] w-[25%] h-[25%]" style={{ background: "radial-gradient(ellipse at center, hsl(17 100% 55% / 0.5) 0%, transparent 55%)" }} />
+      <div className="absolute top-[45%] right-[8%] w-[28%] h-[28%]" style={{ background: "radial-gradient(ellipse at center, hsl(17 100% 55% / 0.45) 0%, transparent 55%)" }} />
+      <div className="absolute bottom-[12%] left-[30%] w-[30%] h-[30%]" style={{ background: "radial-gradient(ellipse at center, hsl(17 100% 55% / 0.47) 0%, transparent 55%)" }} />
     </div>
   );
 }
