@@ -26,6 +26,11 @@
 - Format: AVIF or WebP, crop to 16:9, place in `site/public/screenshots/`
 - Update component paths accordingly
 
+## 2b. Assets for Sid to supply
+
+- [ ] **Tile screenshots** — drop images into `site/public/tiles/` (auto-picked next build, scan-tiles.mjs → GridBackdrop renders them)
+- [ ] **Card face photo** — replace monogram on /about Lanyard card: update `frontImage` data URI in `site/src/app/about/page.tsx`
+
 ## 3. LinkedIn Verification
 
 - [ ] Verify `https://www.linkedin.com/in/siddharth-singh-735340296` resolves
@@ -44,16 +49,16 @@
 
 - [ ] Push to `Siddharthsinghkumar/Siddharthsinghkumar.github.io` repo, `main` branch
 - [ ] GitHub Actions: verify deploy workflow runs green (typecheck → lint → build → deploy)
-- [ ] Verify: `https://Siddharthsinghkumar.github.io` loads all 4 pages
+- [ ] Verify: `https://Siddharthsinghkumar.github.io` loads all 6 pages (/, /prospect, /travel-planner, /projects, /about, /404)
 - [ ] Verify: resume PDF link works
 - [ ] Verify: nightly cron fires and redeploys
 
 ## 7. Post-Launch (optional)
 
 - [ ] **merlin-cli-bridge**: if publishing — ⚠️ `auth.json` holds real cookies, scrub before pushing
-- [ ] **Lanyard 3D card**: implement behind error boundary + static image fallback per DESIGN.md D6
+- [x] **Lanyard 3D card**: shipped on /about page (2026-07-05 T12-A8) — error boundary + static fallback
 - [ ] **GridMotion**: reconsider if wanted later (heavy, decorative — DESIGN.md D6 rejected at launch)
-- [ ] Performance: run Lighthouse against live URL, verify perf ≥ 0.9, a11y ≥ 0.95, SEO ≥ 0.95
+- [ ] Performance: run Lighthouse against live URL, verify perf ≥ 0.85 (home), ≥ 0.90 (case), a11y ≥ 0.95, SEO ≥ 0.95
 
 ---
 

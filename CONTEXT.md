@@ -23,6 +23,10 @@
   India/remote, (2) AI backend global remote.
 - **Tone rule (binding): confident and specific, never desperate.** No begging
   language, no "looking for any opportunity." Specificity and polish do the selling.
+- **Page inventory (amended 2026-07-05):** 6 pages — `/`, `/prospect`, `/travel-planner`,
+  `/projects`, `/about`, `/404`. The original planning scope was 4 pages; `/projects`
+  and `/about` were added per D36/D37 (DESIGN.md §6). Note: `CONTEXT.md §3` exclusion
+  of education still holds — it does not appear on any page, including `/about`.
 
 ## 2. Hard technical constraints
 
