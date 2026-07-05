@@ -120,6 +120,20 @@
   50% { opacity: 1; }
 }
 
+/* B4: RGB-split micro-glitch — AMPED (240ms, 3px, double flicker) */
+@keyframes glitch-amped {
+  0%   { text-shadow: none; transform: none; }
+  15%  { text-shadow: -3px 0 var(--accent), 3px 0 var(--muted); transform: translateX(2px); }
+  30%  { text-shadow: 3px 0 var(--accent), -3px 0 var(--muted); transform: translateX(-2px); }
+  45%  { text-shadow: none; transform: none; }
+  60%  { text-shadow: -2px 0 var(--accent), 2px 0 var(--muted); transform: translateX(1px); }
+  80%  { text-shadow: 2px 0 var(--accent), -2px 0 var(--muted); transform: translateX(-1px); }
+  100% { text-shadow: none; transform: none; }
+}
+.eyebrow-glitch {
+  animation: glitch-amped 240ms steps(1) 1;
+}
+
 /* ── Global Base Styles ──────────────────────────────────── */
 html {
   background-color: var(--bg);
