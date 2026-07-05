@@ -19,6 +19,8 @@ uniform vec2 uResolution;
 uniform vec2 uPointer;
 uniform vec4 uTrail[16];
 uniform int uTrailCount;
+uniform vec3 uAutoBlobs[4];
+uniform int uAutoBlobsCount;
 uniform float uDpr;
 
 // ── 2D Simplex noise ──────────────────────────────────────
@@ -63,11 +65,14 @@ float fbm(vec2 p) {
 }
 
 void main() {
-  // Paper-grain base
-  vec3 paper = vec3(0.043, 0.043, 0.051); // base bg in linear sRGB
-  float grain = fbm(vUv * uResolution * 0.5 / uDpr + uTime * 0.03);
-  grain = grain * 0.16 - 0.08;
+  // Paper-grain base — raised for perceptibility
+  vec3 paper = vec3(0.055, 0.055, 0.065); // base bg in linear sRGB (lighter than before)
+  float grain = fbm(vUv * uResolution * 0.35 / uDpr + uTime * 0.03);
+  grain = grain * 0.45 - 0.10;
   vec3 color = paper * (1.0 + grain);
+  // Micro-detail: secondary fine grain layer
+  float fine = fbm(vUv * uResolution * 2.0 / uDpr + uTime * 0.05) * 0.02;
+  color += fine;
 
   // Ink-glow trail from pointer history
   vec3 inkColor = vec3(1.0, 0.361, 0.102); // hsl(17 100% 55%)
@@ -77,13 +82,34 @@ void main() {
     if (i >= uTrailCount) break;
     vec4 t = uTrail[i];
     if (t.z <= 0.0) continue;
-    // t.z = age [0..1], older = dimmer
     float dist = length(vUv - t.xy) * uDpr;
     float influence = exp(-dist * 9.14) * t.z * t.w;
     inkGlow += influence;
     maxGlow = max(maxGlow, influence);
   }
-  inkGlow = clamp(inkGlow, 0.0, 0.35);
+
+  // Autonomous ink blobs — 4 slow-drifting orange blooms (visible without pointer input)
+  for (int j = 0; j < 4; j++) {
+    if (j >= uAutoBlobsCount) break;
+    vec3 b = uAutoBlobs[j];
+    if (b.z <= 0.0) continue;
+    float dist = length(vUv - b.xy);
+    float influence = smoothstep(b.z, 0.0, dist) * 0.55;
+    inkGlow += influence;
+    maxGlow = max(maxGlow, influence);
+  }
+
+  // Ambient orange warm wash — subtle overall warmth so orange is visible everywhere
+  float ambientOrange = 0.0;
+  for (int k = 0; k < 4; k++) {
+    if (k >= uAutoBlobsCount) break;
+    vec3 bk = uAutoBlobs[k];
+    float wdist = length(vUv - bk.xy) * 0.5;
+    ambientOrange += smoothstep(1.0, 0.0, wdist) * 0.015;
+  }
+  inkGlow += ambientOrange;
+
+  inkGlow = clamp(inkGlow, 0.0, 0.55);
   color = mix(color, inkColor, inkGlow);
 
   // Subtle vignette from pointer

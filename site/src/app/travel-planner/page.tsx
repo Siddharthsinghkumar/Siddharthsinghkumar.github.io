@@ -137,9 +137,19 @@ export default function TravelPlannerPage() {
           ].map((caption) => (
             <div
               key={caption}
-              className="aspect-video rounded-[--r-md] bg-[--surface-2] border border-[--line] flex items-center justify-center p-4"
+              className="aspect-video rounded-[--r-md] bg-[--surface-2] border border-[--line] flex items-center justify-center p-4 relative overflow-hidden"
             >
-              <p className="font-mono text-[11px] text-[--muted] text-center">
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,92,26,0.03) 2px, rgba(255,92,26,0.03) 4px)",
+                }}
+              />
+              <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-[--accent]" />
+              <div className="absolute top-3 right-3 w-3 h-3 border-t border-r border-[--accent]" />
+              <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-[--accent]" />
+              <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-[--accent]" />
+              <p className="font-mono text-[11px] text-[--muted] text-center relative z-10">
                 {caption}
               </p>
             </div>

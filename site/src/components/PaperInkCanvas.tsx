@@ -22,6 +22,7 @@ export default function PaperInkCanvas() {
     pointer: { x: number; y: number };
     time: number;
     raf: number;
+    autoBlobs: Array<{ phaseX: number; phaseY: number; speedX: number; speedY: number; ampX: number; ampY: number; radius: number }>;
   } | null>(null);
 
   useEffect(() => {
@@ -93,6 +94,8 @@ export default function PaperInkCanvas() {
         uPointer: gl.getUniformLocation(program, "uPointer"),
         uTrail: gl.getUniformLocation(program, "uTrail"),
         uTrailCount: gl.getUniformLocation(program, "uTrailCount"),
+        uAutoBlobs: gl.getUniformLocation(program, "uAutoBlobs"),
+        uAutoBlobsCount: gl.getUniformLocation(program, "uAutoBlobsCount"),
         uDpr: gl.getUniformLocation(program, "uDpr"),
       };
 
@@ -104,6 +107,12 @@ export default function PaperInkCanvas() {
         pointer: { x: 0.5, y: 0.5 },
         time: 0,
         raf: 0,
+        autoBlobs: [
+          { phaseX: 0.2, phaseY: 0.35, speedX: 0.07, speedY: 0.05, ampX: 0.3, ampY: 0.25, radius: 0.25 },
+          { phaseX: 0.75, phaseY: 0.6, speedX: 0.05, speedY: 0.08, ampX: 0.25, ampY: 0.28, radius: 0.20 },
+          { phaseX: 0.5, phaseY: 0.2, speedX: 0.06, speedY: 0.04, ampX: 0.28, ampY: 0.22, radius: 0.22 },
+          { phaseX: 0.35, phaseY: 0.8, speedX: 0.04, speedY: 0.06, ampX: 0.20, ampY: 0.25, radius: 0.18 },
+        ],
       };
 
       gl.uniform2f(locs.uResolution, canvas.width, canvas.height);
@@ -117,8 +126,9 @@ export default function PaperInkCanvas() {
       if (!s) return;
       s.time = ts;
 
-      const { gl, locs, dpr, trail } = s;
+      const { gl, locs, dpr, trail, autoBlobs } = s;
       const dt = 0.016;
+      const t = ts * 0.001;
 
       // Age trail points
       for (const p of trail) p.age -= dt * 0.5;
@@ -126,20 +136,34 @@ export default function PaperInkCanvas() {
         if (trail[i].age <= 0) trail.splice(i, 1);
       }
 
-      // Pack trail uniforms: vec4(x, y, age, strength)
+      // Pack trail uniforms
       const flatTrail = new Float32Array(MAX_TRAIL * 4);
       for (let i = 0; i < MAX_TRAIL; i++) {
         if (i < trail.length) {
-          const t = trail[i];
-          flatTrail[i * 4] = t.x;
-          flatTrail[i * 4 + 1] = t.y;
-          flatTrail[i * 4 + 2] = t.age;
-          flatTrail[i * 4 + 3] = t.strength;
+          const tt = trail[i];
+          flatTrail[i * 4] = tt.x;
+          flatTrail[i * 4 + 1] = tt.y;
+          flatTrail[i * 4 + 2] = tt.age;
+          flatTrail[i * 4 + 3] = tt.strength;
         }
       }
       gl.uniform4fv(locs.uTrail, flatTrail);
       gl.uniform1i(locs.uTrailCount, trail.length);
-      gl.uniform1f(locs.uTime, ts * 0.001);
+
+      // Autonomous ink blobs — slow sinusoidal drifting
+      const flatBlobs = new Float32Array(4 * 3);
+      for (let i = 0; i < autoBlobs.length; i++) {
+        const b = autoBlobs[i];
+        const x = b.phaseX + Math.sin(t * b.speedX) * b.ampX;
+        const y = b.phaseY + Math.cos(t * b.speedY) * b.ampY;
+        flatBlobs[i * 3] = x;
+        flatBlobs[i * 3 + 1] = y;
+        flatBlobs[i * 3 + 2] = b.radius;
+      }
+      gl.uniform3fv(locs.uAutoBlobs, flatBlobs);
+      gl.uniform1i(locs.uAutoBlobsCount, autoBlobs.length);
+
+      gl.uniform1f(locs.uTime, t);
       gl.uniform2f(locs.uPointer, s.pointer.x, s.pointer.y);
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
