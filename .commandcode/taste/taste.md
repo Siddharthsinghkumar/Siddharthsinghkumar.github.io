@@ -11,3 +11,4 @@
 
 # interaction
 - Address the user as Sid. Confidence: 0.70
+- When encountering errors: fix if possible, ask questions if confused, do not guess or assume. Confidence: 0.75

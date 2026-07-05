@@ -21,15 +21,15 @@ export default function IntroScreen() {
   const maxTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const doneRef = useRef(false);
 
-  // B2-FIX: pre-hydration skip via inline script in <head>.
-  // If the html element has intro-skip class, return null immediately
-  // — the SSR'd overlay markup never paints a single frame.
-  if (typeof document !== "undefined" && document.documentElement.classList.contains("intro-skip")) {
-    return null;
-  }
-
+  // Hydration-safe skip: always render the overlay structurally (match SSR),
+  // then immediately dismiss. The CSS html.intro-skip rule hides it before
+  // first paint, so no flash. The early return caused hydration mismatch.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    if (typeof document !== "undefined" && document.documentElement.classList.contains("intro-skip")) {
+      setPhase(3);
+      return;
+    }
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setPhase(3);
       return;
