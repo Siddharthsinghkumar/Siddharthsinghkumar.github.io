@@ -161,6 +161,17 @@ for (const [pageKey, html] of Object.entries(pages)) {
 }
 ok("all internal links resolve");
 
+// ── 8. Poster artifact (D45) — T10.7 claimed a poster that never existed ──
+console.log("[8] Poster artifact present (D45)");
+const posterSrc = join(root, "public", "poster-home.webp");
+const posterOut = join(out, "poster-home.webp");
+existsSync(posterSrc)
+  ? ok("public/poster-home.webp exists (source)")
+  : fail("public/poster-home.webp missing — run: node scripts/make-poster.mjs");
+existsSync(posterOut)
+  ? ok("out/poster-home.webp shipped")
+  : fail("out/poster-home.webp missing (build did not copy poster to out/)");
+
 // ────────────────────────────────────────────────────────────────────────────
 console.log(failures ? `\nGUARDS FAILED: ${failures} violation(s)` : "\nAll guards passed.");
 process.exit(failures ? 1 : 0);

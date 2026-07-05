@@ -5,7 +5,12 @@
 // SSR via cqi so no hydration jump. Falls back to static Space Grotesk on
 // reduced-motion / !pointer:fine.
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useCallback } from "react";
+
+// useLayoutEffect on the client (runs before paint → no CLS); useEffect on the
+// server (avoids the React useLayoutEffect-during-SSR console warning).
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 const dist = (a: { x: number; y: number }, b: { x: number; y: number }) => {
   const dx = b.x - a.x;
@@ -107,13 +112,18 @@ export default function TextPressure({
     setFitted(true);
   }, [chars, minFontSize]);
 
+  // Initial fit runs before paint (isomorphic layout effect) so the size change
+  // is part of initial layout, not a post-paint shift — kills home CLS (D48).
+  useIsomorphicLayoutEffect(() => {
+    fitToWidth();
+  }, [fitToWidth]);
+
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
     const debounced = () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(fitToWidth, 80);
     };
-    debounced();
     window.addEventListener("resize", debounced);
     return () => {
       window.removeEventListener("resize", debounced);

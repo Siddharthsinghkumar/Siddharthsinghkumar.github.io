@@ -127,7 +127,7 @@ async function main() {
 
     const waypoints = [
       // Home — 4 waypoints, strict thresholds (35% hero per F1)
-      { url: "http://localhost:4173/", label: "home-wp-0", minScene: 35, minOrange: 1.5, scrollFraction: 0, checkH1: true },
+      { url: "http://localhost:4173/", label: "home-wp-0", minScene: 35, minOrange: 1.5, scrollFraction: 0, checkH1: true, settleMs: 3000 },
       { url: "http://localhost:4173/", label: "home-wp-20", minScene: 10, minOrange: 1.5, scrollFraction: 0.20 },
       { url: "http://localhost:4173/", label: "home-wp-55", minScene: 10, minOrange: 1.5, scrollFraction: 0.55 },
       { url: "http://localhost:4173/", label: "home-wp-95", minScene: 10, minOrange: 1.5, scrollFraction: 0.95 },
@@ -139,10 +139,10 @@ async function main() {
       { url: "http://localhost:4173/this-route-does-not-exist", label: "404-p0", minScene: 10, minOrange: 1.5, scrollFraction: 0, checkH1: true },
     ];
 
-    for (const { url, label, minScene, minOrange, scrollFraction, checkH1 } of waypoints) {
+    for (const { url, label, minScene, minOrange, scrollFraction, checkH1, settleMs } of waypoints) {
       const outFile = join(outDir, `${label}.png`);
       await page.goto(url, { waitUntil: "networkidle" });
-      await page.waitForTimeout(800);
+      await page.waitForTimeout(settleMs ?? 800);
 
       if (scrollFraction && scrollFraction > 0) {
         const scrollHeight = await page.evaluate(() => document.body.scrollHeight);

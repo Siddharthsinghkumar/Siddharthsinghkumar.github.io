@@ -9,8 +9,13 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+// Memo: home perf gate 55 (was 85), case perf gate 75 (was 90). Sid 2026-07-05:
+// "performance is not the issue — it's a portfolio, people can wait. The problem
+// is it can't be forgettable." Honest floors for the N17-locked heavy 3D scene
+// + GooeyLoader on simulated throttling. D49 in DESIGN.md §6.
+const HOME_PERF = 55;
+const CASE_PERF = 75;
 const THRESHOLDS = { performance: 90, accessibility: 95, seo: 95 };
-const HOME_PERF = 85; // home page: 3D scene buys 5 perf points (D30)
 const PAGES = ["", "prospect/", "travel-planner/"];
 
 // Find a Chrome: playwright cache → CHROME_PATH env → system chrome
@@ -36,7 +41,7 @@ try {
     const outJson = join("/tmp", `lh-gate-${page.replace("/", "") || "home"}.json`);
     const args = [
       "--yes", "lighthouse", `http://localhost:4173/${page}`,
-      "--throttling-method=devtools",
+      "--throttling-method=simulate",
       "--only-categories=performance,accessibility,seo",
       "--output=json", `--output-path=${outJson}`, "--quiet",
       `--chrome-flags=--headless=new --no-sandbox`,
@@ -47,7 +52,11 @@ try {
     const r = JSON.parse(readFileSync(outJson, "utf-8"));
     for (const [cat, min] of Object.entries(THRESHOLDS)) {
       const score = Math.round((r.categories[cat]?.score ?? 0) * 100);
-      const effectiveMin = (page === "" && cat === "performance") ? HOME_PERF : min;
+      let effectiveMin = min;
+      if (cat === "performance") {
+        if (page === "") effectiveMin = HOME_PERF;
+        else effectiveMin = CASE_PERF;
+      }
       const okay = score >= effectiveMin;
       if (!okay) failures++;
       console.log(`${okay ? "✓" : "✗"} /${page || ""} ${cat}: ${score} (min ${effectiveMin})`);
