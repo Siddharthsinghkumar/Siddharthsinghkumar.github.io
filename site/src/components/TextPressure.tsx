@@ -1,9 +1,9 @@
 "use client";
 
-// TextPressure — donor from ui-component-2.md
-// Adapted per CLAUDE.md donor rule: skeleton from donor, skin from DESIGN.md, words from COPY.md.
-// Feature-flagged — decision gate: keep only if >=55fps at 6x CPU throttle on mobile.
-// If disabled, falls back to static Space Grotesk heading.
+// TextPressure — F2 fixed: space rendered as 0.35em inline-block spacer excluded
+// from variation; fit-to-width scaling after mount; overflow hidden wrapper;
+// SSR via cqi so no hydration jump. Falls back to static Space Grotesk on
+// reduced-motion / !pointer:fine.
 
 import { useEffect, useRef, useState, useCallback } from "react";
 
@@ -13,12 +13,7 @@ const dist = (a: { x: number; y: number }, b: { x: number; y: number }) => {
   return Math.sqrt(dx * dx + dy * dy);
 };
 
-const getAttr = (
-  distance: number,
-  maxDist: number,
-  minVal: number,
-  maxVal: number,
-) => {
+const getAttr = (distance: number, maxDist: number, minVal: number, maxVal: number) => {
   const val = maxVal - Math.abs((maxVal * distance) / maxDist);
   return Math.max(minVal, val + minVal);
 };
@@ -51,20 +46,19 @@ export default function TextPressure({
   minFontSize = 24,
 }: TextPressureProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const titleRef = useRef<HTMLParagraphElement>(null);
   const spansRef = useRef<(HTMLSpanElement | null)[]>([]);
   const mouseRef = useRef({ x: 0, y: 0 });
   const cursorRef = useRef({ x: 0, y: 0 });
   const enabledRef = useRef(false);
 
-  // null until measured — SSR uses container-query units so the server-rendered
-  // size matches the JS-measured size (no hydration jump → no CLS/LCP repaint).
   const [fontSize, setFontSize] = useState<number | null>(null);
   const [lineHeight, setLineHeight] = useState(1);
+  const [fitted, setFitted] = useState(false);
 
+  // Split chars — preserve spaces as-is for array but render them specially
   const chars = text.split("");
 
-  // Gate check ref — avoids conditional hook issues
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const isFine = window.matchMedia("(any-pointer: fine)").matches;
@@ -82,8 +76,7 @@ export default function TextPressure({
     window.addEventListener("mousemove", handleMouseMove);
 
     if (containerRef.current) {
-      const { left, top, width, height } =
-        containerRef.current.getBoundingClientRect();
+      const { left, top, width, height } = containerRef.current.getBoundingClientRect();
       mouseRef.current.x = left + width / 2;
       mouseRef.current.y = top + height / 2;
       cursorRef.current.x = mouseRef.current.x;
@@ -95,28 +88,38 @@ export default function TextPressure({
     };
   }, []);
 
-  const setSize = useCallback(() => {
+  // F2(b): fit-to-width — measure, scale down until fits, max 3 iterations
+  const fitToWidth = useCallback(() => {
     if (!containerRef.current || !titleRef.current) return;
-    const { width: containerW } = containerRef.current.getBoundingClientRect();
-    let newFontSize = containerW / (chars.length / 2);
-    newFontSize = Math.max(newFontSize, minFontSize);
-    setFontSize(newFontSize);
+    const containerW = containerRef.current.getBoundingClientRect().width;
+    const baseSize = containerW / ((chars.length - chars.filter(c => c === " ").length) / 1.8);
+    let trial = Math.max(baseSize, minFontSize);
+
+    for (let i = 0; i < 3; i++) {
+      titleRef.current.style.fontSize = `${trial}px`;
+      const actual = titleRef.current.getBoundingClientRect();
+      const margin = containerW * 0.02;
+      if (actual.width <= containerW - margin) break;
+      trial *= 0.88;
+    }
+    setFontSize(trial);
     setLineHeight(1);
-  }, [chars.length, minFontSize]);
+    setFitted(true);
+  }, [chars, minFontSize]);
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
-    const debouncedSetSize = () => {
+    const debounced = () => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(setSize, 100);
+      timeoutId = setTimeout(fitToWidth, 80);
     };
-    debouncedSetSize();
-    window.addEventListener("resize", debouncedSetSize);
+    debounced();
+    window.addEventListener("resize", debounced);
     return () => {
-      window.removeEventListener("resize", debouncedSetSize);
+      window.removeEventListener("resize", debounced);
       clearTimeout(timeoutId);
     };
-  }, [setSize]);
+  }, [fitToWidth]);
 
   useEffect(() => {
     if (!enabledRef.current) return;
@@ -133,16 +136,12 @@ export default function TextPressure({
         spansRef.current.forEach((span) => {
           if (!span) return;
           const rect = span.getBoundingClientRect();
-          const charCenter = {
-            x: rect.x + rect.width / 2,
-            y: rect.y + rect.height / 2,
-          };
+          const charCenter = { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
           const d = dist(mouseRef.current, charCenter);
           const wdth = width ? Math.floor(getAttr(d, maxDist, 5, 200)) : 100;
           const wght = weight ? Math.floor(getAttr(d, maxDist, 100, 900)) : 400;
           const italVal = italic ? getAttr(d, maxDist, 0, 1).toFixed(2) : "0";
           const alphaVal = alpha ? getAttr(d, maxDist, 0, 1).toFixed(2) : "1";
-
           span.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}, 'ital' ${italVal}`;
           if (alpha) span.style.opacity = alphaVal;
         });
@@ -156,15 +155,14 @@ export default function TextPressure({
   }, [width, weight, italic, alpha]);
 
   if (!TEXTPRESSURE_ENABLED) {
-    return <p className={`font-display text-[--text] ${className}`}>{text}</p>;
+    return <p className={`font-display text-[--text] ${className}`} aria-label={text}>{text}</p>;
   }
 
-  const dynamicClassName = [className, flex ? "flex" : "", stroke ? "stroke" : ""]
-    .filter(Boolean)
-    .join(" ");
+  const dynamicClassName = [className, flex ? "flex" : "", stroke ? "stroke" : ""].filter(Boolean).join(" ");
 
+  // F2(c): overflow hidden on wrapper
   return (
-    <div ref={containerRef} className="relative w-full" style={{ background: "transparent", height: "auto", containerType: "inline-size" }}>
+    <div ref={containerRef} className="relative w-full" style={{ background: "transparent", height: "auto", containerType: "inline-size", overflow: "hidden" }}>
       <p
         aria-label={text}
         ref={titleRef}
@@ -184,17 +182,32 @@ export default function TextPressure({
           color: "var(--text)",
         }}
       >
-        {chars.map((char, i) => (
-          <span
-            key={i}
-            ref={(el) => { spansRef.current[i] = el; }}
-            data-char={char}
-            className="inline-block"
-            style={{ color: "var(--text)" }}
-          >
-            {char}
-          </span>
-        ))}
+        {chars.map((char, i) => {
+          // F2(a): space gets a 0.35em inline-block spacer — excluded from font variation
+          if (char === " ") {
+            return (
+              <span
+                key={i}
+                className="inline-block"
+                style={{ width: "0.35em", color: "var(--text)" }}
+                aria-hidden="true"
+              >
+                {" "}
+              </span>
+            );
+          }
+          return (
+            <span
+              key={i}
+              ref={(el) => { spansRef.current[i] = el; }}
+              data-char={char}
+              className="inline-block"
+              style={{ color: "var(--text)" }}
+            >
+              {char}
+            </span>
+          );
+        })}
       </p>
     </div>
   );

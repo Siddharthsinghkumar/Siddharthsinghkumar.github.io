@@ -1,24 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useMemo } from "react";
+import { useRef, useMemo } from "react";
 import * as THREE from "three";
 
-// Glow sprite texture — radial gradient, orange on dark
-function createGlowTexture(innerColor: string, size = 128): HTMLCanvasElement {
-  const canvas = document.createElement("canvas");
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext("2d")!;
-  const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-  gradient.addColorStop(0, innerColor);
-  gradient.addColorStop(0.15, innerColor);
-  gradient.addColorStop(1, "transparent");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, size, size);
-  return canvas;
-}
-
-// Procedural materials/functions for the R3F scene
 export const COLORS = {
   bg: 0x0b0b0d,
   accent: 0xff5c1a,
@@ -29,71 +13,97 @@ export const COLORS = {
   ok: 0x2ea85a,
 };
 
-export const GLOW_TEXTURE = (() => {
-  const canvas = createGlowTexture("rgba(255, 92, 26, 1.0)");
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.needsUpdate = true;
-  return tex;
-})();
-
-export function useBg() {
-  return useMemo(() => new THREE.Color(COLORS.bg), []);
+// ── Glow texture factory ──────────────────────────────────
+export function createGlowTexture(innerColor = "rgba(255, 92, 26, 1.0)", size = 256) {
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+  const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  gradient.addColorStop(0, innerColor);
+  gradient.addColorStop(0.08, innerColor);
+  gradient.addColorStop(0.5, "rgba(255, 92, 26, 0.08)");
+  gradient.addColorStop(1, "transparent");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, size, size);
+  return canvas;
 }
 
-export function useAccent() {
-  return useMemo(() => new THREE.Color(COLORS.accent), []);
+let _glowTex: THREE.CanvasTexture | null = null;
+export function getGlowTexture() {
+  if (!_glowTex) {
+    _glowTex = new THREE.CanvasTexture(createGlowTexture());
+    _glowTex.needsUpdate = true;
+  }
+  return _glowTex;
 }
 
-// Core: icosahedron wireframe over dark inner solid
-export function Core({ position, radius = 1.6 }: { position: [number, number, number]; radius?: number }) {
-  const groupRef = useRef<THREE.Group>(null);
-  const accentColor = useAccent();
-
-  const glowTex = useMemo(() => GLOW_TEXTURE, []);
+// ── Core — F1: scaled to 45-55% frame height ──────────────
+// Radius pumped up to ~3.5 so it fills visible area at z=7 camera.
+export function Core({ radius = 3.5 }: { radius?: number }) {
+  const accentColor = useMemo(() => new THREE.Color(COLORS.accent), []);
+  const glowTex = useMemo(() => getGlowTexture(), []);
+  const segments = useMemo(() => new THREE.IcosahedronGeometry(radius, 2), [radius]);
+  const inner = useMemo(() => new THREE.IcosahedronGeometry(radius * 0.95, 2), [radius]);
+  const edges = useMemo(() => new THREE.EdgesGeometry(segments), [segments]);
 
   return (
-    <group ref={groupRef} position={position}>
-      {/* Dark solid inner — occludes back wireframe edges */}
+    <group>
+      {/* Dark solid inner */}
       <mesh>
-        <icosahedronGeometry args={[radius * 0.95, 2]} />
+        <primitive object={inner} attach="geometry" />
         <meshBasicMaterial color={COLORS.bg} />
       </mesh>
-      {/* Orange wireframe outer */}
+      {/* Orange wireframe */}
       <lineSegments>
-        <edgesGeometry args={[new THREE.IcosahedronGeometry(radius, 2)]} />
+        <primitive object={edges} attach="geometry" />
         <lineBasicMaterial color={accentColor} opacity={0.85} transparent />
       </lineSegments>
-      {/* Additive glow sprite behind core */}
-      <sprite position={[0, 0, -0.5]} scale={[radius * 4, radius * 4, 1]}>
-        <spriteMaterial map={glowTex} color={accentColor} opacity={0.22} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
+      {/* Large wide glow sprites */}
+      <SpriteGlow size={radius * 5} opacity={0.28} position={[0, 0, -0.3]} />
+      <SpriteGlow size={radius * 3.5} opacity={0.15} position={[radius * 0.6, radius * 0.3, 0.2]} />
+      <SpriteGlow size={radius * 3} opacity={0.12} position={[-radius * 0.4, -radius * 0.5, 0]} />
+    </group>
+  );
+}
+
+function SpriteGlow({ size, opacity, position }: { size: number; opacity: number; position: [number, number, number] }) {
+  const glowTex = getGlowTexture();
+  const accentColor = useMemo(() => new THREE.Color(COLORS.accent), []);
+  return (
+    <sprite position={position} scale={[size, size, 1]}>
+      <spriteMaterial map={glowTex} color={accentColor} opacity={opacity} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
+    </sprite>
+  );
+}
+
+// ── Grid floor — visible across lower third at WP-A ───────
+export function GridFloor() {
+  const gridGeo = useMemo(() => new THREE.PlaneGeometry(30, 20, 30, 20), []);
+  const edgesGeo = useMemo(() => new THREE.EdgesGeometry(gridGeo), [gridGeo]);
+
+  return (
+    <group position={[0, -6, -2]} rotation={[-Math.PI / 2, 0, 0]}>
+      <lineSegments>
+        <primitive object={edgesGeo} attach="geometry" />
+        <lineBasicMaterial color={COLORS.line} opacity={0.22} transparent />
+      </lineSegments>
+      {/* Accent glow bleeding onto the floor from below */}
+      <sprite position={[0, 0.1, 3]} scale={[18, 18, 1]}>
+        <spriteMaterial map={getGlowTexture()} color={new THREE.Color(COLORS.accent)} opacity={0.06} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
       </sprite>
     </group>
   );
 }
 
-// Grid plane — vast thin wireframe floor
-export function GridPlane() {
-  const gridSize = 14;
-  const divisions = 28;
-  const gridGeo = useMemo(() => new THREE.PlaneGeometry(gridSize, gridSize, divisions, divisions), [gridSize, divisions]);
-
-  return (
-    <lineSegments position={[0, -3.5, -2]} rotation={[-Math.PI / 2, 0, 0]}>
-      <edgesGeometry args={[gridGeo]} />
-      <lineBasicMaterial color={COLORS.line} opacity={0.18} transparent />
-    </lineSegments>
-  );
-}
-
-// Dust field — 1800 tiny particles
-export function DustField() {
-  const count = 1800;
+// ── Dust field — spans full frame with z-parallax layers ──
+export function DustField({ count = 2500 }: { count?: number }) {
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 14;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 6;
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 10;
+      arr[i * 3] = (Math.random() - 0.5) * 22;
+      arr[i * 3 + 1] = (Math.random() - 0.5) * 12;
+      arr[i * 3 + 2] = (Math.random() * 18) - 4;
     }
     return arr;
   }, [count]);
@@ -106,31 +116,81 @@ export function DustField() {
 
   return (
     <points>
-      <pointsMaterial color={COLORS.white} size={0.04} opacity={0.25} transparent depthWrite={false} />
-      <bufferGeometry {...geo} />
+      <primitive object={geo} attach="geometry" />
+      <pointsMaterial color={COLORS.white} size={0.05} opacity={0.3} transparent depthWrite={false} />
     </points>
   );
 }
 
-// Fog setup — returned as props for the Canvas
-export function fogConfig(): { fog: THREE.Fog } {
-  return { fog: new THREE.Fog(COLORS.bg, 6, 22) };
-}
-
-// Orbit nodes — small octahedrons for the stage ring
-export function StageNode({ position, index, _total = 6 }: { position: [number, number, number]; index: number; _total?: number }) {
-  const accentColor = useAccent();
-  const glowTex = useMemo(() => GLOW_TEXTURE, []);
+// ── Stage ring nodes ──────────────────────────────────────
+export function StageNodes({ radius = 5 }: { radius?: number }) {
+  const accentColor = useMemo(() => new THREE.Color(COLORS.accent), []);
+  const nodes = useMemo(() => {
+    const arr: [number, number, number][] = [];
+    for (let i = 0; i < 6; i++) {
+      const angle = (i / 6) * Math.PI * 2 + Math.PI / 6;
+      arr.push([Math.cos(angle) * radius, 0, Math.sin(angle) * radius]);
+    }
+    return arr;
+  }, [radius]);
 
   return (
-    <group position={position}>
-      <mesh>
-        <octahedronGeometry args={[0.15, 0]} />
-        <meshBasicMaterial color={accentColor} opacity={0.75} transparent />
-      </mesh>
-      <sprite scale={[0.7, 0.7, 1]}>
-        <spriteMaterial map={glowTex} color={accentColor} opacity={0.2} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
-      </sprite>
+    <group>
+      {nodes.map((pos, i) => (
+        <group key={i} position={pos}>
+          <mesh>
+            <octahedronGeometry args={[0.22, 0]} />
+            <meshBasicMaterial color={accentColor} opacity={0.85} transparent />
+          </mesh>
+          <sprite scale={[1.2, 1.2, 1]}>
+            <spriteMaterial map={getGlowTexture()} color={accentColor} opacity={0.3} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
+          </sprite>
+        </group>
+      ))}
     </group>
+  );
+}
+
+// ── Data stream particles — flowing along CatmullRom curves ──
+export function DataStream({ curve, count = 300, color = COLORS.accent, speed = 0.5, headSize = 2.5 }: {
+  curve: THREE.CatmullRomCurve3;
+  count?: number;
+  color?: number;
+  speed?: number;
+  headSize?: number;
+}) {
+  const segments = 100;
+  const positions = useMemo(() => {
+    const arr = new Float32Array(segments * 3);
+    for (let i = 0; i < segments; i++) {
+      const t = i / segments;
+      const p = curve.getPoint(t);
+      arr[i * 3] = p.x;
+      arr[i * 3 + 1] = p.y;
+      arr[i * 3 + 2] = p.z;
+    }
+    return arr;
+  }, [curve, segments]);
+
+  const geo = useMemo(() => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    return g;
+  }, [positions]);
+
+  const mat = useMemo(() => new THREE.PointsMaterial({
+    color,
+    size: 0.12,
+    opacity: 0.7,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  }), [color]);
+
+  return (
+    <points>
+      <primitive object={geo} attach="geometry" />
+      <primitive object={mat} attach="material" />
+    </points>
   );
 }

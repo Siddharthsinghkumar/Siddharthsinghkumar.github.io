@@ -10,6 +10,7 @@ import ContributionsDisplay from "@/components/ContributionsDisplay";
 import CssHeroAtmosphere from "@/components/CssHeroAtmosphere";
 import PaperInkLoader from "@/components/PaperInkLoader";
 import EngineLoader from "@/components/engine/EngineLoader";
+import TextPressure, { TEXTPRESSURE_ENABLED } from "@/components/TextPressure";
 import GridBackdrop from "@/components/GridBackdrop";
 import ChoreoReveal, { CascadeRows } from "@/components/ChoreoReveal";
 import contributions from "@/data/contributions.json";
@@ -45,9 +46,15 @@ export default function Home() {
 
         <div className="mx-auto max-w-[1200px] w-full">
           <ChoreoReveal variant="hero-item" heroIndex={0}>
-            <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[--muted] mb-4">
-              SIDDHARTH SINGH
-            </p>
+            {TEXTPRESSURE_ENABLED ? (
+              <div className="mb-6">
+                <TextPressure text="SIDDHARTH SINGH" className="text-[--text]" />
+              </div>
+            ) : (
+              <p className="font-display text-[clamp(3.5rem,10vw,8rem)] leading-none tracking-[-0.02em] text-[--text] mb-6" aria-label="SIDDHARTH SINGH">
+                SIDDHARTH SINGH
+              </p>
+            )}
           </ChoreoReveal>
           <ChoreoReveal variant="hero-item" heroIndex={1}>
             <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-8">

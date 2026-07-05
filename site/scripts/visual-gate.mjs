@@ -73,7 +73,7 @@ async function main() {
     const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 
     const waypoints = [
-      { url: "http://localhost:4173/", label: "home-wp-0", minScene: 18, minOrange: 1.5, scrollFraction: 0 },
+      { url: "http://localhost:4173/", label: "home-wp-0", minScene: 35, minOrange: 1.5, scrollFraction: 0 },
       { url: "http://localhost:4173/", label: "home-wp-20", minScene: 10, minOrange: 1.5, scrollFraction: 0.20 },
       { url: "http://localhost:4173/", label: "home-wp-55", minScene: 10, minOrange: 1.5, scrollFraction: 0.55 },
       { url: "http://localhost:4173/", label: "home-wp-95", minScene: 10, minOrange: 1.5, scrollFraction: 0.95 },
