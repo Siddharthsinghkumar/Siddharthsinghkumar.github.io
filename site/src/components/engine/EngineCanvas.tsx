@@ -110,8 +110,7 @@ function SceneInner({ coarse }: { coarse: boolean }) {
 
   // ── Init camera ─────────────────────────────────────────
   useEffect(() => {
-    scene.fog = new THREE.Fog(COLORS.bg, 6, 26);
-    scene.background = new THREE.Color(COLORS.bg);
+    scene.fog = new THREE.FogExp2(COLORS.bg, 0.012);
     camera.position.copy(WAYPOINTS[0].camPos);
     camera.lookAt(WAYPOINTS[0].camLook);
   }, [scene, camera]);
@@ -188,20 +187,22 @@ function SceneInner({ coarse }: { coarse: boolean }) {
       });
     }
 
+    // T14: satellite only at waypoint C (p 0.28–0.48), not D
     // Satellite visibility: show around waypoints C-D (p 0.28–0.72)
     if (satelliteRef.current) {
-      satelliteRef.current.visible = p > 0.28 && p < 0.72;
+      satelliteRef.current.visible = p > 0.28 && p < 0.48;
     }
 
-    // Core rotation + breathing (intensifies at waypoint E)
+    // Core rotation + breathing — always fast 3s pulse (T14: removed slow 8s)
     if (coreRef.current) {
       coreRef.current.rotation.x += 0.006 * delta;
       coreRef.current.rotation.y += 0.01 * delta;
-      // E-phase: intensified pulse
-      const eIntensity = p >= 0.72 ? (p < 0.95 ? (p - 0.72) / 0.23 : 1) : 0;
-      const baseBreathe = 1 + 0.015 * Math.sin(t * (Math.PI * 2 / 8));
-      const ePulse = 1 + 0.04 * Math.sin(t * (Math.PI * 2 / 3));
-      const breathe = baseBreathe * (1 - eIntensity) + ePulse * eIntensity;
+      // T14: always fast pulse, no slow 8s breath
+      // const eIntensity = p >= 0.72 ? (p < 0.95 ? (p - 0.72) / 0.23 : 1) : 0;
+      // const baseBreathe = 1 + 0.015 * Math.sin(t * (Math.PI * 2 / 8));
+      // const ePulse = 1 + 0.04 * Math.sin(t * (Math.PI * 2 / 3));
+      // const breathe = baseBreathe * (1 - eIntensity) + ePulse * eIntensity;
+      const breathe = 1 + 0.04 * Math.sin(t * (Math.PI * 2 / 3));
       coreRef.current.scale.setScalar(breathe);
     }
 
@@ -230,8 +231,8 @@ function SceneInner({ coarse }: { coarse: boolean }) {
         <Core radius={3.5} />
       </group>
 
-      {/* Stage ring — spec radius ~2.6 */}
-      <StageNodes radius={2.6} />
+      {/* T14 temp: Stage ring moved outside core (radius 5.5 > core 3.5) */}
+      <StageNodes radius={5.5} />
 
       {/* Data streams — ~4,500 total; half on coarse */}
       <group ref={streamGroupRef}>
@@ -295,7 +296,7 @@ export default function EngineCanvas({ className = "", deviceProfile }: EngineCa
       <Canvas
         gl={{
           antialias: !coarse,
-          alpha: false,
+          alpha: true,
           powerPreference: coarse ? "low-power" : "high-performance",
           stencil: false,
           depth: true,
