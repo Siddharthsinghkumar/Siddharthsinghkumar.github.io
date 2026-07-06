@@ -51,3 +51,4 @@ All responses must start with my name. My name is **Sid**.
 5. Reference websites (1-5) are design inspiration — mine for patterns, not copy.
 6. UI component files (1-3) contain React Bits integration prompts — follow the exact prompt format.
 7. Deploy via Coolify (self-hosted), not Vercel — see `howtodeploy.md`.
+8. Commit each completed task separately with descriptive messages. Never mention any AI/agent (Claude, Deepseek, etc.) in commit messages. After all tasks complete, check `git status` to ensure nothing is left uncommitted and everything in `.gitignore` is properly ignored.
