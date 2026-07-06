@@ -221,11 +221,11 @@ export function StageNodes({ radius = 5 }: { radius?: number }) {
       {nodes.map((pos, i) => (
         <group key={i} position={pos} ref={(el) => { nodeRefs.current[i] = el; }}>
           <mesh>
-            <octahedronGeometry args={[0.22, 0]} />
+            <octahedronGeometry args={[0.66, 0]} />
             <meshBasicMaterial color={accentColor} opacity={0.85} transparent />
           </mesh>
           <sprite scale={[1.4, 1.4, 1]}>
-            <spriteMaterial map={getGlowTexture() || undefined} color={accentColor} opacity={0.3} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
+            <spriteMaterial map={getGlowTexture() || undefined} color={new THREE.Color(COLORS.accent)} opacity={0.2} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
           </sprite>
         </group>
       ))}
@@ -352,7 +352,6 @@ export function Satellite({ position, groupRef: externalRef }: {
 
   return (
     <group ref={internalRef} position={position} visible={true}>
-      {/* Router node — central octahedron, ~14% core scale */}
       <mesh>
         <octahedronGeometry args={[0.49, 0]} />
         <meshBasicMaterial color={accentColor} opacity={0.9} transparent />
@@ -361,15 +360,13 @@ export function Satellite({ position, groupRef: externalRef }: {
         <spriteMaterial map={getGlowTexture() || undefined} color={accentColor} opacity={0.35} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
       </sprite>
 
-      {/* 2 orbiting fallback nodes */}
       {[accentColor, whiteColor].map((col, i) => (
         <mesh key={i} ref={(el) => { orbitRefs.current[i] = el; }}>
           <octahedronGeometry args={[0.18, 0]} />
-          <meshBasicMaterial color={col} opacity={0.8} transparent />
+          <meshBasicMaterial color={col} opacity={1.0} />
         </mesh>
       ))}
 
-      {/* Orbital ring — thin wireframe */}
       <lineSegments>
         <edgesGeometry args={[new THREE.TorusGeometry(1.6, 0.02, 8, 64)]} />
         <lineBasicMaterial color={COLORS.line} opacity={0.4} transparent />
