@@ -1,12 +1,8 @@
 "use client";
 
 // Scroll choreography — staged, masked entrances.
-// Replaces the previous uniform fade-up with Glyphic-grade sequenced reveals:
-// - Hero: name→headline→sub→CTAs staggered 80ms (transform/clip only, h1 opacity=1)
-// - Headings: clip-path inset reveal, 500ms --ease
-// - Body: fade-up 60ms stagger per child
-// - Rows: cascade 40ms per row
-// - Reduced-motion: all content visible instantly (no animations)
+// T14 FIX: Once content is revealed, it stays revealed — even across React remounts.
+// Uses DOM data-attribute to persist visibility state through parent re-renders.
 
 import { useEffect, useRef, useState, type ReactNode, Children } from "react";
 
@@ -30,6 +26,7 @@ export default function ChoreoReveal({
 }: ChoreoProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const wasRevealed = useRef(false);
   const heroDelay = heroIndex * 80;
 
   useEffect(() => {
@@ -42,11 +39,23 @@ export default function ChoreoReveal({
       return;
     }
 
+    // Restore visibility if this DOM node was already revealed in a
+    // previous render cycle — survives React Strict Mode double-mount.
+    if (el.dataset.revealed === "true") {
+      setVisible(true);
+      wasRevealed.current = true;
+      return;
+    }
+
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           const delay = variant === "hero-item" ? heroDelay : 0;
-          setTimeout(() => setVisible(true), delay);
+          setTimeout(() => {
+            setVisible(true);
+            wasRevealed.current = true;
+            el.dataset.revealed = "true";
+          }, delay);
           obs.unobserve(el);
         }
       },
