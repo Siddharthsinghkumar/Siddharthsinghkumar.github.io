@@ -8,7 +8,7 @@ import SkillsRow from "@/components/SkillsRow";
 import JsonLd from "@/components/JsonLd";
 import ContributionsDisplay from "@/components/ContributionsDisplay";
 import CssHeroAtmosphere from "@/components/CssHeroAtmosphere";
-import PaperInkLoader from "@/components/PaperInkLoader";
+import PageBackground from "@/components/PageBackground";
 import EngineLoader from "@/components/engine/EngineLoader";
 import IntroScreen from "@/components/IntroScreen";
 import TextPressure, { TEXTPRESSURE_ENABLED } from "@/components/TextPressure";
@@ -35,8 +35,8 @@ export default function Home() {
       <IntroScreen />
       {/* ── Hero ────────────────────────────────────────────── */}
       <section className="relative min-h-[100svh] flex flex-col justify-center px-4 overflow-hidden">
+        <PageBackground image="/test/pic_idea.png" />
         <CssHeroAtmosphere />
-        <PaperInkLoader />
         <EngineLoader />
         {/* F8: radial scrim behind hero text — ≤30% darkening for legibility */}
         <div
@@ -54,11 +54,11 @@ export default function Home() {
           }}
         />
 
-        <div className="mx-auto max-w-[1200px] w-full">
+        <div className="mx-auto max-w-[1200px] w-full relative z-[1]">
           <ChoreoReveal variant="hero-item" heroIndex={0}>
             <Link
-              href="/about"
-              aria-label="About Siddharth Singh"
+              href="/"
+              aria-label="Siddharth Singh — AI Backend Engineer"
               className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-[--accent] focus-visible:outline-offset-4"
               style={{ color: "inherit", textDecoration: "none" }}
             >
@@ -94,10 +94,10 @@ export default function Home() {
           </ChoreoReveal>
           <ChoreoReveal variant="hero-item" heroIndex={4}>
             <div className="flex flex-wrap gap-3">
-              <Button href="mailto:siddharthsingh8418@gmail.com">
+              <Button href="mailto:siddharthsingh8418@gmail.com" className="border-white text-white border-2">
                 Email me
               </Button>
-              <Button variant="ghost" href="/resume-siddharth-singh.pdf">
+              <Button variant="ghost" href="/resume-siddharth-singh.pdf" className="border-white text-white border-2 bg-white/10">
                 Resume ↓
               </Button>
             </div>
@@ -147,7 +147,7 @@ export default function Home() {
           <span className="text-[--line]">·</span>
           <span>5 COMPONENTS</span>
         </div>
-        <Button variant="ghost" href="/prospect">
+        <Button variant="ghost" href="/prospect" className="border-white text-white border-2 bg-white/10 z-10 relative">
           Read the system breakdown →
         </Button>
       </Section>
@@ -182,7 +182,7 @@ export default function Home() {
           <span className="text-[--line]">·</span>
           <span>SSE STREAMING</span>
         </div>
-        <Button variant="ghost" href="/travel-planner">
+        <Button variant="ghost" href="/travel-planner" className="border-white text-white border-2 bg-white/10 z-10 relative">
           Read the system breakdown →
         </Button>
       </Section>
@@ -194,7 +194,7 @@ export default function Home() {
 
         <CascadeRows staggerMs={40}>
           <div className="mt-8 max-w-[720px]">
-            <TimelineEntry period="2026 – now" role="Lead Full-Stack Engineer, Sindhey Pathology">
+            <TimelineEntry period="2026 – now" role="Lead Full-Stack Engineer, Sindhey Pathology" href="https://www.sindheypathology.com">
               Took a diagnostic lab from zero to a live booking platform{" "}
               <strong className="font-medium text-[--text]">in six weeks</strong>:
               Next.js 16, Supabase, Cashfree payments, WhatsApp notifications,
@@ -202,19 +202,19 @@ export default function Home() {
             </TimelineEntry>
           </div>
           <div>
-            <TimelineEntry period="2026 – now" role="AI Backend Developer, LLM Travel Planner">
+            <TimelineEntry period="2026 – now" role="AI Backend Developer, LLM Travel Planner" href="/travel-planner">
               Agent memory, model routing, circuit breaking, SSE streaming,
               local-inference fallback.
             </TimelineEntry>
           </div>
           <div>
-            <TimelineEntry period="2026" role="Lead Developer (contract), Play-School Management Platform">
+            <TimelineEntry period="2026" role="Lead Developer (contract), Play-School Management Platform" href="/projects">
               Multi-stage admissions pipeline CRM, UPI payments, parent daily-diary
               with real-time notifications.
             </TimelineEntry>
           </div>
           <div>
-            <TimelineEntry period="2023–24" role="Lead Developer, Autonomous Firefighting Robot">
+            <TimelineEntry period="2023–24" role="Lead Developer, Autonomous Firefighting Robot" href="https://github.com/Siddharthsinghkumar/ai-travel-planner-agent">
               FPGA + Arduino master-slave architecture, CNN flame verification,
               sub-100ms deterministic response, autonomous navigation.
             </TimelineEntry>
@@ -267,7 +267,7 @@ export default function Home() {
                 href="https://www.ijfmr.com/research-paper.php?id=32630"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[--accent] hover:underline"
+                className="text-[--accent] hover:underline link-pulse-hover link-pulse-auto"
               >
                 Autonomous Firefighting Vehicle
               </a>
@@ -280,7 +280,7 @@ export default function Home() {
               href="https://github.com/interviewstreet/hiring-agent/pulls?q=is%3Apr+author%3ASiddharthsinghkumar"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[--accent] hover:underline"
+              className="text-[--accent] hover:underline link-pulse-hover link-pulse-auto"
             >
               interviewstreet/hiring-agent
             </a>
@@ -298,40 +298,9 @@ export default function Home() {
 
       {/* ── Contact (inline CTA before footer) ──────────────── */}
       <Section className="border-t border-[--line]">
-        <h2 className="font-display text-[clamp(1.953rem,4vw,2.441rem)] leading-tight text-[--text] mb-4">
-          The next system could be yours.
-        </h2>
-        <p className="text-[--muted] text-[clamp(1.25rem,2.5vw,1.563rem)] max-w-[60ch] mb-8">
-          I&rsquo;m open to AI backend roles — India or remote, full-time or
-          contract. Email gets answered fastest.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <Button href="mailto:siddharthsingh8418@gmail.com">
-            siddharthsingh8418@gmail.com
-          </Button>
-          <Button variant="ghost" href="/resume-siddharth-singh.pdf">
-            Resume ↓
-          </Button>
-        </div>
-
-        <div className="flex flex-wrap gap-x-6 gap-y-2 mt-8 text-[--muted]">
-          <a
-            href="https://github.com/Siddharthsinghkumar"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-[11px] uppercase tracking-[0.08em] hover:text-[--accent] transition-colors"
-          >
-            GitHub
-          </a>
-          <a
-            href="https://www.linkedin.com/in/siddharth-singh-735340296"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-[11px] uppercase tracking-[0.08em] hover:text-[--accent] transition-colors"
-          >
-            LinkedIn
-          </a>
-        </div>
+        <Button variant="ghost" href="/knowme" className="border-white text-white border-2 bg-white/10 z-10 relative">
+          Know Me →
+        </Button>
       </Section>
     </>
   );
