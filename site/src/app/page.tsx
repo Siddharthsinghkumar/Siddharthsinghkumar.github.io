@@ -7,8 +7,6 @@ import TimelineEntry from "@/components/TimelineEntry";
 import SkillsRow from "@/components/SkillsRow";
 import JsonLd from "@/components/JsonLd";
 import ContributionsDisplay from "@/components/ContributionsDisplay";
-import CssHeroAtmosphere from "@/components/CssHeroAtmosphere";
-import PageBackground from "@/components/PageBackground";
 import EngineLoader from "@/components/engine/EngineLoader";
 import IntroScreen from "@/components/IntroScreen";
 import TextPressure, { TEXTPRESSURE_ENABLED } from "@/components/TextPressure";
@@ -34,9 +32,8 @@ export default function Home() {
       <JsonLd />
       <IntroScreen />
       {/* ── Hero ────────────────────────────────────────────── */}
-      <section className="relative min-h-[100svh] flex flex-col justify-center px-4 overflow-hidden z-10">
-        <PageBackground image="/test/pic_idea.png" />
-        <CssHeroAtmosphere />
+      {/* Layer 0 & 1 skipped: no PageBackground or CssHeroAtmosphere in hero */}
+      <section className="relative min-h-[100svh] flex flex-col justify-center px-4">
         <EngineLoader />
         {/* F8: radial scrim behind hero text — ≤30% darkening for legibility */}
         <div
@@ -54,7 +51,7 @@ export default function Home() {
           }}
         />
 
-        <div className="mx-auto max-w-[1200px] w-full relative z-[1]">
+        <div className="mx-auto max-w-[1200px] w-full relative z-[20]">
           <ChoreoReveal variant="hero-item" heroIndex={0}>
             <Link
               href="/"

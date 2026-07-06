@@ -40,7 +40,7 @@ export default function Nav() {
       {scrolled && (
         <div className="absolute inset-0 z-[-1] overflow-hidden pointer-events-none">
           <FlutedGlass
-            colorBack="rgba(0,0,0,0.92)"
+            colorBack="rgba(0,0,0,0.70)"
             colorShadow="rgba(255,89,0,0.31)"
             colorHighlight="rgb(232, 232, 232)"
             size={0.62}
