@@ -33,7 +33,8 @@ export default function Home() {
       <IntroScreen />
       {/* ── Hero ────────────────────────────────────────────── */}
       {/* Layer 0 & 1 skipped: no PageBackground or CssHeroAtmosphere in hero */}
-      <section className="relative min-h-[100svh] flex flex-col justify-center px-4">
+      {/* z-10 on section creates stacking context so children (text z-[20]) sit above fixed z-0 canvas */}
+      <section className="relative min-h-[100svh] flex flex-col justify-center px-4 z-10">
         <EngineLoader />
         {/* F8: radial scrim behind hero text — ≤30% darkening for legibility */}
         <div
