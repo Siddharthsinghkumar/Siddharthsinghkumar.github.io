@@ -34,7 +34,7 @@ export default function Home() {
       <JsonLd />
       <IntroScreen />
       {/* ── Hero ────────────────────────────────────────────── */}
-      <section className="relative min-h-[100svh] flex flex-col justify-center px-4 overflow-hidden">
+      <section className="relative min-h-[100svh] flex flex-col justify-center px-4 overflow-hidden z-10">
         <PageBackground image="/test/pic_idea.png" />
         <CssHeroAtmosphere />
         <EngineLoader />
