@@ -32,7 +32,7 @@ export default function Home() {
       <JsonLd />
       <IntroScreen />
       {/* ── Hero ────────────────────────────────────────────── */}
-      {/* Layer 0 & 1 skipped: no PageBackground or CssHeroAtmosphere in hero */}
+      {/* Layers 0 & 1: body bg + noscript poster (layout.tsx) — nothing rendered here */}
       {/* z-10 on section creates stacking context so children (text z-[20]) sit above fixed z-0 canvas */}
       <section className="relative min-h-[100svh] flex flex-col justify-center px-4 z-[3]">
         <EngineLoader />
