@@ -181,6 +181,15 @@ function SceneInner({ coarse }: { coarse: boolean }) {
       signalEngineReady();
     }
 
+    // Aspect-adaptive FOV: wider field of view on narrow viewports
+    // to keep the core in frame. Desktop 16:9 keeps fov=45.
+    const aspect = window.innerWidth / window.innerHeight;
+    if (camera instanceof THREE.PerspectiveCamera) {
+      const targetFov = aspect < 1.2 ? 45 + (1.2 - aspect) * 30 : 45;
+      camera.fov += (targetFov - camera.fov) * 0.02;
+      camera.updateProjectionMatrix();
+    }
+
     // Lerp smoothP toward scrollP
     smoothP.current += (scrollP.current - smoothP.current) * 0.06;
 
