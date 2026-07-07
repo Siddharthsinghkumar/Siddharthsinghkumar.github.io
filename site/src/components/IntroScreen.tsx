@@ -10,7 +10,7 @@ import { useEffect, useState, useRef } from "react";
 import DecryptedText from "./DecryptedText";
 import { engineReady, onEngineProgress, reportProgress } from "./engine/engine-ready";
 
-const MAX_WAIT = 2500;
+const MAX_WAIT = 10000;
 
 export default function IntroScreen() {
   const [phase, setPhase] = useState(0); // 0: black, 1: loading, 2: exiting, 3: done
@@ -61,8 +61,19 @@ export default function IntroScreen() {
     // Maximum wait failsafe
     maxTimerRef.current = setTimeout(() => { if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); } }, MAX_WAIT);
 
-    // Wait for real engine ready; exit as soon as it fires
-    engineReady.then(() => { if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); } });
+    // Wait for real engine ready; enforce minimum 1000ms display time
+    engineReady.then(() => {
+      if (!doneRef.current) {
+        const elapsed = Date.now() - startRef.current;
+        const delay = Math.max(0, 1000 - elapsed);
+        setTimeout(() => {
+          if (!doneRef.current) {
+            phase2();
+            cancelAnimationFrame(rafId);
+          }
+        }, delay);
+      }
+    });
 
     const tick = () => {
       if (doneRef.current) return;
@@ -91,6 +102,17 @@ export default function IntroScreen() {
       if (maxTimerRef.current) clearTimeout(maxTimerRef.current);
     };
   }, []);
+
+  // Scroll lock effect (Layer 7 requirement)
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      if (phase < 3) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "";
+      }
+    }
+  }, [phase]);
 
   // Phase 2: exiting — overlay fades out
   useEffect(() => {
