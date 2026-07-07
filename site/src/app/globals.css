@@ -260,3 +260,14 @@ a.hover-line {
 a.hover-line:hover {
   background-size: 100% 1px;
 }
+
+/* ── 44px touch target expansion ──────────────────────── */
+.expanded-hit-area {
+  position: relative;
+}
+.expanded-hit-area::before {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  pointer-events: auto;
+}

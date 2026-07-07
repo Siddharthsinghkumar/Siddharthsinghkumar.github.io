@@ -57,10 +57,10 @@ export default function KnowMeClient() {
           </div>
 
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-[--muted]">
-            <a href="https://github.com/Siddharthsinghkumar" target="_blank" rel="noopener noreferrer" className="font-mono text-[13px] uppercase tracking-[0.08em] hover:text-[--accent] transition-colors link-pulse-hover link-pulse-auto">
+            <a href="https://github.com/Siddharthsinghkumar" target="_blank" rel="noopener noreferrer" className="font-mono text-[13px] uppercase tracking-[0.08em] hover:text-[--accent] transition-colors link-pulse-hover link-pulse-auto expanded-hit-area">
               GitHub
             </a>
-            <a href="https://www.linkedin.com/in/siddharth-singh-735340296" target="_blank" rel="noopener noreferrer" className="font-mono text-[13px] uppercase tracking-[0.08em] hover:text-[--accent] transition-colors link-pulse-hover link-pulse-auto">
+            <a href="https://www.linkedin.com/in/siddharth-singh-735340296" target="_blank" rel="noopener noreferrer" className="font-mono text-[13px] uppercase tracking-[0.08em] hover:text-[--accent] transition-colors link-pulse-hover link-pulse-auto expanded-hit-area">
               LinkedIn
             </a>
           </div>

@@ -87,14 +87,14 @@ export default function Nav() {
 
   return (
     <>
-      {/* Layer 5.1: Nav background effects slot */}
-      <div className="fixed top-0 left-0 right-0 z-[40] h-16 pointer-events-none overflow-hidden">
+      <div className="fixed top-0 left-0 right-0 z-[40] h-16 pointer-events-none overflow-hidden" style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
         <NavRipple ripples={ripples} />
       </div>
 
       <nav
         ref={navRef}
         className="fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-[300ms] ease-[--ease] border-b border-[--line]"
+        style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
         <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-4 relative">
           {/* Wordmark */}
@@ -174,8 +174,7 @@ export default function Nav() {
             <Button
               variant="primary"
               href="/resume-siddharth-singh.pdf"
-              linkPulse={false}
-              className="text-[10px] xs:text-[11px] px-2 xs:px-3 py-1.5 whitespace-nowrap"
+              className="text-[10px] xs:text-[11px] px-2 xs:px-3 py-1.5 whitespace-nowrap expanded-hit-area"
             >
               Resume ↓
             </Button>

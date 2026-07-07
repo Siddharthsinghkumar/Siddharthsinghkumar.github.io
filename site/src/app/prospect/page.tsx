@@ -209,9 +209,14 @@ export default function ProspectPage() {
             Resume ↓
           </Button>
         </div>
-        <Button variant="ghost" href="/travel-planner">
-          Travel Planner Agent →
-        </Button>
+        <div className="flex justify-between items-center gap-4">
+          <Button href="mailto:siddharthsingh8418@gmail.com?subject=Prospect%20System%20Inquiry">
+            Want your own version?
+          </Button>
+          <Button variant="ghost" href="/travel-planner">
+            Travel Planner Agent →
+          </Button>
+        </div>
       </Section>
     </>
   );

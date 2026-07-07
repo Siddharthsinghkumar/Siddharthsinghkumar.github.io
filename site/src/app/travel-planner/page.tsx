@@ -158,9 +158,14 @@ export default function TravelPlannerPage() {
             Resume ↓
           </Button>
         </div>
-        <Button variant="ghost" href="/prospect">
-          Prospect →
-        </Button>
+        <div className="flex justify-between items-center gap-4">
+          <Button href="mailto:siddharthsingh8418@gmail.com?subject=Travel%20Planner%20Agent%20Inquiry">
+            Want your own version?
+          </Button>
+          <Button variant="ghost" href="/prospect">
+            Prospect →
+          </Button>
+        </div>
       </Section>
     </>
   );

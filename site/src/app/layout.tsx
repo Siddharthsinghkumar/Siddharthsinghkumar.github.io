@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
+import type { Viewport } from "next";
 import Nav from "@/components/Nav";
 import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
@@ -52,6 +53,12 @@ export const metadata: Metadata = {
     images: [{ url: "/og/home.png", width: 1200, height: 630 }],
   },
   twitter: { card: "summary_large_image" },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
