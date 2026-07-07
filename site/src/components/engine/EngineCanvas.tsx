@@ -3,7 +3,7 @@
 import { useRef, useMemo, useEffect, useCallback, useState } from "react";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { Core, GridFloor, DustField, StageNodes, DataStream, Satellite, getGlowTexture, COLORS } from "./SceneObjects";
+import { Core, GridFloor, DustField, StageNodes, Satellite, getGlowTexture, COLORS } from "./SceneObjects";
 import { signalEngineReady } from "./engine-ready";
 
 export type DeviceProfile = {
@@ -12,13 +12,13 @@ export type DeviceProfile = {
   isCoarse: boolean;
 };
 
+/*
 // ── Build stream curves — 5 orange + 2 grey-white = 7 streams, 70% orange per spec ──
 // Plus exit stream: flows from core downward-forward, brighter (sorted output)
 function buildStreamCurves(): { curve: THREE.CatmullRomCurve3; color: number; isExit: boolean }[] {
   const accent = COLORS.accent;
   const grey = COLORS.white;
   const raw = [
-    // 5 orange streams entering from edges
     { from: [-10, 6, -3], mid: [-3, 1.5, 0], to: [0, 0.2, 0.5], color: accent },
     { from: [8, 5, -4], mid: [2, 1.8, -1], to: [-0.3, -0.1, 0.3], color: accent },
     { from: [-7, -5, 2], mid: [-2, -1.5, 0.5], to: [0.2, 0, -0.2], color: accent },
@@ -27,7 +27,7 @@ function buildStreamCurves(): { curve: THREE.CatmullRomCurve3; color: number; is
     // 2 grey-white streams
     { from: [-9, 1, -5], mid: [-2.5, 0.5, -1.5], to: [0, 0, 0.1], color: grey },
     { from: [2, -6, 3], mid: [-0.5, -2.5, 1], to: [0.1, -0.1, -0.3], color: grey },
-    // Exit stream — brighter, core → forward-down
+    // Exit stream
     { from: [0, -0.3, 1], mid: [1.5, -2, 4], to: [4, -5, 8], color: accent },
   ];
   return raw.map(({ from, mid, to, color }) => ({
@@ -40,6 +40,7 @@ function buildStreamCurves(): { curve: THREE.CatmullRomCurve3; color: number; is
     isExit: from[0] === 0 && from[1] === -0.3 && from[2] === 1,
   }));
 }
+*/
 
 // ── Waypoint camera config ────────────────────────────────
 interface Waypoint {
@@ -70,7 +71,7 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
 function SceneInner({ coarse }: { coarse: boolean }) {
   const { scene, camera } = useThree();
   const coreRef = useRef<THREE.Group>(null);
-  const streamGroupRef = useRef<THREE.Group>(null);
+  // const streamGroupRef = useRef<THREE.Group>(null);
   const sceneGroupRef = useRef<THREE.Group>(null);
   const gridRef = useRef<THREE.Group>(null);
   const satelliteRef = useRef<THREE.Group>(null);
@@ -81,7 +82,7 @@ function SceneInner({ coarse }: { coarse: boolean }) {
   const pointerNorm = useRef({ x: 0, y: 0 });
   const isFine = useRef(!coarse);
 
-  const streamDefs = useMemo(() => buildStreamCurves(), []);
+  // const streamDefs = useMemo(() => buildStreamCurves(), []);
   const glowTex = useMemo(() => getGlowTexture(), []);
   const accentColor = useMemo(() => new THREE.Color(COLORS.accent), []);
 
@@ -172,6 +173,7 @@ function SceneInner({ coarse }: { coarse: boolean }) {
 
     // Scene opacity blend — applies to grid (LineSegments) + stream particles
     const sceneOpacity = wpA.sceneOpacity + (wpB.sceneOpacity - wpA.sceneOpacity) * blend;
+    /*
     if (streamGroupRef.current) {
       streamGroupRef.current.children.forEach((child) => {
         if (child instanceof THREE.Points && child.material instanceof THREE.ShaderMaterial) {
@@ -179,6 +181,7 @@ function SceneInner({ coarse }: { coarse: boolean }) {
         }
       });
     }
+    */
     if (gridRef.current) {
       gridRef.current.children.forEach((child) => {
         if (child instanceof THREE.LineSegments) {
@@ -187,10 +190,26 @@ function SceneInner({ coarse }: { coarse: boolean }) {
       });
     }
 
-    // T14: satellite only at waypoint C (p 0.28–0.48), not D
-    // Satellite visibility: show around waypoints C-D (p 0.28–0.72)
+    // Satellite visibility: show around waypoints B-D (p 0.20–0.50)
+    // Smooth fade-in: p 0.20–0.26, fade-out: p 0.44–0.50
     if (satelliteRef.current) {
-      satelliteRef.current.visible = p > 0.28 && p < 0.48;
+      const satVisible = p > 0.20 && p < 0.50;
+      satelliteRef.current.visible = satVisible;
+      
+      if (satVisible) {
+        let satOpacity = 1;
+        if (p < 0.26) satOpacity = Math.max(0, (p - 0.20) / 0.06);
+        else if (p > 0.44) satOpacity = Math.max(0, (0.50 - p) / 0.06);
+        
+        satelliteRef.current.traverse((child: any) => {
+          if (child.material) {
+            if (child.userData.baseOpacity === undefined) {
+              child.userData.baseOpacity = child.material.opacity;
+            }
+            child.material.opacity = child.userData.baseOpacity * satOpacity;
+          }
+        });
+      }
     }
 
     // Core rotation + breathing — always fast 3s pulse (T14: removed slow 8s)
@@ -206,6 +225,7 @@ function SceneInner({ coarse }: { coarse: boolean }) {
       coreRef.current.scale.setScalar(breathe);
     }
 
+    /*
     // Waypoint E p>0.95: emit bright stream toward camera
     const brightStreamIdx = 7; // exit/TOWARD stream
     if (streamGroupRef.current && streamGroupRef.current.children[brightStreamIdx]) {
@@ -214,6 +234,7 @@ function SceneInner({ coarse }: { coarse: boolean }) {
       const mat = (exitStream.material as unknown) as THREE.ShaderMaterial;
       if (mat.uniforms) mat.uniforms.uOpacity.value = eFade;
     }
+    */
 
     // p > 0.95: slow drift hold
     if (p > 0.95) {
@@ -231,10 +252,11 @@ function SceneInner({ coarse }: { coarse: boolean }) {
         <Core radius={3.5} />
       </group>
 
-      {/* T14 temp: Stage ring moved outside core (radius 5.5 > core 3.5) */}
-      <StageNodes radius={5.5} />
+      {/* Stage ring */}
+      <StageNodes radius={3.85} />
 
-      {/* Data streams — ~4,500 total; half on coarse */}
+      {/* DataStream disabled — Sid: "don't like it, comment out in case I change my mind" */}
+      {/*
       <group ref={streamGroupRef}>
         {streamDefs.map((def, i) => (
           <DataStream
@@ -247,6 +269,7 @@ function SceneInner({ coarse }: { coarse: boolean }) {
           />
         ))}
       </group>
+      */}
 
       {/* Satellite system — visible around waypoint C */}
       <Satellite position={[-8, 0.8, 3.5]} groupRef={satelliteRef} />
@@ -292,7 +315,7 @@ export default function EngineCanvas({ className = "", deviceProfile }: EngineCa
   }, []);
 
   return (
-    <div className={`fixed inset-0 z-0 pointer-events-none ${className}`}>
+    <div className={`fixed inset-0 z-[2] pointer-events-none ${className}`}>
       <Canvas
         gl={{
           antialias: !coarse,

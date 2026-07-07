@@ -86,10 +86,13 @@ export function Core({ radius = 3.5 }: { radius?: number }) {
         <primitive object={edges} attach="geometry" />
         <lineBasicMaterial color={accentColor} opacity={0.85} transparent />
       </lineSegments>
-      <SpriteGlow size={radius * 6} opacity={0.32} position={[0, 0, -0.3]} />
-      <SpriteGlow size={radius * 4.5} opacity={0.18} position={[radius * 0.6, radius * 0.3, 0.2]} />
-      <SpriteGlow size={radius * 3.5} opacity={0.14} position={[-radius * 0.4, -radius * 0.5, 0]} />
-      <SpriteGlow size={radius * 2.5} opacity={0.10} position={[0, radius * 0.2, radius * 0.3]} />
+      {/* SpriteGlow halos deprecated — may be removed in future. Sid: "put these currently as invisible and may be deprecated". */}
+      {/*
+      <SpriteGlow size={radius * 6} opacity={0.65} position={[0, 0, -0.3]} />
+      <SpriteGlow size={radius * 4.5} opacity={0.50} position={[radius * 0.6, radius * 0.3, 0.2]} />
+      <SpriteGlow size={radius * 3.5} opacity={0.40} position={[-radius * 0.4, -radius * 0.5, 0]} />
+      <SpriteGlow size={radius * 2.5} opacity={0.30} position={[0, radius * 0.2, radius * 0.3]} />
+      */}
     </group>
   );
 }
@@ -221,10 +224,10 @@ export function StageNodes({ radius = 5 }: { radius?: number }) {
       {nodes.map((pos, i) => (
         <group key={i} position={pos} ref={(el) => { nodeRefs.current[i] = el; }}>
           <mesh>
-            <octahedronGeometry args={[0.66, 0]} />
+            <octahedronGeometry args={[0.46, 0]} />
             <meshBasicMaterial color={accentColor} opacity={0.85} transparent />
           </mesh>
-          <sprite scale={[1.4, 1.4, 1]}>
+          <sprite scale={[1.0, 1.0, 1]}>
             <spriteMaterial map={getGlowTexture() || undefined} color={new THREE.Color(COLORS.accent)} opacity={0.2} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
           </sprite>
         </group>
@@ -234,7 +237,10 @@ export function StageNodes({ radius = 5 }: { radius?: number }) {
 }
 
 // ── Animated Data stream — flowing particles along curve ──
-export function DataStream({
+// DataStream disabled for external use — Sid: "don't like it, comment out in case I change my mind"
+// export function DataStream(...) { ... }
+// NOTE: Kept internal non-exported version below for Satellite
+function DataStream({
   curve,
   count = 570,
   color = COLORS.accent,
@@ -283,7 +289,7 @@ export function DataStream({
       uniforms: {
         uSize: { value: bright ? 0.24 : 0.18 },
         uColor: { value: c },
-        uOpacity: { value: bright ? 1.0 : 0.85 },
+        uOpacity: { value: 0.85 },
       },
       transparent: true,
       depthWrite: false,
@@ -341,7 +347,7 @@ export function Satellite({ position, groupRef: externalRef }: {
 
     orbitAngles.current.forEach((angle, i) => {
       orbitAngles.current[i] += orbitSpeeds.current[i] * delta;
-      const orbitRadius = 1.6 + i * 0.4;
+      const orbitRadius = 1.12 + i * 0.28;
       const x = Math.cos(orbitAngles.current[i]) * orbitRadius;
       const z = Math.sin(orbitAngles.current[i]) * orbitRadius;
       const y = Math.sin(orbitAngles.current[i] * 1.7) * 0.35;
@@ -353,22 +359,22 @@ export function Satellite({ position, groupRef: externalRef }: {
   return (
     <group ref={internalRef} position={position} visible={true}>
       <mesh>
-        <octahedronGeometry args={[0.49, 0]} />
+        <octahedronGeometry args={[0.34, 0]} />
         <meshBasicMaterial color={accentColor} opacity={0.9} transparent />
       </mesh>
-      <sprite scale={[2.5, 2.5, 1]}>
-        <spriteMaterial map={getGlowTexture() || undefined} color={accentColor} opacity={0.35} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
+      <sprite scale={[1.75, 1.75, 1]}>
+        <spriteMaterial map={getGlowTexture() || undefined} color={accentColor} opacity={0.25} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
       </sprite>
 
       {[accentColor, whiteColor].map((col, i) => (
         <mesh key={i} ref={(el) => { orbitRefs.current[i] = el; }}>
-          <octahedronGeometry args={[0.18, 0]} />
+          <octahedronGeometry args={[0.13, 0]} />
           <meshBasicMaterial color={col} opacity={1.0} />
         </mesh>
       ))}
 
       <lineSegments>
-        <edgesGeometry args={[new THREE.TorusGeometry(1.6, 0.02, 8, 64)]} />
+        <edgesGeometry args={[new THREE.TorusGeometry(1.12, 0.02, 8, 64)]} />
         <lineBasicMaterial color={COLORS.line} opacity={0.4} transparent />
       </lineSegments>
 
