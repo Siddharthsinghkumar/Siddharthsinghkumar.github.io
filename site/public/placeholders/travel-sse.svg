@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <rect width="1200" height="675" fill="#0B0B0D"/>
+  <rect x="0" y="0" width="1200" height="675" fill="none" stroke="#26262A" stroke-width="2"/>
+  <rect x="20" y="20" width="24" height="24" fill="none" stroke="#FF5C1A" stroke-width="2"/>
+  <rect x="1156" y="20" width="24" height="24" fill="none" stroke="#FF5C1A" stroke-width="2"/>
+  <rect x="20" y="631" width="24" height="24" fill="none" stroke="#FF5C1A" stroke-width="2"/>
+  <rect x="1156" y="631" width="24" height="24" fill="none" stroke="#FF5C1A" stroke-width="2"/>
+  <rect x="420" y="240" width="360" height="100" rx="8" fill="#1A1A1E" stroke="#26262A" stroke-width="1"/>
+  <text x="600" y="278" font-family="monospace" font-size="18" fill="#8A8A93" text-anchor="middle">⚡ SSE Stream</text>
+  <text x="600" y="310" font-family="monospace" font-size="13" fill="#FF5C1A" text-anchor="middle">Stream surviving a forced provider failure</text>
+  <text x="600" y="420" font-family="monospace" font-size="11" fill="#8A8A93" text-anchor="middle">1200 × 675 · Travel Planner Proof · Screenshot Slot 2</text>
+</svg>
