@@ -22,10 +22,10 @@ export default function GlitchSync() {
         links.forEach((el) => {
           el.style.animation = "none";
           void el.offsetWidth;
-          el.style.animation = "glitch-spec 120ms steps(1) 1";
+          el.style.animation = "glitch-amped 240ms steps(1) 1";
           setTimeout(() => {
             el.style.animation = "";
-          }, 130);
+          }, 250);
         });
       });
     };
@@ -63,8 +63,8 @@ export default function GlitchSync() {
       // Fire glitch on this element only
       target.style.animation = "none";
       void target.offsetWidth;
-      target.style.animation = "glitch-spec 120ms steps(1) 1";
-      setTimeout(() => { target.style.animation = ""; }, 130);
+      target.style.animation = "glitch-amped 240ms steps(1) 1";
+      setTimeout(() => { target.style.animation = ""; }, 250);
     };
 
     document.addEventListener("mouseover", onHover, { passive: true });
