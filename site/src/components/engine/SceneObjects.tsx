@@ -86,13 +86,6 @@ export function Core({ radius = 3.5 }: { radius?: number }) {
         <primitive object={edges} attach="geometry" />
         <lineBasicMaterial color={accentColor} opacity={0.85} transparent />
       </lineSegments>
-      {/* SpriteGlow halos deprecated — may be removed in future. Sid: "put these currently as invisible and may be deprecated". */}
-      {/*
-      <SpriteGlow size={radius * 6} opacity={0.65} position={[0, 0, -0.3]} />
-      <SpriteGlow size={radius * 4.5} opacity={0.50} position={[radius * 0.6, radius * 0.3, 0.2]} />
-      <SpriteGlow size={radius * 3.5} opacity={0.40} position={[-radius * 0.4, -radius * 0.5, 0]} />
-      <SpriteGlow size={radius * 2.5} opacity={0.30} position={[0, radius * 0.2, radius * 0.3]} />
-      */}
     </group>
   );
 }

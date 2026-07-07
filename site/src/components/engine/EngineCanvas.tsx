@@ -12,35 +12,7 @@ export type DeviceProfile = {
   isCoarse: boolean;
 };
 
-/*
-// ── Build stream curves — 5 orange + 2 grey-white = 7 streams, 70% orange per spec ──
-// Plus exit stream: flows from core downward-forward, brighter (sorted output)
-function buildStreamCurves(): { curve: THREE.CatmullRomCurve3; color: number; isExit: boolean }[] {
-  const accent = COLORS.accent;
-  const grey = COLORS.white;
-  const raw = [
-    { from: [-10, 6, -3], mid: [-3, 1.5, 0], to: [0, 0.2, 0.5], color: accent },
-    { from: [8, 5, -4], mid: [2, 1.8, -1], to: [-0.3, -0.1, 0.3], color: accent },
-    { from: [-7, -5, 2], mid: [-2, -1.5, 0.5], to: [0.2, 0, -0.2], color: accent },
-    { from: [9, -4, -2], mid: [3, -1, -0.5], to: [-0.1, 0.1, 0], color: accent },
-    { from: [6, 2, 4], mid: [1.5, 0.8, 1], to: [0.3, -0.2, -0.4], color: accent },
-    // 2 grey-white streams
-    { from: [-9, 1, -5], mid: [-2.5, 0.5, -1.5], to: [0, 0, 0.1], color: grey },
-    { from: [2, -6, 3], mid: [-0.5, -2.5, 1], to: [0.1, -0.1, -0.3], color: grey },
-    // Exit stream
-    { from: [0, -0.3, 1], mid: [1.5, -2, 4], to: [4, -5, 8], color: accent },
-  ];
-  return raw.map(({ from, mid, to, color }) => ({
-    curve: new THREE.CatmullRomCurve3([
-      new THREE.Vector3(...from),
-      new THREE.Vector3(...mid),
-      new THREE.Vector3(...to),
-    ]),
-    color,
-    isExit: from[0] === 0 && from[1] === -0.3 && from[2] === 1,
-  }));
-}
-*/
+
 
 // ── Waypoint camera config ────────────────────────────────
 interface Waypoint {
@@ -71,7 +43,6 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
 function SceneInner({ coarse }: { coarse: boolean }) {
   const { scene, camera } = useThree();
   const coreRef = useRef<THREE.Group>(null);
-  // const streamGroupRef = useRef<THREE.Group>(null);
   const sceneGroupRef = useRef<THREE.Group>(null);
   const gridRef = useRef<THREE.Group>(null);
   const satelliteRef = useRef<THREE.Group>(null);
@@ -82,7 +53,6 @@ function SceneInner({ coarse }: { coarse: boolean }) {
   const pointerNorm = useRef({ x: 0, y: 0 });
   const isFine = useRef(!coarse);
 
-  // const streamDefs = useMemo(() => buildStreamCurves(), []);
   const glowTex = useMemo(() => getGlowTexture(), []);
   const accentColor = useMemo(() => new THREE.Color(COLORS.accent), []);
 
@@ -171,17 +141,8 @@ function SceneInner({ coarse }: { coarse: boolean }) {
     );
     camera.lookAt(lookTarget);
 
-    // Scene opacity blend — applies to grid (LineSegments) + stream particles
+    // Scene opacity blend — applies to grid (LineSegments)
     const sceneOpacity = wpA.sceneOpacity + (wpB.sceneOpacity - wpA.sceneOpacity) * blend;
-    /*
-    if (streamGroupRef.current) {
-      streamGroupRef.current.children.forEach((child) => {
-        if (child instanceof THREE.Points && child.material instanceof THREE.ShaderMaterial) {
-          child.material.uniforms.uOpacity.value = sceneOpacity * 0.7;
-        }
-      });
-    }
-    */
     if (gridRef.current) {
       gridRef.current.children.forEach((child) => {
         if (child instanceof THREE.LineSegments) {
@@ -216,25 +177,9 @@ function SceneInner({ coarse }: { coarse: boolean }) {
     if (coreRef.current) {
       coreRef.current.rotation.x += 0.006 * delta;
       coreRef.current.rotation.y += 0.01 * delta;
-      // T14: always fast pulse, no slow 8s breath
-      // const eIntensity = p >= 0.72 ? (p < 0.95 ? (p - 0.72) / 0.23 : 1) : 0;
-      // const baseBreathe = 1 + 0.015 * Math.sin(t * (Math.PI * 2 / 8));
-      // const ePulse = 1 + 0.04 * Math.sin(t * (Math.PI * 2 / 3));
-      // const breathe = baseBreathe * (1 - eIntensity) + ePulse * eIntensity;
       const breathe = 1 + 0.04 * Math.sin(t * (Math.PI * 2 / 3));
       coreRef.current.scale.setScalar(breathe);
     }
-
-    /*
-    // Waypoint E p>0.95: emit bright stream toward camera
-    const brightStreamIdx = 7; // exit/TOWARD stream
-    if (streamGroupRef.current && streamGroupRef.current.children[brightStreamIdx]) {
-      const exitStream = streamGroupRef.current.children[brightStreamIdx] as THREE.Points;
-      const eFade = p >= 0.72 ? Math.min(1, (p - 0.72) / 0.18) : 0;
-      const mat = (exitStream.material as unknown) as THREE.ShaderMaterial;
-      if (mat.uniforms) mat.uniforms.uOpacity.value = eFade;
-    }
-    */
 
     // p > 0.95: slow drift hold
     if (p > 0.95) {
@@ -254,22 +199,6 @@ function SceneInner({ coarse }: { coarse: boolean }) {
 
       {/* Stage ring */}
       <StageNodes radius={coarse ? 3.0 : 4.0} />
-
-      {/* DataStream disabled — Sid: "don't like it, comment out in case I change my mind" */}
-      {/*
-      <group ref={streamGroupRef}>
-        {streamDefs.map((def, i) => (
-          <DataStream
-            key={i}
-            curve={def.curve}
-            color={def.color}
-            speed={0.4 + i * 0.12}
-            count={coarse ? (def.isExit ? 320 : 320) : (def.isExit ? 650 : 640)}
-            bright={def.isExit}
-          />
-        ))}
-      </group>
-      */}
 
       {/* Satellite system — visible around waypoint C */}
       {/* [-5.616, 0.5616, 2.457] best for dis[play with 16 by 9 desktop */}
