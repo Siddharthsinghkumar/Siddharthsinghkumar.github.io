@@ -120,6 +120,15 @@
   50% { opacity: 1; }
 }
 
+/* ── SPEC version: 120ms, 2px orange/grey split ── */
+@keyframes glitch-spec {
+  0%   { text-shadow: none; transform: none; }
+  25%  { text-shadow: -2px 0 var(--accent), 2px 0 var(--muted); transform: translateX(1px); }
+  50%  { text-shadow: 2px 0 var(--accent), -2px 0 var(--muted); transform: translateX(-1px); }
+  75%  { text-shadow: -1px 0 var(--accent), 1px 0 var(--muted); transform: none; }
+  100% { text-shadow: none; transform: none; }
+}
+
 /* B4: RGB-split micro-glitch — AMPED (240ms, 3px, double flicker) */
 @keyframes glitch-amped {
   0%   { text-shadow: none; transform: none; }
