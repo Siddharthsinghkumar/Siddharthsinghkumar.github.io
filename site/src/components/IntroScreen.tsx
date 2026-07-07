@@ -6,13 +6,13 @@
 // Failsafe: 2.5s CSS auto-dismiss. Skips on reduced-motion / repeat visits.
 // B2/D43: counter tracks REAL asset progress (fonts→chunk→first-frame→poster).
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import DecryptedText from "./DecryptedText";
 import { engineReady, onEngineProgress, reportProgress } from "./engine/engine-ready";
 
 const MAX_WAIT = 10000;
 
-export default function IntroScreen() {
+export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: boolean }) {
   const [phase, setPhase] = useState(0); // 0: black, 1: loading, 2: exiting, 3: done
   const [counter, setCounter] = useState(0);
   const phaseRef = useRef(0);
@@ -36,72 +36,79 @@ export default function IntroScreen() {
     }
 
     let rafId: number;
-
-    // ── Asset-progress milestones (B2/D43) ────────────────
-    reportProgress(0); // reset for this visit
-
-    // 15 → fonts ready
-    document.fonts.ready.then(() => { if (!doneRef.current) reportProgress(15); });
-
-    // 100 → poster decoded (also warms the cache for reduced-motion path)
-    const posterImg = new Image();
-    posterImg.src = "/poster-home.webp";
-    posterImg.decode().then(() => { if (!doneRef.current) reportProgress(100); }).catch(() => { if (!doneRef.current) reportProgress(100); });
-
-    // 45 → engine chunk (EngineLoader), 85 → first frame (signalEngineReady)
+    const phase1 = () => { if (phaseRef.current === 0) { phaseRef.current = 1; setPhase(1); } };
+    const phase2 = () => { if (phaseRef.current < 2) { doneRef.current = true; setCounter(100); phaseRef.current = 2; setPhase(2); } };
 
     // Sync module-level progress → window bridge for rAF poll
     const unsub = onEngineProgress((p) => {
       (window as any).__engineProgress = p;
     });
 
-    const phase1 = () => { if (phaseRef.current === 0) { phaseRef.current = 1; setPhase(1); } };
-    const phase2 = () => { if (phaseRef.current < 2) { doneRef.current = true; setCounter(100); phaseRef.current = 2; setPhase(2); } };
+    if (waitForEngine) {
+      // ── Asset-progress milestones (B2/D43) ────────────────
+      reportProgress(0);
 
-    // Maximum wait failsafe
-    maxTimerRef.current = setTimeout(() => { if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); } }, MAX_WAIT);
+      document.fonts.ready.then(() => { if (!doneRef.current) reportProgress(15); });
+      const posterImg = new Image();
+      posterImg.src = "/poster-home.webp";
+      posterImg.decode().then(() => { if (!doneRef.current) reportProgress(100); }).catch(() => { if (!doneRef.current) reportProgress(100); });
 
-    // Wait for real engine ready; enforce minimum 1000ms display time
-    engineReady.then(() => {
-      if (!doneRef.current) {
-        const elapsed = Date.now() - startRef.current;
-        const delay = Math.max(0, 1000 - elapsed);
-        setTimeout(() => {
-          if (!doneRef.current) {
-            phase2();
-            cancelAnimationFrame(rafId);
-          }
-        }, delay);
-      }
-    });
+      maxTimerRef.current = setTimeout(() => { if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); } }, MAX_WAIT);
 
-    const tick = () => {
-      if (doneRef.current) return;
-      const start = startRef.current;
+      engineReady.then(() => {
+        if (!doneRef.current) {
+          const elapsed = Date.now() - startRef.current;
+          setTimeout(() => {
+            if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); }
+          }, Math.max(0, 1000 - elapsed));
+        }
+      });
 
-      // Poll module-level progress and ease counter toward it
-      const target = (window as any).__engineProgress ?? 0;
-      if (target > counterRef.current) {
-        const step = Math.min(target, counterRef.current + Math.ceil((target - counterRef.current) * 0.15));
-        counterRef.current = Math.max(counterRef.current, step);
-        setCounter(counterRef.current);
-      }
-
-      // Visual phase 0→1 at 150ms
-      if (phaseRef.current === 0 && Date.now() - start > 150) {
-        phase1();
-      }
-
+      const tick = () => {
+        if (doneRef.current) return;
+        const target = (window as any).__engineProgress ?? 0;
+        if (target > counterRef.current) {
+          counterRef.current = Math.max(counterRef.current, Math.min(target, counterRef.current + Math.ceil((target - counterRef.current) * 0.15)));
+          setCounter(counterRef.current);
+        }
+        if (phaseRef.current === 0 && Date.now() - startRef.current > 150) phase1();
+        rafId = requestAnimationFrame(tick);
+      };
       rafId = requestAnimationFrame(tick);
-    };
-    rafId = requestAnimationFrame(tick);
+    } else {
+      // Subpage: no 3D engine — wait for fonts + window load + min 1000ms
+      const dismiss = () => {
+        if (!doneRef.current) {
+          const elapsed = Date.now() - startRef.current;
+          setTimeout(() => {
+            if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); }
+          }, Math.max(0, 1000 - elapsed));
+        }
+      };
+
+      document.fonts.ready.then(() => { if (!doneRef.current) reportProgress(15); });
+      window.addEventListener("load", dismiss, { once: true });
+      maxTimerRef.current = setTimeout(() => { if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); } }, MAX_WAIT);
+
+      const tick = () => {
+        if (doneRef.current) return;
+        const target = (window as any).__engineProgress ?? 0;
+        if (target > counterRef.current) {
+          counterRef.current = Math.max(counterRef.current, Math.min(target, counterRef.current + Math.ceil((target - counterRef.current) * 0.15)));
+          setCounter(counterRef.current);
+        }
+        if (phaseRef.current === 0 && Date.now() - startRef.current > 150) phase1();
+        rafId = requestAnimationFrame(tick);
+      };
+      rafId = requestAnimationFrame(tick);
+    }
 
     return () => {
       unsub();
       cancelAnimationFrame(rafId);
       if (maxTimerRef.current) clearTimeout(maxTimerRef.current);
     };
-  }, []);
+  }, [waitForEngine]);
 
   // Scroll lock effect (Layer 7 requirement)
   useEffect(() => {

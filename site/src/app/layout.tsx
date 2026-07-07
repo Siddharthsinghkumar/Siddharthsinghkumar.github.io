@@ -5,6 +5,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
 import GlitchSync from "@/components/GlitchSync";
 import ConsoleFix from "@/components/ConsoleFix";
+import IntroScreenGate from "@/components/IntroScreenGate";
 import "./globals.css";
 
 const siteUrl = "https://Siddharthsinghkumar.github.io";
@@ -97,6 +98,7 @@ export default function RootLayout({
         <SmoothScroll />
         <CustomCursor />
         <GlitchSync />
+        <IntroScreenGate />
         <Nav />
         <main className="pt-16">{children}</main>
       </body>

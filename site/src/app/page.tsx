@@ -8,7 +8,6 @@ import SkillsRow from "@/components/SkillsRow";
 import JsonLd from "@/components/JsonLd";
 import ContributionsDisplay from "@/components/ContributionsDisplay";
 import EngineLoader from "@/components/engine/EngineLoader";
-import IntroScreen from "@/components/IntroScreen";
 import TextPressure, { TEXTPRESSURE_ENABLED } from "@/components/TextPressure";
 import ChoreoReveal, { CascadeRows } from "@/components/ChoreoReveal";
 import StatusPill from "@/components/StatusPill";
@@ -30,7 +29,6 @@ export default function Home() {
   return (
     <>
       <JsonLd />
-      <IntroScreen />
       {/* ── Hero ────────────────────────────────────────────── */}
       {/* Layers 0 & 1: body bg + noscript poster (layout.tsx) — nothing rendered here */}
       {/* z-10 on section creates stacking context so children (text z-[20]) sit above fixed z-0 canvas */}
