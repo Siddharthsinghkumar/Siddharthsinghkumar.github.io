@@ -249,7 +249,7 @@ function SceneInner({ coarse }: { coarse: boolean }) {
     <group ref={sceneGroupRef}>
       {/* Core */}
       <group ref={coreRef}>
-        <Core radius={3.5} />
+        <Core radius={2.6} />
       </group>
 
       {/* Stage ring */}
@@ -272,7 +272,8 @@ function SceneInner({ coarse }: { coarse: boolean }) {
       */}
 
       {/* Satellite system — visible around waypoint C */}
-      <Satellite position={[-8, 0.8, 3.5]} groupRef={satelliteRef} />
+      {/* [-5.616, 0.5616, 2.457] best for dis[play with 16 by 9 desktop */}
+      <Satellite position={[-5.616, 0.5616, 2.457]} groupRef={satelliteRef} />
 
       {/* Dust — two z-parallax layers; half counts on coarse */}
       <DustField count={coarse ? 1000 : 2000} />

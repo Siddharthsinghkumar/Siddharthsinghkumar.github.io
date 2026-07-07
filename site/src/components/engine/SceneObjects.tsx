@@ -373,24 +373,12 @@ export function Satellite({ position, groupRef: externalRef }: {
         </mesh>
       ))}
 
+      {/* 
       <lineSegments>
         <edgesGeometry args={[new THREE.TorusGeometry(1.12, 0.02, 8, 64)]} />
         <lineBasicMaterial color={COLORS.line} opacity={0.4} transparent />
       </lineSegments>
-
-      {/* Thin particle arc between the two fallback nodes */}
-      <DataStream
-        curve={new THREE.CatmullRomCurve3([
-          new THREE.Vector3(1.2, 0.3, 0.8),
-          new THREE.Vector3(0, 0.8, 0),
-          new THREE.Vector3(-0.8, -0.2, -1.0),
-          new THREE.Vector3(-1.3, -0.4, 0.2),
-        ])}
-        count={100}
-        color={COLORS.accent}
-        speed={0.45}
-        bright={false}
-      />
+      */}
     </group>
   );
 }
