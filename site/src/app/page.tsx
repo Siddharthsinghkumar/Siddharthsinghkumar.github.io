@@ -54,22 +54,17 @@ export default function Home() {
 
         <div className="mx-auto max-w-[1200px] w-full relative z-[20]">
           <ChoreoReveal variant="hero-item" heroIndex={0}>
-            <Link
-              href="/"
-              aria-label="Siddharth Singh — AI Backend Engineer"
-              className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-[--accent] focus-visible:outline-offset-4"
-              style={{ color: "inherit", textDecoration: "none" }}
-            >
-            {TEXTPRESSURE_ENABLED ? (
-              <div className="mb-6">
-                <TextPressure text="SIDDHARTH SINGH" className="text-[--text]" />
-              </div>
-            ) : (
-              <p className="font-display text-[clamp(3.5rem,10vw,8rem)] leading-none tracking-[-0.02em] text-[--text] mb-6" aria-label="SIDDHARTH SINGH">
-                SIDDHARTH SINGH
-              </p>
-            )}
-            </Link>
+            <div className="block link-pulse-auto cursor-default select-none">
+              {TEXTPRESSURE_ENABLED ? (
+                <div className="mb-6">
+                  <TextPressure text="SIDDHARTH SINGH" className="text-[--text]" />
+                </div>
+              ) : (
+                <p className="font-display text-[clamp(3.5rem,10vw,8rem)] leading-none tracking-[-0.02em] text-[--text] mb-6" aria-label="SIDDHARTH SINGH">
+                  SIDDHARTH SINGH
+                </p>
+              )}
+            </div>
           </ChoreoReveal>
           <ChoreoReveal variant="hero-item" heroIndex={1}>
             <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-8">
