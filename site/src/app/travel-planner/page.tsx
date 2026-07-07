@@ -7,6 +7,7 @@ import DecryptedText from "@/components/DecryptedText";
 import PaperInkLoader from "@/components/PaperInkLoader";
 import ChoreoReveal from "@/components/ChoreoReveal";
 import PageBackground from "@/components/PageBackground";
+import ScreenshotFrame from "@/components/ScreenshotFrame";
 
 export const metadata: Metadata = {
   title: "Travel Planner Agent — agentic AI with failure-proof inference",
@@ -133,30 +134,14 @@ export default function TravelPlannerPage() {
         </p>
 
         <div className="grid sm:grid-cols-2 gap-4">
-          {[
-            "SCREENSHOT — Sid to capture: Grafana dashboards during a planning session",
-            "SCREENSHOT — Sid to capture: SSE stream surviving a forced provider failure",
-          ].map((caption) => (
-            <div
-              key={caption}
-              className="aspect-video rounded-[--r-md] bg-[--surface-2] border border-[--line] flex items-center justify-center p-4 relative overflow-hidden"
-            >
-              {/* testing different size and opacity */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 5px, rgba(255,92,26,0.30) 5px, rgba(255,92,26,0.30) 10px)",
-                }}
-              />
-              <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-[--accent]" />
-              <div className="absolute top-3 right-3 w-3 h-3 border-t border-r border-[--accent]" />
-              <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-[--accent]" />
-              <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-[--accent]" />
-              <p className="font-mono text-[11px] text-[--muted] text-center relative z-10">
-                {caption}
-              </p>
-            </div>
-          ))}
+          <ScreenshotFrame
+            caption="SCREENSHOT — Sid to capture: Grafana dashboards during a planning session"
+            placeholder="/placeholders/travel-grafana.svg"
+          />
+          <ScreenshotFrame
+            caption="SCREENSHOT — Sid to capture: SSE stream surviving a forced provider failure"
+            placeholder="/placeholders/travel-sse.svg"
+          />
         </div>
       </Section>
 

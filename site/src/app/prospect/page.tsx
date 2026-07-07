@@ -8,6 +8,7 @@ import DecryptedText from "@/components/DecryptedText";
 import PaperInkLoader from "@/components/PaperInkLoader";
 import ChoreoReveal from "@/components/ChoreoReveal";
 import PageBackground from "@/components/PageBackground";
+import ScreenshotFrame from "@/components/ScreenshotFrame";
 
 export const metadata: Metadata = {
   title: "Prospect — an autonomous job-prospecting engine",
@@ -174,31 +175,14 @@ export default function ProspectPage() {
         <Eyebrow>Proof</Eyebrow>
 
         <div className="grid sm:grid-cols-2 gap-4 mb-4">
-          {[
-            "SCREENSHOT — Sid to capture: Telegram alert arriving with ranked matches",
-            "SCREENSHOT — Sid to capture: pipeline run — pages OCR'd, blocks extracted",
-          ].map((caption) => (
-            <div
-              key={caption}
-              className="aspect-video rounded-[--r-md] bg-[--surface-2] border border-[--line] flex items-center justify-center p-4 relative overflow-hidden"
-            >
-              {/* Design: scanline texture + orange corner ticks — intentional frame */}
-              {/* testing different size and opacity */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 5px, rgba(255,92,26,0.30) 5px, rgba(255,92,26,0.30) 10px)",
-                }}
-              />
-              <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-[--accent]" />
-              <div className="absolute top-3 right-3 w-3 h-3 border-t border-r border-[--accent]" />
-              <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-[--accent]" />
-              <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-[--accent]" />
-              <p className="font-mono text-[11px] text-[--muted] text-center relative z-10">
-                {caption}
-              </p>
-            </div>
-          ))}
+          <ScreenshotFrame
+            caption="SCREENSHOT — Sid to capture: Telegram alert arriving with ranked matches"
+            placeholder="/placeholders/prospect-telegram.svg"
+          />
+          <ScreenshotFrame
+            caption="SCREENSHOT — Sid to capture: pipeline run — pages OCR'd, blocks extracted"
+            placeholder="/placeholders/prospect-pipeline.svg"
+          />
         </div>
       </Section>
 
