@@ -139,10 +139,11 @@ export default function TravelPlannerPage() {
               key={caption}
               className="aspect-video rounded-[--r-md] bg-[--surface-2] border border-[--line] flex items-center justify-center p-4 relative overflow-hidden"
             >
+              {/* testing different size and opacity */}
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
-                  backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,92,26,0.03) 2px, rgba(255,92,26,0.03) 4px)",
+                  backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 5px, rgba(255,92,26,0.30) 5px, rgba(255,92,26,0.30) 10px)",
                 }}
               />
               <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-[--accent]" />
