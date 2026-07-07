@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "./Button";
 import DecryptedText from "./DecryptedText";
-import { FlutedGlass } from "@paper-design/shaders-react";
 
 const links = [
   { href: "/prospect", label: "Prospect" },
@@ -54,26 +53,9 @@ export default function Nav() {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-[40] h-16 pointer-events-none">
-        {scrolled && (
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <FlutedGlass
-              colorBack="rgba(0,0,0,0.70)"
-              colorShadow="rgba(255,89,0,0.50)"
-              colorHighlight="rgb(232, 232, 232)"
-              size={0.80}
-              shadows={0.25}
-              highlights={0.25}
-              shape="lines"
-              angle={0}
-              distortionShape="prism"
-              distortion={0.5}
-              blur={0}
-              edges={0.25}
-            />
-          </div>
-        )}
-      </div>
+      {/* Layer 5.1: Reserved for future nav background effects */}
+      <div className="fixed top-0 left-0 right-0 z-[40] h-16 pointer-events-none" />
+
       <nav
         className="fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-[300ms] ease-[--ease] border-b border-[--line]"
       >
