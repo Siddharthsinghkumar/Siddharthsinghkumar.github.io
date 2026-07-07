@@ -199,7 +199,7 @@ export function StageNodes({ radius = 5 }: { radius?: number }) {
     // Counter-rotate the whole ring
     if (groupRef.current) {
       groupRef.current.rotation.y -= delta * 0.15;
-      groupRef.current.rotation.x += delta * 0.04;
+      groupRef.current.rotation.x += delta * 0.2;
     }
     // Sequential pulse — 6-second loop, each node lights in order (SCAN→DELIVER cadence)
     const t = performance.now() * 0.001;
@@ -224,7 +224,7 @@ export function StageNodes({ radius = 5 }: { radius?: number }) {
       {nodes.map((pos, i) => (
         <group key={i} position={pos} ref={(el) => { nodeRefs.current[i] = el; }}>
           <mesh>
-            <octahedronGeometry args={[0.46, 0]} />
+            <octahedronGeometry args={[0.40, 0]} />
             <meshBasicMaterial color={accentColor} opacity={0.85} transparent />
           </mesh>
           <sprite scale={[1.0, 1.0, 1]}>

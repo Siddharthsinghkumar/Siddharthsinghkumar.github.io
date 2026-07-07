@@ -249,11 +249,11 @@ function SceneInner({ coarse }: { coarse: boolean }) {
     <group ref={sceneGroupRef}>
       {/* Core */}
       <group ref={coreRef}>
-        <Core radius={2.6} />
+        <Core radius={2.9} />
       </group>
 
       {/* Stage ring */}
-      <StageNodes radius={3.85} />
+      <StageNodes radius={4.0} />
 
       {/* DataStream disabled — Sid: "don't like it, comment out in case I change my mind" */}
       {/*
