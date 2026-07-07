@@ -25,7 +25,7 @@ const backImage = `data:image/svg+xml,${encodeURIComponent(backSvg)}`;
 export default function KnowMeClient() {
   return (
     <>
-      <div className="absolute inset-0 z-[1]" style={{ opacity: 0.8, transform: "translateX(18%)" }}>
+      <div className="absolute inset-0 z-[60]" style={{ opacity: 0.8, transform: "translateX(18%)" }}>
         <LanyardLoader frontImage={frontImage} backImage={backImage} />
       </div>
 
