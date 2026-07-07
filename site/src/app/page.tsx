@@ -221,11 +221,8 @@ export default function Home() {
             </TimelineEntry>
           </div>
         </CascadeRows>
-      </Section>
 
-      {/* ── Skills ──────────────────────────────────────────── */}
-      <Section className="border-t border-[--line]">
-        <Eyebrow>Stack</Eyebrow>
+        <Eyebrow className="mt-16 md:mt-24">Stack</Eyebrow>
 
         <div className="grid md:grid-cols-2 gap-8">
           <SkillsRow
@@ -295,13 +292,12 @@ export default function Home() {
             />
           </p>
         </div>
-      </Section>
 
-      {/* ── Contact (inline CTA before footer) ──────────────── */}
-      <Section className="border-t border-[--line]">
-        <Button variant="ghost" href="/knowme" className="border-white text-white border-2 bg-white/10 z-10 relative">
-          Know Me →
-        </Button>
+        <div className="mt-12 md:mt-16">
+          <Button variant="ghost" href="/knowme" className="border-white text-white border-2 bg-white/10 z-10 relative">
+            Know Me →
+          </Button>
+        </div>
       </Section>
     </>
   );
