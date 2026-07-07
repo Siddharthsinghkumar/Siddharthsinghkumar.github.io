@@ -58,8 +58,6 @@ export default function Nav() {
         {scrolled && (
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <FlutedGlass
-              image="/bg-graphite.png"
-              className="w-full h-full"
               colorBack="rgba(0,0,0,0.70)"
               colorShadow="rgba(255,89,0,0.50)"
               colorHighlight="rgb(232, 232, 232)"

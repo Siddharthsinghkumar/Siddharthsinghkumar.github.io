@@ -12,3 +12,6 @@
 # interaction
 - Address the user as Sid. Confidence: 0.70
 - When encountering errors: fix if possible, ask questions if confused, do not guess or assume. Confidence: 0.75
+
+# glitch-animation
+- Apply glitch animation to all links, buttons, and the hero name text — auto-trigger every 3 seconds plus on hover, all synced to one shared clock. Confidence: 0.80
