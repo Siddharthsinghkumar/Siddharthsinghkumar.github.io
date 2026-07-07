@@ -4,6 +4,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
+import GlitchSync from "@/components/GlitchSync";
 import ConsoleFix from "@/components/ConsoleFix";
 import "./globals.css";
 
@@ -96,6 +97,7 @@ export default function RootLayout({
         <ConsoleFix />
         <SmoothScroll />
         <CustomCursor />
+        <GlitchSync />
         <Nav />
         <main className="pt-16">{children}</main>
         <Footer />

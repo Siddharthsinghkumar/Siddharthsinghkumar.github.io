@@ -54,7 +54,7 @@ export default function Home() {
 
         <div className="mx-auto max-w-[1200px] w-full relative z-[20]">
           <ChoreoReveal variant="hero-item" heroIndex={0}>
-            <div className="block link-pulse-auto cursor-default select-none">
+            <div className="block link-pulse-auto link-pulse-hover cursor-default select-none">
               {TEXTPRESSURE_ENABLED ? (
                 <div className="mb-6">
                   <TextPressure text="SIDDHARTH SINGH" className="text-[--text]" />
@@ -107,7 +107,7 @@ export default function Home() {
       </section>
 
       {/* ── Prospect Teaser (RICHER per F11/F21) ─────────────── */}
-      <Section className="border-t border-[--line]">
+      <Section>
         <Eyebrow>SYSTEM / 01 — PROSPECT</Eyebrow>
         <ChoreoReveal variant="heading">
           <h2 className="font-display text-[clamp(1.953rem,4vw,2.441rem)] leading-tight text-[--text] mb-4">
@@ -149,7 +149,7 @@ export default function Home() {
       </Section>
 
       {/* ── Travel Planner Teaser (RICHER per F11/F21) ────────── */}
-      <Section className="border-t border-[--line]">
+      <Section>
         <Eyebrow>SYSTEM / 02 — TRAVEL PLANNER AGENT</Eyebrow>
         <ChoreoReveal variant="heading">
           <h2 className="font-display text-[clamp(1.953rem,4vw,2.441rem)] leading-tight text-[--text] mb-4">
@@ -185,7 +185,7 @@ export default function Home() {
 
 
       {/* ── Experience Timeline ──────────────────────────────── */}
-      <Section className="border-t border-[--line]">
+      <Section>
         <Eyebrow>Where the systems shipped</Eyebrow>
 
         <CascadeRows staggerMs={40}>
@@ -249,7 +249,7 @@ export default function Home() {
       </Section>
 
       {/* ── Publication & Open Source ───────────────────────── */}
-      <Section className="border-t border-[--line]">
+      <Section>
         <Eyebrow>Verifiable elsewhere</Eyebrow>
 
         <div className="space-y-4 max-w-[68ch]">
