@@ -25,7 +25,6 @@ const pages = {
   "prospect.html": readFileSync(join(out, "prospect", "index.html"), "utf-8"),
   "travel-planner.html": readFileSync(join(out, "travel-planner", "index.html"), "utf-8"),
   "projects.html": readFileSync(join(out, "projects", "index.html"), "utf-8"),
-  "about.html": readFileSync(join(out, "about", "index.html"), "utf-8"),
   "404.html": readFileSync(join(out, "404.html"), "utf-8"),
 };
 const allHtml = Object.values(pages).join("\n");
@@ -43,7 +42,6 @@ const required = [
   ["travel-planner.html", "An agent that survives its own failures"],
   ["travel-planner.html", "K3S MULTI-NODE"],
   ["projects.html", "Sindhey Pathology"],
-  ["about.html", "The card is real"],
   ["404.html", "NO SIGNAL"],
 ];
 for (const [page, str] of required) {
@@ -95,10 +93,10 @@ for (const og of ["og/home.png", "og/prospect.png", "og/travel-planner.png"]) {
 }
 
 // ── 5. Dev/debug pages must not ship ────────────────────────────────────────
-console.log("[5] No dev pages in out/ — only 6 pages allowed");
+console.log("[5] No dev pages in out/ — only 7 pages allowed");
 const shipped = readdirSync(out).filter((f) => f.endsWith(".html"));
 const allowed = ["index.html", "404.html", "_not-found.html"];
-const allowedDirs = ["prospect", "travel-planner", "projects", "about"];
+const allowedDirs = ["prospect", "travel-planner", "projects", "knowme"];
 for (const dir of allowedDirs) {
   if (existsSync(join(out, dir, "index.html"))) shipped.push(`${dir}/index.html`);
 }
@@ -117,7 +115,7 @@ kb <= 480 ? ok(`home loads ${kb} KB gzip JS`) : fail(`home loads ${kb} KB gzip J
 
 // ── 7. F15 Link-integrity: parse every page's internal hrefs; all must resolve ──
 console.log("[7] Link-integrity: no dead internal links");
-const knownPages = ["/", "/prospect", "/travel-planner", "/projects", "/about", "/404"];
+const knownPages = ["/", "/prospect", "/travel-planner", "/projects", "/knowme", "/404"];
 const pageAnchors = {
   "/": ["#contact"],
   "/prospect": [],
