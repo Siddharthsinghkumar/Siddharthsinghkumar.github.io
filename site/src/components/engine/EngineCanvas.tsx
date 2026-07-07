@@ -12,9 +12,6 @@ export type DeviceProfile = {
   isCoarse: boolean;
 };
 
-
-
-// ── Waypoint camera config ────────────────────────────────
 interface Waypoint {
   name: string;
   pMin: number;
@@ -26,17 +23,78 @@ interface Waypoint {
   satelliteVisible: boolean;
 }
 
-const WAYPOINTS: Waypoint[] = [
-  { name: "A", pMin: 0.00, pMax: 0.15, camPos: new THREE.Vector3(1.8, 0.2, 7), camLook: new THREE.Vector3(0, 0, 0), sceneOpacity: 1.0, streamBrightness: 0.6, satelliteVisible: false },
-  { name: "B", pMin: 0.15, pMax: 0.35, camPos: new THREE.Vector3(0.6, 1.2, 4.2), camLook: new THREE.Vector3(0.4, 0, 0), sceneOpacity: 1.0, streamBrightness: 1.0, satelliteVisible: false },
-  { name: "C", pMin: 0.35, pMax: 0.55, camPos: new THREE.Vector3(-2.5, 0.6, 5.5), camLook: new THREE.Vector3(-3.5, 0.2, 2), sceneOpacity: 0.95, streamBrightness: 0.9, satelliteVisible: true },
-  { name: "D", pMin: 0.55, pMax: 0.85, camPos: new THREE.Vector3(0.5, 2.5, 9), camLook: new THREE.Vector3(0, -1.5, 0), sceneOpacity: 0.45, streamBrightness: 0.4, satelliteVisible: true },
-  { name: "E", pMin: 0.85, pMax: 1.00, camPos: new THREE.Vector3(0, 0.2, 5), camLook: new THREE.Vector3(0, 0, 0), sceneOpacity: 0.75, streamBrightness: 0.8, satelliteVisible: false },
+const WAYPOINT_CONFIGS: Omit<Waypoint, "pMin" | "pMax">[] = [
+  { name: "A", camPos: new THREE.Vector3(1.8, 0.2, 7), camLook: new THREE.Vector3(0, 0, 0), sceneOpacity: 1.0, streamBrightness: 0.6, satelliteVisible: false },
+  { name: "B", camPos: new THREE.Vector3(0.6, 1.2, 4.2), camLook: new THREE.Vector3(0.4, 0, 0), sceneOpacity: 1.0, streamBrightness: 1.0, satelliteVisible: false },
+  { name: "C", camPos: new THREE.Vector3(-2.5, 0.6, 5.5), camLook: new THREE.Vector3(-3.5, 0.2, 2), sceneOpacity: 0.95, streamBrightness: 0.9, satelliteVisible: true },
+  { name: "D", camPos: new THREE.Vector3(0.5, 2.5, 9), camLook: new THREE.Vector3(0, -1.5, 0), sceneOpacity: 0.45, streamBrightness: 0.4, satelliteVisible: true },
+  { name: "E", camPos: new THREE.Vector3(0, 0.2, 5), camLook: new THREE.Vector3(0, 0, 0), sceneOpacity: 0.75, streamBrightness: 0.8, satelliteVisible: false },
 ];
 
 function smoothstep(edge0: number, edge1: number, x: number): number {
   const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
   return t * t * (3 - 2 * t);
+}
+
+function measureWaypoints(): Waypoint[] {
+  const sections = document.querySelectorAll("[data-waypoint]");
+  if (sections.length === 0 || typeof document === "undefined") {
+    // Fallback to equal distribution
+    return WAYPOINT_CONFIGS.map((c, i) => ({
+      ...c,
+      pMin: i / WAYPOINT_CONFIGS.length,
+      pMax: (i + 1) / WAYPOINT_CONFIGS.length,
+    }));
+  }
+
+  // Section order: a-hero, b-prospect, c-travel, d-timeline, e-publication
+  const totalScrollable = Math.max(1, document.body.scrollHeight - window.innerHeight);
+
+  // Get each section's offsetTop — normalized
+  const offsets: { name: string; top: number; height: number }[] = [];
+  sections.forEach((el) => {
+    const name = el.getAttribute("data-waypoint");
+    if (!name) return;
+    const rect = el.getBoundingClientRect();
+    const top = rect.top + window.scrollY;
+    offsets.push({ name, top, height: rect.height });
+  });
+  offsets.sort((a, b) => a.top - b.top); // ensure DOM order
+
+  if (offsets.length < 2) {
+    return WAYPOINT_CONFIGS.map((c, i) => ({
+      ...c,
+      pMin: i / WAYPOINT_CONFIGS.length,
+      pMax: (i + 1) / WAYPOINT_CONFIGS.length,
+    }));
+  }
+
+  // Anchor: waypoint A starts at p=0
+  // Each waypoint's p range is the normalized offset of its section center
+  // Waypoint E is anchored to end at p=1.0
+  const minTop = offsets[0].top;
+  const maxTop = offsets[offsets.length - 1].top + offsets[offsets.length - 1].height;
+
+  return WAYPOINT_CONFIGS.map((c, i) => {
+    const section = offsets.find((o) => o.name === c.name.toLowerCase()) || offsets[i] || offsets[0];
+    const center = section.top + section.height * 0.4; // upper portion of section
+    const pCenter = Math.max(0, Math.min(1, (center - minTop) / (maxTop - minTop)));
+
+    // Each waypoint gets territory around its center
+    const halfSpan = 0.5 / (WAYPOINT_CONFIGS.length + 1); // ~0.08 for 5 waypoints
+    const pMin = i === 0 ? 0 : Math.max(0, pCenter - halfSpan);
+    let pMax = i === WAYPOINT_CONFIGS.length - 1 ? 1 : Math.min(1, pCenter + halfSpan);
+
+    // Ensure no gaps and no overlap: next waypoint's min must be >= this max
+    if (i < WAYPOINT_CONFIGS.length - 1) {
+      const nextSection = offsets.find((o) => o.name === WAYPOINT_CONFIGS[i + 1].name.toLowerCase()) || offsets[i + 1] || offsets[0];
+      const nextCenter = Math.max(0, Math.min(1, (nextSection.top + nextSection.height * 0.4 - minTop) / (maxTop - minTop)));
+      const nextMin = Math.max(0, nextCenter - halfSpan);
+      pMax = Math.min(pMax, nextMin);
+    }
+
+    return { ...c, pMin, pMax };
+  });
 }
 
 // ── Scene Inner ────────────────────────────────────────────
@@ -52,9 +110,32 @@ function SceneInner({ coarse }: { coarse: boolean }) {
   const smoothP = useRef(0);
   const pointerNorm = useRef({ x: 0, y: 0 });
   const isFine = useRef(!coarse);
+  const waypointsRef = useRef<Waypoint[]>(measureWaypoints());
 
   const glowTex = useMemo(() => getGlowTexture(), []);
   const accentColor = useMemo(() => new THREE.Color(COLORS.accent), []);
+
+  // ── Dynamic waypoint measurement ─────────────────────────
+  const remeasure = useCallback(() => {
+    waypointsRef.current = measureWaypoints();
+  }, []);
+
+  useEffect(() => {
+    // Measure on mount after layout settles
+    requestAnimationFrame(() => requestAnimationFrame(remeasure));
+
+    // Debounced resize
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(remeasure, 200);
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      clearTimeout(resizeTimer);
+    };
+  }, [remeasure]);
 
   // ── Scroll tracking — native scrollY with damped lerp (0.06) smooths it ──
   const updateScroll = useCallback(() => {
@@ -82,8 +163,11 @@ function SceneInner({ coarse }: { coarse: boolean }) {
   // ── Init camera ─────────────────────────────────────────
   useEffect(() => {
     scene.fog = new THREE.FogExp2(COLORS.bg, 0.012);
-    camera.position.copy(WAYPOINTS[0].camPos);
-    camera.lookAt(WAYPOINTS[0].camLook);
+    const wp = waypointsRef.current;
+    if (wp.length > 0) {
+      camera.position.copy(wp[0].camPos);
+      camera.lookAt(wp[0].camLook);
+    }
   }, [scene, camera]);
 
   // ── Frame loop ──────────────────────────────────────────
@@ -100,23 +184,26 @@ function SceneInner({ coarse }: { coarse: boolean }) {
     // Lerp smoothP toward scrollP
     smoothP.current += (scrollP.current - smoothP.current) * 0.06;
 
+    const waypoints = waypointsRef.current;
+    if (waypoints.length === 0) return;
+
     // Find active waypoints and blend
     const p = smoothP.current;
-    let wpA = WAYPOINTS[0];
-    let wpB = WAYPOINTS[WAYPOINTS.length - 1];
+    let wpA = waypoints[0];
+    let wpB = waypoints[waypoints.length - 1];
     let blend = 0;
 
-    for (let i = 0; i < WAYPOINTS.length - 1; i++) {
-      if (p >= WAYPOINTS[i].pMin && p < WAYPOINTS[i + 1].pMax) {
-        wpA = WAYPOINTS[i];
-        wpB = WAYPOINTS[i + 1];
+    for (let i = 0; i < waypoints.length - 1; i++) {
+      if (p >= waypoints[i].pMin && p < waypoints[i + 1].pMax) {
+        wpA = waypoints[i];
+        wpB = waypoints[i + 1];
         blend = smoothstep(wpA.pMax, wpB.pMin, p);
         break;
       }
     }
-    if (p >= WAYPOINTS[WAYPOINTS.length - 1].pMin) {
-      wpA = WAYPOINTS[WAYPOINTS.length - 1];
-      wpB = WAYPOINTS[WAYPOINTS.length - 1];
+    if (p >= waypoints[waypoints.length - 1].pMin) {
+      wpA = waypoints[waypoints.length - 1];
+      wpB = waypoints[waypoints.length - 1];
       blend = 0;
     }
 
@@ -151,16 +238,21 @@ function SceneInner({ coarse }: { coarse: boolean }) {
       });
     }
 
-    // Satellite visibility: show around waypoints B-D (p 0.20–0.50)
-    // Smooth fade-in: p 0.20–0.26, fade-out: p 0.44–0.50
-    if (satelliteRef.current) {
-      const satVisible = p > 0.20 && p < 0.50;
+    // Satellite visibility: show around waypoint C
+    if (satelliteRef.current && waypoints.length >= 3) {
+      const wpc = waypoints[2]; // C
+      const satVisible = p > wpc.pMin - 0.08 && p < wpc.pMax + 0.08;
       satelliteRef.current.visible = satVisible;
       
       if (satVisible) {
         let satOpacity = 1;
-        if (p < 0.26) satOpacity = Math.max(0, (p - 0.20) / 0.06);
-        else if (p > 0.44) satOpacity = Math.max(0, (0.50 - p) / 0.06);
+        const fadeInEnd = wpc.pMin + 0.06;
+        const fadeOutStart = wpc.pMax - 0.06;
+        if (p < fadeInEnd && p > wpc.pMin - 0.08) {
+          satOpacity = Math.max(0, (p - (wpc.pMin - 0.08)) / 0.14);
+        } else if (p > fadeOutStart && p < wpc.pMax + 0.08) {
+          satOpacity = Math.max(0, ((wpc.pMax + 0.08) - p) / 0.14);
+        }
         
         satelliteRef.current.traverse((child: any) => {
           if (child.material) {
@@ -173,7 +265,7 @@ function SceneInner({ coarse }: { coarse: boolean }) {
       }
     }
 
-    // Core rotation + breathing — always fast 3s pulse (T14: removed slow 8s)
+    // Core rotation + breathing — always fast 3s pulse
     if (coreRef.current) {
       coreRef.current.rotation.x += 0.006 * delta;
       coreRef.current.rotation.y += 0.01 * delta;
@@ -183,8 +275,9 @@ function SceneInner({ coarse }: { coarse: boolean }) {
 
     // p > 0.95: slow drift hold
     if (p > 0.95) {
+      const lastWp = waypoints[waypoints.length - 1];
       camera.position.lerp(
-        new THREE.Vector3(WAYPOINTS[4].camPos.x + driftX * 0.3, WAYPOINTS[4].camPos.y + driftY * 0.3, WAYPOINTS[4].camPos.z),
+        new THREE.Vector3(lastWp.camPos.x + driftX * 0.3, lastWp.camPos.y + driftY * 0.3, lastWp.camPos.z),
         0.02
       );
     }
@@ -201,7 +294,6 @@ function SceneInner({ coarse }: { coarse: boolean }) {
       <StageNodes radius={coarse ? 3.0 : 4.0} />
 
       {/* Satellite system — visible around waypoint C */}
-      {/* [-5.616, 0.5616, 2.457] best for dis[play with 16 by 9 desktop */}
       <Satellite position={coarse ? [-3.6, 0.4, 1.8] : [-5.616, 0.5616, 2.457]} groupRef={satelliteRef} />
 
       {/* Dust — two z-parallax layers; half counts on coarse */}

@@ -34,7 +34,7 @@ export default function Home() {
       {/* ── Hero ────────────────────────────────────────────── */}
       {/* Layers 0 & 1: body bg + noscript poster (layout.tsx) — nothing rendered here */}
       {/* z-10 on section creates stacking context so children (text z-[20]) sit above fixed z-0 canvas */}
-      <section className="relative min-h-[100svh] flex flex-col justify-center px-4 z-[3]">
+      <section data-waypoint="a" className="relative min-h-[100svh] flex flex-col justify-center px-4 z-[3]">
         <EngineLoader />
         {/* F8: radial scrim behind hero text — ≤30% darkening for legibility */}
         <div
@@ -107,7 +107,7 @@ export default function Home() {
       </section>
 
       {/* ── Prospect Teaser (RICHER per F11/F21) ─────────────── */}
-      <Section>
+      <Section data-waypoint="b">
         <Eyebrow>SYSTEM / 01 — PROSPECT</Eyebrow>
         <ChoreoReveal variant="heading">
           <h2 className="font-display text-[clamp(1.953rem,4vw,2.441rem)] leading-tight text-[--text] mb-4">
@@ -149,7 +149,7 @@ export default function Home() {
       </Section>
 
       {/* ── Travel Planner Teaser (RICHER per F11/F21) ────────── */}
-      <Section>
+      <Section data-waypoint="c">
         <Eyebrow>SYSTEM / 02 — TRAVEL PLANNER AGENT</Eyebrow>
         <ChoreoReveal variant="heading">
           <h2 className="font-display text-[clamp(1.953rem,4vw,2.441rem)] leading-tight text-[--text] mb-4">
@@ -185,7 +185,7 @@ export default function Home() {
 
 
       {/* ── Experience Timeline ──────────────────────────────── */}
-      <Section>
+      <Section data-waypoint="d">
         <Eyebrow>Where the systems shipped</Eyebrow>
 
         <CascadeRows staggerMs={40}>
@@ -249,7 +249,7 @@ export default function Home() {
       </Section>
 
       {/* ── Publication & Open Source ───────────────────────── */}
-      <Section>
+      <Section data-waypoint="e">
         <Eyebrow>Verifiable elsewhere</Eyebrow>
 
         <div className="space-y-4 max-w-[68ch]">
