@@ -30,7 +30,7 @@ export default function ProjectCard({
       href={href}
       target={href.startsWith("http") ? "_blank" : undefined}
       rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-      className="group block rounded-[--r-md] border border-[--line] bg-[--surface] p-6 transition-all duration-[--dur-fast] hover:border-[--accent] hover:shadow-[0_16px_48px_rgba(0,0,0,0.45)]"
+      className="group block rounded-[--r-md] border border-[--line] bg-[--surface] p-6 transition-all duration-[--dur-fast] hover:border-[--accent] hover:shadow-[0_16px_48px_rgba(0,0,0,0.45)] link-pulse-hover link-pulse-auto"
     >
       <h3 className="font-display text-lg mb-1 text-[--text] group-hover:text-[--accent] transition-colors">
         {title}

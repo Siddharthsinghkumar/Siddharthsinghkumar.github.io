@@ -32,30 +32,33 @@ export default function Nav() {
   }, []);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-[300ms] ease-[--ease] border-b border-[--line] ${
-        scrolled ? "bg-[--bg]/92" : ""
-      }`}
-    >
-      {scrolled && (
-        <div className="absolute inset-0 z-[-1] overflow-hidden pointer-events-none">
-          <FlutedGlass
-            colorBack="rgba(0,0,0,0.70)"
-            colorShadow="rgba(255,89,0,0.31)"
-            colorHighlight="rgb(232, 232, 232)"
-            size={0.62}
-            shadows={0.25}
-            highlights={0.1}
-            shape="lines"
-            angle={0}
-            distortionShape="prism"
-            distortion={0.5}
-            blur={0}
-            edges={0.25}
-          />
-        </div>
-      )}
-      <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-4 relative z-10">
+    <>
+      <div className="fixed top-0 left-0 right-0 z-[40] h-16 pointer-events-none">
+        {scrolled && (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <FlutedGlass
+              colorBack="rgba(0,0,0,0.70)"
+              colorShadow="rgba(255,89,0,0.31)"
+              colorHighlight="rgb(232, 232, 232)"
+              size={0.62}
+              shadows={0.25}
+              highlights={0.1}
+              shape="lines"
+              angle={0}
+              distortionShape="prism"
+              distortion={0.5}
+              blur={0}
+              edges={0.25}
+            />
+          </div>
+        )}
+      </div>
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-[300ms] ease-[--ease] border-b border-[--line] ${
+          scrolled ? "bg-[--bg]/92" : ""
+        }`}
+      >
+        <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-4 relative">
         {/* T14: plain <a> so clicking from hero page actually reloads (Next <Link> is no-op on same route) */}
         <a
           href="/"
@@ -119,6 +122,7 @@ export default function Nav() {
           </Button>
         </div>
       </div>
-    </nav>
+      </nav>
+    </>
   );
 }

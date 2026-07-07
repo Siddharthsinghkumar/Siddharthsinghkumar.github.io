@@ -4,6 +4,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
+import ConsoleFix from "@/components/ConsoleFix";
 import "./globals.css";
 
 const siteUrl = "https://Siddharthsinghkumar.github.io";
@@ -62,6 +63,7 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} antialiased`}
       data-scroll-behavior="smooth"
+      suppressHydrationWarning
     >
       <head>
         {/* theme-color for browser chrome */}
@@ -86,6 +88,12 @@ export default function RootLayout({
         className="min-h-screen bg-[--bg] text-[--text] font-sans"
         style={{ backgroundColor: "#0B0B0D" }}
       >
+        <noscript
+          dangerouslySetInnerHTML={{
+            __html: `<div style="position:fixed;inset:0;z-index:1;background-image:url('/poster-home.webp');background-size:cover;background-position:center;pointer-events:none" aria-hidden="true"></div>`,
+          }}
+        />
+        <ConsoleFix />
         <SmoothScroll />
         <CustomCursor />
         <Nav />

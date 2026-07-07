@@ -34,7 +34,7 @@ export default function Home() {
       {/* ── Hero ────────────────────────────────────────────── */}
       {/* Layer 0 & 1 skipped: no PageBackground or CssHeroAtmosphere in hero */}
       {/* z-10 on section creates stacking context so children (text z-[20]) sit above fixed z-0 canvas */}
-      <section className="relative min-h-[100svh] flex flex-col justify-center px-4 z-10">
+      <section className="relative min-h-[100svh] flex flex-col justify-center px-4 z-[3]">
         <EngineLoader />
         {/* F8: radial scrim behind hero text — ≤30% darkening for legibility */}
         <div
@@ -90,6 +90,9 @@ export default function Home() {
               11-STAGE PIPELINE · 15–20 GB SCANNED DAILY · RUNS ON MY OWN HARDWARE
             </p>
           </ChoreoReveal>
+        </div>
+
+        <div className="mx-auto max-w-[1200px] w-full relative z-[30]">
           <ChoreoReveal variant="hero-item" heroIndex={4}>
             <div className="flex flex-wrap gap-3">
               <Button href="mailto:siddharthsingh8418@gmail.com" className="border-white text-white border-2">

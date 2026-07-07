@@ -27,7 +27,7 @@ const POSTER_URL = "/poster-home.webp";
 function PosterDiv() {
   return (
     <div
-      className="fixed inset-0 z-0 pointer-events-none"
+      className="fixed inset-0 z-[1] pointer-events-none"
       style={{
         backgroundImage: `url(${POSTER_URL})`,
         backgroundSize: "cover",
@@ -88,13 +88,9 @@ export default function EngineLoader() {
 
   return (
     <>
-      {/* No-JS fallback: scene poster. Browsers ignore <noscript> content when
-          JS runs, so this costs normal users nothing (no fetch, no LCP shift). */}
-      <noscript
-        dangerouslySetInnerHTML={{
-          __html: `<div style="position:fixed;inset:0;z-index:0;background-image:url('${POSTER_URL}');background-size:cover;background-position:center;pointer-events:none" aria-hidden="true"></div>`,
-        }}
-      />
+      {/* No-JS fallback: scene poster. Moved to server-rendered layout.tsx
+          so it actually renders when JS is disabled. */}
+      {/* Note: noscript poster now lives in layout.tsx for proper server-side rendering */}
       {/* Reduced motion: poster only — canvas never mounts. */}
       {profile?.isReducedMotion ? <PosterDiv /> : null}
       {/* Normal path: live canvas once rIC fires; poster on WebGL failure. */}

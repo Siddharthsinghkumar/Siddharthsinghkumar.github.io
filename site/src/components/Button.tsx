@@ -5,6 +5,7 @@ type BaseProps = {
   variant?: "primary" | "ghost";
   children: ReactNode;
   className?: string;
+  linkPulse?: boolean;
 };
 
 type ButtonAsButton = BaseProps &
@@ -14,7 +15,7 @@ type ButtonAsLink = BaseProps &
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 export default function Button(props: ButtonProps) {
-  const { variant = "primary", children, className = "", ...rest } = props;
+  const { variant = "primary", children, className = "", linkPulse, ...rest } = props;
 
   const base =
     "inline-flex items-center justify-center font-mono text-[13px] uppercase tracking-[0.08em] rounded-[--r-sm] px-5 py-2.5 transition-colors duration-[--dur-fast] cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--accent]";
