@@ -16,20 +16,41 @@ const links = [
 
 export default function Nav() {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
+  // TEMP: Force scrolled to true always per Sid's request
+  const [scrolled, setScrolled] = useState(true);
+  
+  // DecryptedText dual trigger logic
+  // On subpages, it's hover-only from the start
+  const [hasInitialDecrypted, setHasInitialDecrypted] = useState(pathname !== "/");
 
   useEffect(() => {
     // Feature-query check: only enable glass if backdrop-filter is supported
     const supportsBackdrop = CSS.supports("backdrop-filter", "blur(1px)");
     if (!supportsBackdrop) return;
 
+    // ORIGINAL: setScrolled(window.scrollY > 40) — commented out, temp always visible per Sid
+    /*
     const onScroll = () => {
       setScrolled(window.scrollY > 40);
     };
     onScroll(); // check initial state
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+    */
   }, []);
+
+  useEffect(() => {
+    if (pathname === "/") {
+      import("./engine/engine-ready").then(({ engineReady }) => {
+        engineReady.then(() => {
+          // Trigger the initial view animation slightly after engine is ready
+          setTimeout(() => {
+            setHasInitialDecrypted(true);
+          }, 500);
+        });
+      });
+    }
+  }, [pathname]);
 
   return (
     <>
@@ -62,23 +83,25 @@ export default function Nav() {
         {/* T14: plain <a> so clicking from hero page actually reloads (Next <Link> is no-op on same route) */}
         <a
           href="/"
-          className="font-mono text-[10px] xs:text-[11px] md:text-[13px] uppercase tracking-[0.08em] text-[--text] hover:text-[--accent] transition-colors duration-[--dur-fast] whitespace-nowrap no-underline"
+          className="font-mono text-[10px] xs:text-[11px] md:text-[13px] uppercase tracking-[0.08em] text-[--text] hover:text-[--accent] transition-colors duration-[--dur-fast] whitespace-nowrap no-underline group"
         >
-          <DecryptedText
-            text="Siddharth Singh"
-            animateOn="hover"
-            speed={30}
-            maxIterations={8}
-            sequential={true}
-            revealDirection="center"
-            className="text-[--text]"
-            encryptedClassName="text-[--muted]"
-            parentClassName="font-mono uppercase tracking-[0.08em]"
-          />
+          <span className="hidden xs:inline">
+            <DecryptedText
+              text="Siddharth Singh"
+              animateOn={hasInitialDecrypted ? "hover" : "view"}
+              speed={30}
+              maxIterations={8}
+              sequential={true}
+              revealDirection="center"
+              className="text-[--text]"
+              encryptedClassName="text-[--muted]"
+              parentClassName="font-mono uppercase tracking-[0.08em]"
+            />
+          </span>
           <span className="xs:hidden">
             <DecryptedText
               text="SS"
-              animateOn="hover"
+              animateOn={hasInitialDecrypted ? "hover" : "view"}
               speed={30}
               maxIterations={4}
               sequential={false}
@@ -98,7 +121,7 @@ export default function Nav() {
             >
               <DecryptedText
                 text={label}
-                animateOn="hover"
+                animateOn={hasInitialDecrypted ? "hover" : "view"}
                 speed={40}
                 maxIterations={8}
                 sequential={true}
