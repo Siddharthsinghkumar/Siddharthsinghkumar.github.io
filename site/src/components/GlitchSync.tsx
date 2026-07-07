@@ -32,14 +32,16 @@ export default function GlitchSync() {
 
     // Fire once after mount, then on interval
     const startDelay = 2000;
+    let interval: ReturnType<typeof setInterval>;
+    
     const initialTimer = setTimeout(() => {
       fireAll();
-      const interval = setInterval(fireAll, AUTO_INTERVAL);
-      return () => clearInterval(interval);
+      interval = setInterval(fireAll, AUTO_INTERVAL);
     }, startDelay);
 
     return () => {
       clearTimeout(initialTimer);
+      if (interval) clearInterval(interval);
       cancelAnimationFrame(rafRef.current);
     };
   }, []);
