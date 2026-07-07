@@ -162,8 +162,6 @@ export default function DecryptedText({
   ]);
 
   useEffect(() => {
-    if (animateOn !== "view" && animateOn !== "inViewHover") return;
-
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting && !hasAnimated) {
@@ -186,7 +184,7 @@ export default function DecryptedText({
     return () => {
       if (currentRef) observer.unobserve(currentRef);
     };
-  }, [animateOn, hasAnimated, triggerDecrypt]);
+  }, [hasAnimated, triggerDecrypt]);
 
   return (
     <span
