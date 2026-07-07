@@ -6,6 +6,7 @@ import TravelPlannerDiagram from "@/components/TravelPlannerDiagram";
 import DecryptedText from "@/components/DecryptedText";
 import PaperInkLoader from "@/components/PaperInkLoader";
 import ChoreoReveal from "@/components/ChoreoReveal";
+import PageBackground from "@/components/PageBackground";
 
 export const metadata: Metadata = {
   title: "Travel Planner Agent — agentic AI with failure-proof inference",
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
 export default function TravelPlannerPage() {
   return (
     <>
+      <PageBackground image="/test/final-df-h.jpg" />
       {/* Hero */}
       <Section className="pt-[calc(4rem+96px)] relative overflow-hidden min-h-[75svh] flex flex-col justify-center">
         <PaperInkLoader />

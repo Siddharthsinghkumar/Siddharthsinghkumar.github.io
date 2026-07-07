@@ -7,6 +7,7 @@ import ProspectDiagram from "@/components/ProspectDiagram";
 import DecryptedText from "@/components/DecryptedText";
 import PaperInkLoader from "@/components/PaperInkLoader";
 import ChoreoReveal from "@/components/ChoreoReveal";
+import PageBackground from "@/components/PageBackground";
 
 export const metadata: Metadata = {
   title: "Prospect — an autonomous job-prospecting engine",
@@ -56,6 +57,7 @@ const components = [
 export default function ProspectPage() {
   return (
     <>
+      <PageBackground image="/test/final-df-h.jpg" />
       <Section className="pt-[calc(4rem+96px)] relative overflow-hidden min-h-[75svh] flex flex-col justify-center">
         <PaperInkLoader />
         <ChoreoReveal variant="hero-item" heroIndex={0}>
