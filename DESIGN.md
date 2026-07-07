@@ -223,4 +223,17 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 | D47 | 2026-07-05 | Lighthouse gate throttling devtools → simulate (Sid's call). Devtools made the heavy 3D home + GooeyLoader persistently score perf 64/CLS .058 and was never recorded green in qa-report; simulate is the Lighthouse-CI standard. Thresholds (home 85, case 90, CLS .05) unchanged | Sid: switch to simulated throttling. |
 | D49 | 2026-07-05 | Lighthouse perf gates lowered: home 85→55, case 90→75 (simulated throttling). TextPressure pre-paint fit fixed CLS (0.058→0.005). | Sid: "performance is not the issue — it's a portfolio, people can wait. The problem is it can't be forgettable." Honest floors for the N17-locked scene + GooeyLoader; real quality gates are the screenshots + visual-gate. |
 
+| # | Date | Decision | Why |
+|---|---|---|---|
+| D50 | 2026-07-07 | Commented-out dead code deleted (DataStream/SpriteGlow call sites, breathe math, onScroll) — reverses C4 "keep commented" | Sid: delete now; git history preserves it; audits stop re-flagging |
+| D51 | 2026-07-07 | /about deleted; /knowme is the about page; sitemap swapped | Orphaned duplicate with placeholder QR card |
+| D52 | 2026-07-07 | Nav decrypt: once per page load everywhere, never on hover; hover = color only, suppressed during decrypt | phase4-plan Obj 2; supersedes 2026-07-06 dual-trigger |
+| D53 | 2026-07-07 | Liquid-glass droplet ripple = the site's single glassmorphism instance (D25 slot); once post-decrypt + press ripples; zero new deps | Sid picked liquid-glass over CSS wave |
+| D54 | 2026-07-07 | Link glitch pulse uniform sitewide (auto 3s shared clock + hover) | Supersedes T14 hover-only-subpages |
+| D55 | 2026-07-07 | Screenshot frames: scanlines removed permanently, corner ticks stay, placeholder SVGs until real captures | Sid: "Lines are weird" |
+| D56 | 2026-07-07 | Subpage layer schemas per phase4-plan Obj 3; KnowMe lanyard renders above nav | Sid's written layer architecture |
+| D57 | 2026-07-07 | Loading overlay on the session's entry page only (in-memory flag, hard reload resets) | Sid: "real loading on subpages only if the site loads firstly on a subpage" |
+| D58 | 2026-07-07 | /test/ images TEMP-approved as BG assets; must be swapped before launch | Sid accepted interim public exposure |
+| D59 | 2026-07-07 | Waypoint p-values measured from DOM section offsets at runtime (resize-aware), not hardcoded | Hardcoded percentages can't hold across viewports |
+
 *(Executor: append new rows here for every design choice made during build.)*

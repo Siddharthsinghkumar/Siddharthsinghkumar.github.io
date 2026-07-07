@@ -29,7 +29,10 @@
 ## 2b. Assets for Sid to supply
 
 - [ ] **Tile screenshots** — drop images into `site/public/tiles/` (auto-picked next build, scan-tiles.mjs → GridBackdrop renders them)
-- [ ] **Card face photo** — replace monogram on /about Lanyard card: update `frontImage` data URI in `site/src/app/about/page.tsx`
+- [ ] **Card face photo** — replace monogram on /knowme Lanyard card: update `frontImage` data URI in `site/src/app/knowme/KnowMeClient.tsx`
+- [ ] **Replace all `site/public/test/` images with final assets** — personal photo currently public on /knowme, /prospect, /projects, /travel-planner. Re-point PageBackground `image` props to final images.
+- [ ] **Re-verify KnowMe text tone after image swap** — text color is statically chosen per current image; may need adjustment.
+- [ ] **Capture + drop in the four real screenshots** — frames + captions ready in ScreenshotFrame.
 
 ## 3. LinkedIn Verification
 

@@ -273,6 +273,28 @@ router", "SSE streaming agent", + name.
 - Claims V1–V8: resolved per register at top of file.
 - Contributions counter: build-time computed, "N00+" ballpark, DecryptedText render.
 
+## PAGE: `/knowme`
+
+**Copy registered from KnowMeClient.tsx (2026-07-07):**
+
+### Bio
+> I'm Siddharth — an AI backend engineer in Noida. I build agentic systems that keep working when no one's watching: pipelines that read, match, and deliver on their own schedule, and agents that survive their own failures. Before that I led the build of an autonomous firefighting robot, and took a healthcare platform from zero to production in six weeks. I like honest status labels, observable systems, and tools that earn their place. The card is real — drag it.
+
+### Buttons
+- `siddharthsingh8418@gmail.com` (mailto link)
+- `Resume ↓` (PDF link)
+- GitHub (external link)
+- LinkedIn (external link)
+
+### CTA footer (T4.5.4 — Want your own version)
+- Prospect page mailto: `siddharthsingh8418@gmail.com?subject=Prospect%20System%20Inquiry`
+- Travel Planner page mailto: `siddharthsingh8418@gmail.com?subject=Travel%20Planner%20Agent%20Inquiry`
+
+### Claims verification
+- "six weeks" — already verified in claims register V5.
+- "firefighting robot" — already verified in claims register V4.
+- Remaining bio claims (Noida, agentic systems, pipelines, healthcare platform) consistent with CONTEXT.md §3 identities.
+
 ## Open items
 
 1. **Sid's final read-through of this file** before build.
