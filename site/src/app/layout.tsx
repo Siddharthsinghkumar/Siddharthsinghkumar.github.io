@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
 import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
 import GlitchSync from "@/components/GlitchSync";
@@ -100,7 +99,6 @@ export default function RootLayout({
         <GlitchSync />
         <Nav />
         <main className="pt-16">{children}</main>
-        <Footer />
       </body>
     </html>
   );
