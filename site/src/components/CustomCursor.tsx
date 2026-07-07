@@ -11,6 +11,8 @@ export default function CustomCursor() {
     const isFinePointer = window.matchMedia("(any-pointer: fine)").matches;
     if (!isFinePointer) return;
 
+    document.documentElement.classList.add("custom-cursor-active");
+
     let mouseX = 0;
     let mouseY = 0;
     let currentX = 0;
@@ -56,6 +58,7 @@ export default function CustomCursor() {
     document.addEventListener("mouseover", onMouseOver, { passive: true });
 
     return () => {
+      document.documentElement.classList.remove("custom-cursor-active");
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseover", onMouseOver);

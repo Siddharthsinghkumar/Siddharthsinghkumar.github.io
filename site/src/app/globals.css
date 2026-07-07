@@ -141,6 +141,10 @@ html {
   scroll-behavior: smooth;
 }
 
+html.custom-cursor-active, html.custom-cursor-active * {
+  cursor: none !important;
+}
+
 body {
   font-family: var(--font-inter), system-ui, sans-serif;
   font-size: 16px;
