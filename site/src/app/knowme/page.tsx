@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Know Me | Siddharth Singh",
     description: "AI Backend Engineer — agentic pipelines, LLM orchestration, local inference.",
-    images: [{ url: "/og/about.png", width: 1200, height: 630 }],
+    images: [{ url: "/og/knowme.png", width: 1200, height: 630 }],
   },
 };
 
