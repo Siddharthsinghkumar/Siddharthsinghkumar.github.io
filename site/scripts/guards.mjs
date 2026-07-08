@@ -121,7 +121,7 @@ const pageAnchors = {
   "/prospect": [],
   "/travel-planner": [],
   "/projects": [],
-  "/about": [],
+  "/knowme": [],
   "/404": [],
 };
 for (const [pageKey, html] of Object.entries(pages)) {
@@ -142,6 +142,12 @@ for (const [pageKey, html] of Object.entries(pages)) {
       continue;
     }
     if (!knownPages.includes(baseHref) && !baseHref.startsWith("/_next")) {
+      // Asset link — pass when the corresponding file exists in out/ (placeholders, og-images, etc.)
+      const assetPath = join(out, baseHref.replace(/^\//, ""));
+      if (existsSync(assetPath)) {
+        ok(`${pageKey}: asset "${href}" exists in out/`);
+        continue;
+      }
       fail(`${pageKey}: dead link "${href}" (not a known page)`);
       continue;
     }
