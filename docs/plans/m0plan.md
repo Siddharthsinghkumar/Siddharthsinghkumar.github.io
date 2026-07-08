@@ -383,3 +383,7 @@ Fully grilled 2026-07-08, two rounds. **Round 1 (self-grill against the tree)** 
 Residual risks: (1) A7 is narrowed but the perceptual fix still needs taste — one-attempt STOP rule covers it; (2) a case page could land below 70 → STOP 2, Sid decides; (3) typing `Lanyard.tsx` donor code without behavior change — post-fix visual-gate comparison in T15 covers it.
 
 **SCOPE FREEZE (2026-07-08):** this plan is frozen after the grill. Executors may not add, merge, reorder, or reinterpret tasks at execution time; STOPs are accept/reject only. Anything new goes to the v2 parking lot or a new Sid-approved plan.
+
+## Exit state (2026-07-08)
+
+Batch 7 (T25–T29) executed by DeepSeek v4 Flash @ MAX. Precondition (M7 assets) — Sid deferred D1–D5, Batch 7 proceeded with `/test/` → `/images/` swap per his instructions. All 3× consecutive gate runs green. Docs close-out and completeness table posted at FINAL STOP. Awaiting Sid's visual pass. Nothing pushed.
