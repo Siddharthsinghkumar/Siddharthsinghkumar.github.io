@@ -64,7 +64,7 @@ export default function Nav() {
           {/* Wordmark */}
           <a
             href="/"
-            className="font-mono text-[10px] xs:text-[11px] md:text-[13px] uppercase tracking-[0.08em] text-[--text] whitespace-nowrap no-underline group"
+            className="nav-link font-mono text-[10px] xs:text-[11px] md:text-[13px] uppercase tracking-[0.08em] text-[--text] whitespace-nowrap no-underline group"
           >
             {canDecrypt ? (
               <span className="hidden xs:inline">
@@ -113,7 +113,7 @@ export default function Nav() {
                 : "";
               const flashClass = waveFlash ? "text-[--accent] transition-colors duration-75" : "";
               return (
-                <Link key={href} href={href} className="group">
+                <Link key={href} href={href} className="nav-link group">
                   {canDecrypt ? (
                     <DecryptedText
                       text={label}
