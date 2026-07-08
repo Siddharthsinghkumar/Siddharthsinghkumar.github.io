@@ -29,6 +29,7 @@ function ImageTile({ src }: { src: string }) {
       className="relative overflow-hidden rounded-[--r-sm] border border-[--line]"
       style={{ opacity: 0.35, aspectRatio: "1" }}
     >
+      {/* eslint-disable-next-line @next/next/no-img-element -- static export: next/image optimization unavailable */}
       <img
         src={src}
         alt=""

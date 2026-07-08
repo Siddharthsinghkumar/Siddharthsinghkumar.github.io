@@ -13,14 +13,15 @@ export default function ScreenshotFrame({ caption, placeholder }: ScreenshotFram
       <div className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-[--accent]" />
       <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-[--accent]" />
 
-      {placeholder ? (
+      {placeholder && (
+        // eslint-disable-next-line @next/next/no-img-element -- static export: next/image optimization unavailable
         <img
           src={placeholder}
           alt=""
           className="absolute inset-0 w-full h-full object-cover opacity-50"
           aria-hidden="true"
         />
-      ) : null}
+      )}
 
       <p className="font-mono text-[11px] text-[--muted] text-center relative z-10">
         {caption}
