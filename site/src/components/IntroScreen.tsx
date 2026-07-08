@@ -76,7 +76,7 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
       };
       rafId = requestAnimationFrame(tick);
     } else {
-      // Subpage: no 3D engine — wait for fonts + window load + min 1000ms
+      // Subpage: no 3D engine — fonts + document ready + min 1000ms
       const dismiss = () => {
         if (!doneRef.current) {
           const elapsed = Date.now() - startRef.current;
@@ -87,7 +87,11 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
       };
 
       document.fonts.ready.then(() => { if (!doneRef.current) reportProgress(15); });
-      window.addEventListener("load", dismiss, { once: true });
+      if (document.readyState === "complete") {
+        dismiss();
+      } else {
+        window.addEventListener("load", dismiss, { once: true });
+      }
       maxTimerRef.current = setTimeout(() => { if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); } }, MAX_WAIT);
 
       const tick = () => {
