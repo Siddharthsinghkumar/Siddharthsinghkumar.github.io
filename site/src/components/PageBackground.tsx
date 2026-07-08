@@ -51,7 +51,7 @@ export default function PageBackground({ image, className = "" }: PageBackground
       <PaperTexture
         width={dimensions.width}
         height={dimensions.height}
-        image={image || "/test/pic_idea.webp"}
+        image={image || "/images/bg-graphite.webp"}
         colorBack={TOKEN_HEX.white}
         colorFront={TOKEN_HEX.paperFront}
         contrast={0.2}

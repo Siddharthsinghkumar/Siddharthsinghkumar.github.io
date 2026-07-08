@@ -21,7 +21,7 @@ export default function KnowMeBackground() {
       <FlutedGlass
         width={dimensions.width}
         height={dimensions.height}
-        image="/test/pic_idea.webp"
+        image="/images/knowme-bg.webp"
         colorBack={TOKEN_HEX.transparent}
         colorShadow={TOKEN_HEX.black}
         colorHighlight={TOKEN_HEX.white}
