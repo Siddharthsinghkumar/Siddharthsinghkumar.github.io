@@ -2,13 +2,13 @@
 
 Static-export Next.js app deployed to GitHub Pages at
 `Siddharthsinghkumar.github.io`. 6 pages: home, Prospect, Travel Planner,
-Projects, About, 404.
+Projects, Know Me, 404.
 
 ```bash
 npm run dev          # dev server at localhost:3000
 npm run build        # produces out/
 npm run guards       # content/token/SEO/JS invariant checks
-npx playwright test  # 32 smoke + a11y tests (desktop + mobile)
+npx playwright test  # 36 smoke + a11y tests (desktop + mobile)
 node scripts/lighthouse-gate.mjs  # perf ≥55 home / ≥75 case, a11y ≥95, seo ≥95
 node scripts/visual-gate.mjs       # scene + orange pixel perceptibility gates
 ```
@@ -28,8 +28,8 @@ A scheduled rebuild at `30 22 * * *` UTC refreshes live GitHub stats nightly.
 - **Resume PDF**: replace `public/resume-siddharth-singh.pdf`
 - **Tile screenshots**: drop images into `public/tiles/` — run
   `node scripts/scan-tiles.mjs && npm run build` to pick them up
-- **Card photo**: replace the monogram on `/about` by updating the SVG
-  data-URI in `src/app/about/page.tsx`
+- **Card photo**: replace the monogram on `/knowme` by updating the SVG
+  data-URI in `src/app/knowme/KnowMeClient.tsx`
 
 ## Gate suite one-liner
 
