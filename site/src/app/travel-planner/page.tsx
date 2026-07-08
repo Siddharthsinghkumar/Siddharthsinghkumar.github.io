@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 export default function TravelPlannerPage() {
   return (
     <>
-      <PageBackground image="/test/final-df-h.webp" />
+      {/* <PageBackground image="/test/final-df-h.webp" /> Can be restored if visuals require */}
       {/* Hero */}
       <Section className="pt-[calc(4rem+96px)] relative overflow-hidden min-h-[75svh] flex flex-col justify-center">
         <PaperInkLoader />

@@ -237,7 +237,7 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 | D59 | 2026-07-07 | Waypoint p-values measured from DOM section offsets at runtime (resize-aware), not hardcoded | Hardcoded percentages can't hold across viewports |
 | D60 | 2026-07-08 | Site goal reweighted: memorable-enough-to-revisit > fast/professional; the site must define Sid | Sid's explicit ranking; taste calls resolve toward distinctiveness, perf thresholds stay Sid-owned |
 | D61 | 2026-07-08 | M0.1: NavRipple REMOVED for launch; donor evaluation → v2 parking lot. Narrows D53 to launch scope | Idle-rAF violation + not liquid glass; replacement puts a taste loop on the critical path |
-| D62 | 2026-07-08 | M0.3: case-page ambient diet — Option A (keep both) chosen at STOP 1 | Memorability outranks perf (D60); both systems together create the desired atmosphere despite the perf hit |
+| D62 | 2026-07-08 | M0.3: case-page ambient diet — Option C (hero scene only) | Sid: keep PaperInkLoader, comment out PageBackground to hit perf floor, can restore later if visuals require |
 | D63 | 2026-07-08 | M0.2: D54 3s link auto-pulse UPHELD (keep) | Recurring motion is the point — memorability doctrine (D60) |
 | D64 | 2026-07-08 | M0.4: launch via fresh-history single-commit push; this repo remains the private working copy | Tracked history contains personal photos + phone number; a github.io repo is public forever |
 | D65 | 2026-07-08 | M0.5: project links re-pointed to firefighting-robot-public (3★) and mtk-firmware-unlock-root (8★) | Old repo names 404 publicly; new URLs verified HTTP 200 on 2026-07-08 |
