@@ -13,7 +13,6 @@ All responses must start with my name. My name is **Sid**.
 | **EXECUTION-PLAN.md** | `/home/sidd/project/freelance/portfolio-website/EXECUTION-PLAN.md` | T0–T7 executor plan with done-criteria, gates, kickoff prompt |
 | **docs/learned.md** | `/home/sidd/project/freelance/portfolio-website/docs/learned.md` | 973-line master learnings from sindhey-website: 23 mistakes, 46 lessons, 15 weak points, 14-day roadmap |
 | **reference-skill.md** | `/home/sidd/project/freelance/portfolio-website/reference-skill.md` | 84 skills, MCPs, CLIs & frameworks cataloged from sindhey-website |
-| **howtodeploy.md** | `/home/sidd/project/freelance/portfolio-website/howtodeploy.md` | Coolify self-hosted free deployment strategy |
 | **local-resume-references.md** | `/home/sidd/project/freelance/portfolio-website/local-resume-references.md` | Sid's resume details for portfolio content |
 | **portfoli-card.md** | `/home/sidd/project/freelance/portfolio-website/portfoli-card.md` | React Bits portfolio card component integration |
 | **profile-pic-card.md** | `/home/sidd/project/freelance/portfolio-website/profile-pic-card.md` | React Bits Lanyard component integration |
@@ -50,5 +49,5 @@ All responses must start with my name. My name is **Sid**.
 4. Research papers have `.pdf` copies — read `.md` summaries first, fallback to `.pdf` only if needed.
 5. Reference websites (1-5) are design inspiration — mine for patterns, not copy.
 6. UI component files (1-3) contain React Bits integration prompts — follow the exact prompt format.
-7. Deploy via Coolify (self-hosted), not Vercel — see `howtodeploy.md`.
+7. Deploy via GitHub Pages static export (CLAUDE.md hard constraint); Sid pushes, nightly cron redeploys.
 8. Commit each completed task separately with descriptive messages. Never mention any AI/agent (Claude, Deepseek, etc.) in commit messages. After all tasks complete, check `git status` to ensure nothing is left uncommitted and everything in `.gitignore` is properly ignored.
