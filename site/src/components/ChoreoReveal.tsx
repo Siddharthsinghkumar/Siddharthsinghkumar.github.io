@@ -21,7 +21,6 @@ export default function ChoreoReveal({
   children,
   className = "",
   variant = "body",
-  staggerMs = 60,
   heroIndex = 0,
 }: ChoreoProps) {
   const ref = useRef<HTMLDivElement>(null);

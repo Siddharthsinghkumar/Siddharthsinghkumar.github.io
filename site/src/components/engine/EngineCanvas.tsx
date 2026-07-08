@@ -48,7 +48,6 @@ function measureWaypoints(): Waypoint[] {
   }
 
   // Section order: a-hero, b-prospect, c-travel, d-timeline, e-publication
-  const totalScrollable = Math.max(1, document.body.scrollHeight - window.innerHeight);
 
   // Get each section's offsetTop — normalized
   const offsets: { name: string; top: number; height: number }[] = [];

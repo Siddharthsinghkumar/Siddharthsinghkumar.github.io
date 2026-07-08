@@ -8,7 +8,7 @@
 import { useRef, useEffect, useState, useMemo, type ReactNode } from "react";
 import manifest from "@/data/tiles-manifest.json";
 
-function Tile({ children, index }: { children: ReactNode; index: number }) {
+function Tile({ children }: { children: ReactNode }) {
   return (
     <div
       className="flex items-center justify-center p-2 border border-[--line] rounded-[--r-sm]"
@@ -23,7 +23,7 @@ function Tile({ children, index }: { children: ReactNode; index: number }) {
   );
 }
 
-function ImageTile({ src, index }: { src: string; index: number }) {
+function ImageTile({ src }: { src: string }) {
   return (
     <div
       className="relative overflow-hidden rounded-[--r-sm] border border-[--line]"
@@ -95,7 +95,7 @@ export default function GridBackdrop() {
 
   const tiles = useMemo<ReactNode[]>(() => {
     const imageTiles: ReactNode[] = manifest.tiles.map((src, i) => (
-      <ImageTile key={`img-${i}`} src={src} index={i} />
+      <ImageTile key={`img-${i}`} src={src} />
     ));
     const all = [...imageTiles, ...generatedTiles];
     return all;
@@ -141,12 +141,12 @@ export default function GridBackdrop() {
   const grid: ReactNode[] = [];
   for (let i = 0; i < manifest.tiles.length; i++) {
     grid.push(
-      <ImageTile key={`img-${i}`} src={manifest.tiles[i]} index={i} />,
+      <ImageTile key={`img-${i}`} src={manifest.tiles[i]} />,
     );
   }
   for (let i = 0; i < generatedTiles.length; i++) {
     grid.push(
-      <Tile key={`gen-${i}`} index={manifest.tiles.length + i}>
+      <Tile key={`gen-${i}`}>
         {generatedTiles[i]}
       </Tile>,
     );

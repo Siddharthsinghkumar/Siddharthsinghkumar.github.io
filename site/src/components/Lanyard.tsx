@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unknown-property */
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { RefObject } from 'react';
@@ -99,17 +98,9 @@ interface BandProps {
 }
 
 interface Vec3Like { x: number; y: number; z: number }
-interface QuatLike { x: number; y: number; z: number; w: number }
 
 function toVec3(v: Vec3Like): THREE.Vector3 {
   return new THREE.Vector3(v.x, v.y, v.z);
-}
-
-function copyVec3(dst: Vec3Like, src: THREE.Vector3): Vec3Like {
-  dst.x = src.x;
-  dst.y = src.y;
-  dst.z = src.z;
-  return dst;
 }
 
 function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null, backImage = null, imageFit = 'cover', lanyardImage = null, lanyardWidth = 1 }: BandProps) {

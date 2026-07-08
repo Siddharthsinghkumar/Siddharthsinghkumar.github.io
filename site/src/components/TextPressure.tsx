@@ -59,7 +59,6 @@ export default function TextPressure({
 
   const [fontSize, setFontSize] = useState<number | null>(null);
   const [lineHeight, setLineHeight] = useState(1);
-  const [fitted, setFitted] = useState(false);
 
   // Split chars — preserve spaces as-is for array but render them specially
   const chars = text.split("");
@@ -109,7 +108,6 @@ export default function TextPressure({
     }
     setFontSize(trial);
     setLineHeight(1);
-    setFitted(true);
   }, [chars, minFontSize]);
 
   // Initial fit runs before paint (isomorphic layout effect) so the size change

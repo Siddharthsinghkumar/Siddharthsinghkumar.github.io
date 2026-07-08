@@ -42,33 +42,6 @@ export function getGlowTexture() {
   return _glowTex;
 }
 
-// ── Shader-based particle material (head-bright, tail-faint) ──
-const particleVertexShader = /* glsl */ `
-  attribute float aT;
-  attribute float aSize;
-  varying float vT;
-  uniform float uSize;
-  void main() {
-    vT = aT;
-    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-    gl_PointSize = uSize * aSize * (300.0 / -mvPosition.z);
-    gl_Position = projectionMatrix * mvPosition;
-  }
-`;
-
-const particleFragmentShader = /* glsl */ `
-  varying float vT;
-  uniform vec3 uColor;
-  uniform float uOpacity;
-  void main() {
-    float d = length(gl_PointCoord - 0.5) * 2.0;
-    if (d > 1.0) discard;
-    float alpha = (1.0 - d) * smoothstep(0.6, 0.0, vT) * smoothstep(1.0, 0.85, vT);
-    alpha *= uOpacity;
-    gl_FragColor = vec4(uColor, alpha);
-  }
-`;
-
 // ── Core — F1: scaled to 45-55% frame height ──────────────
 export function Core({ radius = 3.5 }: { radius?: number }) {
   const accentColor = useMemo(() => new THREE.Color(COLORS.accent), []);
@@ -87,17 +60,6 @@ export function Core({ radius = 3.5 }: { radius?: number }) {
         <lineBasicMaterial color={accentColor} opacity={0.85} transparent />
       </lineSegments>
     </group>
-  );
-}
-
-function SpriteGlow({ size, opacity, position }: { size: number; opacity: number; position: [number, number, number] }) {
-  const glowTex = getGlowTexture();
-  const accentColor = useMemo(() => new THREE.Color(COLORS.accent), []);
-  if (!glowTex) return null;
-  return (
-    <sprite position={position} scale={[size, size, 1]}>
-      <spriteMaterial map={glowTex} color={accentColor} opacity={opacity} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
-    </sprite>
   );
 }
 
@@ -226,93 +188,6 @@ export function StageNodes({ radius = 5 }: { radius?: number }) {
         </group>
       ))}
     </group>
-  );
-}
-
-// ── Animated Data stream — flowing particles along curve ──
-// DataStream disabled for external use — Sid: "don't like it, comment out in case I change my mind"
-// export function DataStream(...) { ... }
-// NOTE: Kept internal non-exported version below for Satellite
-function DataStream({
-  curve,
-  count = 570,
-  color = COLORS.accent,
-  speed = 0.35,
-  bright = false,
-}: {
-  curve: THREE.CatmullRomCurve3;
-  count?: number;
-  color?: number;
-  speed?: number;
-  bright?: boolean;
-}) {
-  const pointsRef = useRef<THREE.Points>(null);
-  const tValues = useRef(new Float32Array(count));
-  const posArray = useRef(new Float32Array(count * 3));
-  const sizeArray = useRef(new Float32Array(count));
-
-  // Initialize t values and sizes
-  const initialized = useRef(false);
-  useEffect(() => {
-    if (initialized.current) return;
-    initialized.current = true;
-    for (let i = 0; i < count; i++) {
-      tValues.current[i] = Math.random();
-      sizeArray.current[i] = 0.6 + Math.random() * 1.4;
-      const p = curve.getPoint(tValues.current[i]);
-      posArray.current[i * 3] = p.x;
-      posArray.current[i * 3 + 1] = p.y;
-      posArray.current[i * 3 + 2] = p.z;
-    }
-  }, [count, curve]);
-
-  const geo = useMemo(() => {
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.BufferAttribute(posArray.current, 3));
-    g.setAttribute("aT", new THREE.BufferAttribute(tValues.current, 1));
-    g.setAttribute("aSize", new THREE.BufferAttribute(sizeArray.current, 1));
-    return g;
-  }, []);
-
-  const shaderMat = useMemo(() => {
-    const c = new THREE.Color(color);
-    return new THREE.ShaderMaterial({
-      vertexShader: particleVertexShader,
-      fragmentShader: particleFragmentShader,
-      uniforms: {
-        uSize: { value: bright ? 0.24 : 0.18 },
-        uColor: { value: c },
-        uOpacity: { value: 0.85 },
-      },
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-    });
-  }, [color, bright]);
-
-  useFrame((_, delta) => {
-    if (!pointsRef.current) return;
-    const tv = tValues.current;
-    const pos = posArray.current;
-    for (let i = 0; i < count; i++) {
-      tv[i] += speed * delta * (0.7 + Math.random() * 0.6);
-      if (tv[i] > 1) tv[i] -= 1;
-      const p = curve.getPoint(tv[i]);
-      pos[i * 3] = p.x;
-      pos[i * 3 + 1] = p.y;
-      pos[i * 3 + 2] = p.z;
-    }
-    const posAttr = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute;
-    posAttr.needsUpdate = true;
-    const tAttr = pointsRef.current.geometry.attributes.aT as THREE.BufferAttribute;
-    tAttr.needsUpdate = true;
-  });
-
-  return (
-    <points ref={pointsRef}>
-      <primitive object={geo} attach="geometry" />
-      <primitive object={shaderMat} attach="material" />
-    </points>
   );
 }
 
