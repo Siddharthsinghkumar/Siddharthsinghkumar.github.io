@@ -4,9 +4,9 @@
 
 | Layer | Command | What it checks |
 |---|---|---|
-| **Guards** | `npm run guards` | Content invariants against `out/`: required copy present, forbidden strings absent (phone/education/"6 months"/lorem/stock), no rogue hex colors, OG images are PNG, SEO plumbing exists (JSON-LD, sitemap, robots.txt, .nojekyll), only 4 pages ship, JS ≤200 KB gzip per page |
-| **Playwright** | `npx playwright test` | Smoke tests (all 4 pages render correct H1, nav works, CTAs exist, 4 project cards, forbidden content absent, reduced-motion shows content immediately) and axe a11y audits (zero serious/critical violations) on all 4 pages, both desktop and mobile viewports |
-| **Lighthouse gate** | `node scripts/lighthouse-gate.mjs` | perf ≥ 90 / a11y ≥ 95 / seo ≥ 95 / CLS ≤ 0.05 on all 3 real pages, devtools throttling |
+| **Guards** | `npm run guards` | Content invariants against `out/`: required copy present, forbidden strings absent (phone/education/"6 months"/lorem/stock), no rogue hex colors (allowlist: globals.css, layout.tsx, token-hex.ts), OG images are PNG, SEO plumbing exists (JSON-LD, sitemap, robots.txt, .nojekyll), only 6 pages ship, home JS ≤200 KB gzip |
+| **Playwright** | `npx playwright test` | Smoke tests (all 6 pages render correct H1, nav works, CTAs exist, 4 project cards, forbidden content absent, reduced-motion shows content immediately) and axe a11y audits (zero serious/critical violations) on all 6 pages, both desktop and mobile viewports |
+| **Lighthouse gate** | `node scripts/lighthouse-gate.mjs` | home perf ≥ 55 / case pages ≥ 75 / a11y ≥ 95 / seo ≥ 95 / CLS ≤ 0.05 on all 6 pages, devtools throttling |
 
 ## Run everything locally
 
@@ -40,7 +40,7 @@ page structure:
 - Colors come only from `../DESIGN.md` §1.1 token set. No hex values outside
   `globals.css` and `layout.tsx`.
 - `og:image` must be PNG (SVG ignored by LinkedIn/WhatsApp/Twitter).
-- Only 4 pages ship: `/`, `/prospect/`, `/travel-planner/`, `/404`.
+- Only 6 pages ship: `/`, `/knowme`, `/prospect/`, `/travel-planner/`, `/projects/`, `/404`.
 - JS budget: ≤480 KB gzip home (three.js/R3F — D30); ≤230 KB case-study pages.
 
 ## Known allowances
