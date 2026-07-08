@@ -135,7 +135,7 @@ async function main() {
       { url: "http://localhost:4173/prospect", label: "prospect-p0", minScene: 10, minOrange: 1.5, scrollFraction: 0, checkH1: true },
       { url: "http://localhost:4173/travel-planner", label: "travel-planner-p0", minScene: 10, minOrange: 1.5, scrollFraction: 0, checkH1: true },
       { url: "http://localhost:4173/projects", label: "projects-p0", minScene: 10, minOrange: 1.5, scrollFraction: 0, checkH1: true },
-      { url: "http://localhost:4173/about", label: "about-p0", minScene: 10, minOrange: 1.5, scrollFraction: 0, checkH1: true },
+      { url: "http://localhost:4173/knowme", label: "knowme-p0", minScene: 10, minOrange: 1.5, scrollFraction: 0, checkH1: true },
       { url: "http://localhost:4173/this-route-does-not-exist", label: "404-p0", minScene: 10, minOrange: 1.5, scrollFraction: 0, checkH1: true },
     ];
 
