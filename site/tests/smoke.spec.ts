@@ -8,7 +8,7 @@ const PAGES = [
   { path: "/prospect", h1: /reads the morning papers/i },
   { path: "/travel-planner", h1: /survives its own failures/i },
   { path: "/projects", h1: /Projects/i },
-  { path: "/about", h1: /About/i },
+  { path: "/knowme", h1: /Know Me/i },
 ];
 
 for (const { path, h1 } of PAGES) {
@@ -92,7 +92,7 @@ test("reduced motion: content visible immediately, no animation required", async
 });
 
 test("internal link integrity guard (F15): no 404s on site navigation", async ({ page, request }) => {
-  const routes = ["/", "/prospect", "/travel-planner", "/projects", "/about"];
+  const routes = ["/", "/prospect", "/travel-planner", "/projects", "/knowme"];
   const checked = new Set<string>();
   
   for (const route of routes) {
@@ -108,3 +108,4 @@ test("internal link integrity guard (F15): no 404s on site navigation", async ({
     }
   }
 });
+;
