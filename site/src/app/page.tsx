@@ -208,7 +208,7 @@ export default function Home() {
             </TimelineEntry>
           </div>
           <div>
-            <TimelineEntry period="2023–24" role="Lead Developer, Autonomous Firefighting Robot" href="https://github.com/Siddharthsinghkumar/ai-travel-planner-agent">
+            <TimelineEntry period="2023–24" role="Lead Developer, Autonomous Firefighting Robot" href="https://github.com/Siddharthsinghkumar/firefighting-robot-public">
               FPGA + Arduino master-slave architecture, CNN flame verification,
               sub-100ms deterministic response, autonomous navigation.
             </TimelineEntry>
