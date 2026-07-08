@@ -36,7 +36,7 @@ export default function PageBackground({ image, className = "" }: PageBackground
   if (!enabled) {
     return (
       <div
-        className={`fixed inset-0 pointer-events-none select-none -z-10 ${className}`}
+        className={`fixed inset-0 pointer-events-none select-none -z-10 opacity-[0.05] ${className}`}
         style={{ backgroundColor: "var(--bg)" }}
         aria-hidden="true"
       />
@@ -45,7 +45,7 @@ export default function PageBackground({ image, className = "" }: PageBackground
 
   return (
     <div
-      className={`fixed inset-0 pointer-events-none select-none -z-10 ${className}`}
+      className={`fixed inset-0 pointer-events-none select-none -z-10 opacity-15 ${className}`}
       aria-hidden="true"
     >
       <PaperTexture
