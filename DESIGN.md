@@ -235,5 +235,14 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 | D57 | 2026-07-07 | Loading overlay on the session's entry page only (in-memory flag, hard reload resets) | Sid: "real loading on subpages only if the site loads firstly on a subpage" |
 | D58 | 2026-07-07 | /test/ images TEMP-approved as BG assets; must be swapped before launch | Sid accepted interim public exposure |
 | D59 | 2026-07-07 | Waypoint p-values measured from DOM section offsets at runtime (resize-aware), not hardcoded | Hardcoded percentages can't hold across viewports |
+| D60 | 2026-07-08 | Site goal reweighted: memorable-enough-to-revisit > fast/professional; the site must define Sid | Sid's explicit ranking; taste calls resolve toward distinctiveness, perf thresholds stay Sid-owned |
+| D61 | 2026-07-08 | M0.1: NavRipple REMOVED for launch; donor evaluation → v2 parking lot. Narrows D53 to launch scope | Idle-rAF violation + not liquid glass; replacement puts a taste loop on the critical path |
+| D62 | 2026-07-08 | M0.3: case-page ambient diet — PENDING, decided at Phase 5 STOP 1 after A7 fix | Can't judge the diet while the travel-planner scene is invisible (Gemini fills this row at STOP 1) |
+| D63 | 2026-07-08 | M0.2: D54 3s link auto-pulse UPHELD (keep) | Recurring motion is the point — memorability doctrine (D60) |
+| D64 | 2026-07-08 | M0.4: launch via fresh-history single-commit push; this repo remains the private working copy | Tracked history contains personal photos + phone number; a github.io repo is public forever |
+| D65 | 2026-07-08 | M0.5: project links re-pointed to firefighting-robot-public (3★) and mtk-firmware-unlock-root (8★) | Old repo names 404 publicly; new URLs verified HTTP 200 on 2026-07-08 |
+| D66 | 2026-07-08 | M0.6/M0.7: gate-script edits approved — A2 token-hex centralization + allowlist, A3 out/ existence check, A8 visual-gate /knowme; Playwright workers pinned to 2 | Each edit makes a gate measure reality; thresholds unchanged (N7) |
+| D67 | 2026-07-08 | M0.9: CSS-only token press effect on nav links replaces the ripple's press feedback; judged at STOP 1 | Nav shouldn't feel dead on press after ripple removal; zero guardrail risk (no WebGL/rAF) |
+| D68 | 2026-07-08 | M0.10: case-page perf ship-floor pre-authorized at ≥70 after honest optimization (written N7 approval; actual numbers appended at T24 if invoked) | Memorability doctrine (D49/D60): "can't be forgettable" > raw perf; below 70 still STOPs |
 
 *(Executor: append new rows here for every design choice made during build.)*

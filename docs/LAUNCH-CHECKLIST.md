@@ -108,6 +108,20 @@ projects: 29.9%/2.1% | about: 63.7%/1.6% | 404: 27.6%/2.3%
 
 ---
 
+## Phase 5 pre-push sweep (2026-07-08) — CURRENT STATE
+
+The T12 exit state above no longer describes the tree. A full signoff sweep on
+2026-07-08 found the gate suite red (lint ❌ 52 errors, guards ❌ 21, Playwright ❌ 4,
+lighthouse ❌ case pages 56<75, visual ❌ travel-planner invisible), the deploy
+workflow in a location GitHub Actions cannot read (`site/.github/`), no git remote,
+and privacy-sensitive files tracked in git (personal photos, phone number in
+`local-resume-references.md`). **Do not push until the Phase 5 list is worked
+through: [`docs/plans/phase5-todolist.md`](plans/phase5-todolist.md).**
+Note: `/about` references in the sections above are stale — the page is `/knowme`
+since D51 (2026-07-07).
+
+---
+
 ## Quick Reference
 
 | What | Where |
