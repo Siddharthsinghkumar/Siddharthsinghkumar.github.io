@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
+import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 import LanyardErrorBoundary from "./LanyardErrorBoundary";
 import LanyardFallback from "./LanyardFallback";
 
@@ -18,28 +19,33 @@ function supportsWebGL(): boolean {
   }
 }
 
+/** Module-level: is the client Mounted state */
+let isMounted = false;
+const listeners = new Set<() => void>();
+function subscribeMount(cb: () => void) {
+  listeners.add(cb);
+  return () => listeners.delete(cb);
+}
+function getIsMounted() { return isMounted; }
+
 export default function LanyardLoader(props: { frontImage: string; backImage: string }) {
-  const [canRender, setCanRender] = useState(false);
-  const [useFallback, setUseFallback] = useState(false);
+  const prefersReduced = usePrefersReducedMotion();
+  const webglOk = typeof window !== "undefined" && supportsWebGL();
+  const mounted = useSyncExternalStore(subscribeMount, getIsMounted, () => false);
 
+  // Signal mount — runs once per session, idempotent
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const _coarse = window.matchMedia("(pointer: coarse)").matches;
-    void _coarse;
-
-    if (reduced || !supportsWebGL()) {
-      setUseFallback(true);
-      return;
+    if (!isMounted) {
+      isMounted = true;
+      listeners.forEach(fn => fn());
     }
-
-    setCanRender(true);
   }, []);
 
-  if (useFallback) {
+  if (prefersReduced || !webglOk) {
     return <LanyardFallback frontImage={props.frontImage} />;
   }
 
-  if (!canRender) return null;
+  if (!mounted) return null;
 
   return (
     <LanyardErrorBoundary frontImage={props.frontImage} backImage={props.backImage}>

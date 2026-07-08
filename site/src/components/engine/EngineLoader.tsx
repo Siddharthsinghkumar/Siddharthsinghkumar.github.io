@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState, Component, type ReactNode } from "react";
+import { useEffect, useState, Component, useMemo, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import type { DeviceProfile } from "./EngineCanvas";
 import { reportProgress } from "./engine-ready";
+import { useMediaQuery, usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 // B2: report milestone 45 when the engine chunk actually loads.
 // Dynamic import returns the module — our resolver fires once on resolution.
@@ -64,27 +65,24 @@ function scheduleIdle(cb: () => void, timeoutMs: number) {
 }
 
 export default function EngineLoader() {
-  const [profile, setProfile] = useState<DeviceProfile | null>(null);
   const [canvasReady, setCanvasReady] = useState(false);
+  const prefersReduced = usePrefersReducedMotion();
+  const isFine = useMediaQuery("(pointer: fine)", true);
+  const isCoarse = useMediaQuery("(pointer: coarse)", true);
+
+  const profile: DeviceProfile = useMemo(() => ({
+    isFine,
+    isReducedMotion: prefersReduced,
+    isCoarse,
+  }), [isFine, prefersReduced, isCoarse]);
 
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarse = window.matchMedia("(pointer: coarse)").matches;
-    const fine = window.matchMedia("(pointer: fine)").matches;
-    setProfile({
-      isFine: fine,
-      isReducedMotion: reduced,
-      isCoarse: coarse,
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!profile || profile.isReducedMotion) return;
+    if (prefersReduced) return;
     // rIC timeout (1500ms) guarantees canvasReady flips — no rIC-never-fires gap.
     scheduleIdle(() => setCanvasReady(true), 1500);
     // B2 milestone 45: engine chunk resolved (dynamic import completed)
     engineChunkImport.then(() => { reportProgress(45); });
-  }, [profile]);
+  }, [prefersReduced]);
 
   return (
     <>
@@ -92,9 +90,9 @@ export default function EngineLoader() {
           so it actually renders when JS is disabled. */}
       {/* Note: noscript poster now lives in layout.tsx for proper server-side rendering */}
       {/* Reduced motion: poster only — canvas never mounts. */}
-      {profile?.isReducedMotion ? <PosterDiv /> : null}
+      {prefersReduced ? <PosterDiv /> : null}
       {/* Normal path: live canvas once rIC fires; poster on WebGL failure. */}
-      {profile && !profile.isReducedMotion && canvasReady ? (
+      {!prefersReduced && canvasReady ? (
         <EngineErrorBoundary fallback={<PosterDiv />}>
           <EngineCanvas deviceProfile={profile} />
         </EngineErrorBoundary>

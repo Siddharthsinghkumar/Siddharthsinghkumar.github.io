@@ -6,6 +6,7 @@
 // spec-sheet text blocks. All rendered inline, no external image loads.
 
 import { useRef, useEffect, useState, useMemo, type ReactNode } from "react";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 import manifest from "@/data/tiles-manifest.json";
 
 function Tile({ children }: { children: ReactNode }) {
@@ -93,6 +94,12 @@ export default function GridBackdrop() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [enabled, setEnabled] = useState(true);
+  const prefersReduced = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const isFinePointer = useMediaQuery("(any-pointer: fine)", true);
+
+  useEffect(() => {
+    setEnabled(!prefersReduced && isFinePointer);
+  }, [prefersReduced, isFinePointer]);
 
   const tiles = useMemo<ReactNode[]>(() => {
     const imageTiles: ReactNode[] = manifest.tiles.map((src, i) => (
@@ -105,10 +112,7 @@ export default function GridBackdrop() {
   const ROWS = Math.ceil(tiles.length / COLS);
 
   useEffect(() => {
-    const rmq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (rmq.matches) { setEnabled(false); return; }
-    const fine = window.matchMedia("(any-pointer: fine)");
-    if (!fine.matches) { setEnabled(false); return; }
+    if (!enabled) return;
 
     let raf = 0;
     let targetX = 0;
@@ -137,7 +141,7 @@ export default function GridBackdrop() {
       window.removeEventListener("pointermove", onMove);
       cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [enabled]);
 
   const grid: ReactNode[] = [];
   for (let i = 0; i < manifest.tiles.length; i++) {

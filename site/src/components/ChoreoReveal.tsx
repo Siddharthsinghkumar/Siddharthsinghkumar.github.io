@@ -5,6 +5,7 @@
 // Uses DOM data-attribute to persist visibility state through parent re-renders.
 
 import { useEffect, useRef, useState, type ReactNode, Children } from "react";
+import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 interface ChoreoProps {
   children: ReactNode;
@@ -27,16 +28,11 @@ export default function ChoreoReveal({
   const [visible, setVisible] = useState(false);
   const wasRevealed = useRef(false);
   const heroDelay = heroIndex * 80;
+  const prefersReduced = usePrefersReducedMotion();
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) {
-      setVisible(true);
-      return;
-    }
 
     // Restore visibility if this DOM node was already revealed in a
     // previous render cycle — survives React Strict Mode double-mount.
@@ -65,6 +61,8 @@ export default function ChoreoReveal({
     return () => obs.disconnect();
   }, [variant, heroDelay]);
 
+  const isVisible = prefersReduced || visible;
+
   const baseClasses = variant === "heading"
     ? "transition-all duration-[500ms] ease-[--ease]"
     : "transition-all duration-[--dur-med] ease-[--ease]";
@@ -85,14 +83,14 @@ export default function ChoreoReveal({
   const clipStyle: React.CSSProperties =
     variant === "hero-item" || variant === "heading"
       ? {
-          clipPath: visible ? "inset(0 0 0 0)" : "inset(0 0 100% 0)",
+          clipPath: isVisible ? "inset(0 0 0 0)" : "inset(0 0 100% 0)",
         }
       : {};
 
   return (
     <div
       ref={ref}
-      className={`${baseClasses} ${visible ? visibleClasses : hiddenClasses} ${className}`}
+      className={`${baseClasses} ${isVisible ? visibleClasses : hiddenClasses} ${className}`}
       style={clipStyle}
     >
       {children}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 const stages = [
   { key: "SCAN", x: 20, w: 100, sub: "OCR engine" },
@@ -23,17 +24,17 @@ const bottoms = [
 export default function ProspectDiagram() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [litStage, setLitStage] = useState(-1);
-  const [motionOn, setMotionOn] = useState(true);
+  const prefersReduced = usePrefersReducedMotion();
+  const motionOn = !prefersReduced;
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setMotionOn(false);
+    const el = containerRef.current;
+    if (!el) return;
+
+    if (prefersReduced) {
       setLitStage(stages.length);
       return;
     }
-
-    const el = containerRef.current;
-    if (!el) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -52,7 +53,7 @@ export default function ProspectDiagram() {
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [prefersReduced]);
 
   return (
     <div ref={containerRef}>

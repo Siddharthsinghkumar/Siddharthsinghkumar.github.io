@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react";
 import { PaperTexture } from "@paper-design/shaders-react";
 import { TOKEN_HEX } from "@/lib/token-hex";
+import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 interface PageBackgroundProps {
   image?: string;
@@ -14,6 +15,7 @@ interface PageBackgroundProps {
 
 export default function PageBackground({ image, className = "" }: PageBackgroundProps) {
   const [dimensions, setDimensions] = useState({ width: 1280, height: 720 });
+  const prefersReduced = usePrefersReducedMotion();
 
   useEffect(() => {
     const updateSize = () => {
@@ -27,13 +29,7 @@ export default function PageBackground({ image, className = "" }: PageBackground
     return () => window.removeEventListener("resize", updateSize);
   }, []);
 
-  const [enabled, setEnabled] = useState(true);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) setEnabled(false);
-  }, []);
-
-  if (!enabled) {
+  if (prefersReduced) {
     return (
       <div
         className={`fixed inset-0 pointer-events-none select-none -z-10 opacity-[0.05] ${className}`}

@@ -5,6 +5,7 @@
 // Reduced-motion: fire skipped, content visible immediately.
 
 import { useEffect, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 interface EyebrowProps {
   children: string;
@@ -14,16 +15,16 @@ interface EyebrowProps {
 export default function Eyebrow({ children, className = "" }: EyebrowProps) {
   const ref = useRef<HTMLParagraphElement>(null);
   const [fired, setFired] = useState(false);
+  const prefersReduced = usePrefersReducedMotion();
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) {
+    if (prefersReduced) {
       setFired(true);
       return;
     }
+
+    const el = ref.current;
+    if (!el) return;
 
     const obs = new IntersectionObserver(
       ([entry]) => {
@@ -41,7 +42,7 @@ export default function Eyebrow({ children, className = "" }: EyebrowProps) {
 
     obs.observe(el);
     return () => obs.disconnect();
-  }, [fired]);
+  }, [fired, prefersReduced]);
 
   return (
     <p

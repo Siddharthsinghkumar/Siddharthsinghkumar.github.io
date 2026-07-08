@@ -9,6 +9,7 @@
 import { useEffect, useState, useRef } from "react";
 import DecryptedText from "./DecryptedText";
 import { engineReady, onEngineProgress, reportProgress } from "./engine/engine-ready";
+import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 const MAX_WAIT = 10000;
 
@@ -17,19 +18,21 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
   const [counter, setCounter] = useState(0);
   const phaseRef = useRef(0);
   const counterRef = useRef(0);
-  const startRef = useRef(Date.now());
+  const startRef = useRef<number | null>(null);
   const maxTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const doneRef = useRef(false);
+  const prefersReduced = usePrefersReducedMotion();
 
   // Hydration-safe skip: always render the overlay structurally (match SSR),
   // then immediately dismiss. The CSS html.intro-skip rule hides it before
-  // first paint, so no flash. The early return caused hydration mismatch.
+  // first paint, so no flash.
   useEffect(() => {
+    startRef.current ??= Date.now();
     if (typeof document !== "undefined" && document.documentElement.classList.contains("intro-skip")) {
       setPhase(3);
       return;
     }
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (prefersReduced) {
       setPhase(3);
       return;
     }
@@ -53,10 +56,11 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
       posterImg.decode().then(() => { if (!doneRef.current) reportProgress(100); }).catch(() => { if (!doneRef.current) reportProgress(100); });
 
       maxTimerRef.current = setTimeout(() => { if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); } }, MAX_WAIT);
+      const start = startRef.current!;
 
       engineReady.then(() => {
         if (!doneRef.current) {
-          const elapsed = Date.now() - startRef.current;
+          const elapsed = Date.now() - start;
           setTimeout(() => {
             if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); }
           }, Math.max(0, 1000 - elapsed));
@@ -70,15 +74,16 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
           counterRef.current = Math.max(counterRef.current, Math.min(target, counterRef.current + Math.ceil((target - counterRef.current) * 0.15)));
           setCounter(counterRef.current);
         }
-        if (phaseRef.current === 0 && Date.now() - startRef.current > 150) phase1();
+        if (phaseRef.current === 0 && Date.now() - start > 150) phase1();
         rafId = requestAnimationFrame(tick);
       };
       rafId = requestAnimationFrame(tick);
     } else {
       // Subpage: no 3D engine — fonts + document ready + min 1000ms
+      const start = startRef.current!;
       const dismiss = () => {
         if (!doneRef.current) {
-          const elapsed = Date.now() - startRef.current;
+          const elapsed = Date.now() - start;
           setTimeout(() => {
             if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); }
           }, Math.max(0, 1000 - elapsed));
@@ -100,7 +105,7 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
           counterRef.current = Math.max(counterRef.current, Math.min(target, counterRef.current + Math.ceil((target - counterRef.current) * 0.15)));
           setCounter(counterRef.current);
         }
-        if (phaseRef.current === 0 && Date.now() - startRef.current > 150) phase1();
+        if (phaseRef.current === 0 && Date.now() - start > 150) phase1();
         rafId = requestAnimationFrame(tick);
       };
       rafId = requestAnimationFrame(tick);
@@ -111,7 +116,7 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
       cancelAnimationFrame(rafId);
       if (maxTimerRef.current) clearTimeout(maxTimerRef.current);
     };
-  }, [waitForEngine]);
+  }, [waitForEngine, prefersReduced]);
 
   // Scroll lock effect (Layer 7 requirement)
   useEffect(() => {
