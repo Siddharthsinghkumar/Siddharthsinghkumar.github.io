@@ -64,7 +64,7 @@ for (const str of forbidden) {
 
 // ── 3. Design-token discipline (DESIGN.md §1.1) ─────────────────────────────
 console.log("[3] No rogue hex colors in src (tokens only)");
-const allowedHexFiles = ["globals.css", "layout.tsx"]; // tokens + theme-color meta
+const allowedHexFiles = ["globals.css", "layout.tsx", "token-hex.ts"]; // tokens + theme-color meta + centralized hex constants
 let rogue = [];
 try {
   const hits = execSync(

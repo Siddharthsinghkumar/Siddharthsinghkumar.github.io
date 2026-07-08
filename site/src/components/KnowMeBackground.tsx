@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FlutedGlass } from "@paper-design/shaders-react";
+import { TOKEN_HEX } from "@/lib/token-hex";
 
 export default function KnowMeBackground() {
   const [dimensions, setDimensions] = useState({ width: 1280, height: 720 });
@@ -21,9 +22,9 @@ export default function KnowMeBackground() {
         width={dimensions.width}
         height={dimensions.height}
         image="/test/pic_idea.png"
-        colorBack="#00000000"
-        colorShadow="#000000"
-        colorHighlight="#ffffff"
+        colorBack={TOKEN_HEX.transparent}
+        colorShadow={TOKEN_HEX.black}
+        colorHighlight={TOKEN_HEX.white}
         size={0.66}
         shadows={0.6}
         highlights={0.23}

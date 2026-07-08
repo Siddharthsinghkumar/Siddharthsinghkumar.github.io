@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from "react";
 import { PaperTexture } from "@paper-design/shaders-react";
+import { TOKEN_HEX } from "@/lib/token-hex";
 
 interface PageBackgroundProps {
   image?: string;
@@ -51,8 +52,8 @@ export default function PageBackground({ image, className = "" }: PageBackground
         width={dimensions.width}
         height={dimensions.height}
         image={image || "/test/pic_idea.png"}
-        colorBack="#ffffff"
-        colorFront="#9fadbc"
+        colorBack={TOKEN_HEX.white}
+        colorFront={TOKEN_HEX.paperFront}
         contrast={0.2}
         roughness={0.45}
         fiber={0.44}

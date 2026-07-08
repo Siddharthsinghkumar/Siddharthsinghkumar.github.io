@@ -2,22 +2,23 @@
 
 import Button from "@/components/Button";
 import LanyardLoader from "@/components/LanyardLoader";
+import { TOKEN_HEX } from "@/lib/token-hex";
 
 const frontSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">
-  <rect width="400" height="600" fill="#0B0B0D"/>
-  <rect x="0" y="0" width="400" height="100" fill="#FF5C1A"/>
-  <text x="200" y="300" font-family="monospace" font-size="60" font-weight="bold" fill="#E8E8E8" text-anchor="middle" dominant-baseline="middle">SS</text>
-  <text x="200" y="500" font-family="monospace" font-size="24" fill="#FF5C1A" text-anchor="middle">AI BACKEND ENGINEER</text>
+  <rect width="400" height="600" fill="${TOKEN_HEX.bg}"/>
+  <rect x="0" y="0" width="400" height="100" fill="${TOKEN_HEX.accent}"/>
+  <text x="200" y="300" font-family="monospace" font-size="60" font-weight="bold" fill="${TOKEN_HEX.text}" text-anchor="middle" dominant-baseline="middle">SS</text>
+  <text x="200" y="500" font-family="monospace" font-size="24" fill="${TOKEN_HEX.accent}" text-anchor="middle">AI BACKEND ENGINEER</text>
 </svg>`;
 const backSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">
-  <rect width="400" height="600" fill="#0B0B0D"/>
-  <rect x="0" y="0" width="400" height="100" fill="#FF5C1A"/>
-  <text x="200" y="280" font-family="monospace" font-size="32" font-weight="bold" fill="#E8E8E8" text-anchor="middle">SCAN TO</text>
-  <text x="200" y="320" font-family="monospace" font-size="32" font-weight="bold" fill="#E8E8E8" text-anchor="middle">CONNECT</text>
-  <rect x="50" y="350" width="300" height="200" rx="12" fill="none" stroke="#FF5C1A" stroke-width="2"/>
-  <text x="200" y="440" font-family="monospace" font-size="14" fill="#8A8A93" text-anchor="middle">github.com/</text>
-  <text x="200" y="460" font-family="monospace" font-size="14" fill="#8A8A93" text-anchor="middle">Siddharthsinghkumar</text>
-  <text x="200" y="530" font-family="monospace" font-size="14" fill="#FF5C1A" text-anchor="middle">siddharthsingh8418@gmail.com</text>
+  <rect width="400" height="600" fill="${TOKEN_HEX.bg}"/>
+  <rect x="0" y="0" width="400" height="100" fill="${TOKEN_HEX.accent}"/>
+  <text x="200" y="280" font-family="monospace" font-size="32" font-weight="bold" fill="${TOKEN_HEX.text}" text-anchor="middle">SCAN TO</text>
+  <text x="200" y="320" font-family="monospace" font-size="32" font-weight="bold" fill="${TOKEN_HEX.text}" text-anchor="middle">CONNECT</text>
+  <rect x="50" y="350" width="300" height="200" rx="12" fill="none" stroke="${TOKEN_HEX.accent}" stroke-width="2"/>
+  <text x="200" y="440" font-family="monospace" font-size="14" fill="${TOKEN_HEX.muted}" text-anchor="middle">github.com/</text>
+  <text x="200" y="460" font-family="monospace" font-size="14" fill="${TOKEN_HEX.muted}" text-anchor="middle">Siddharthsinghkumar</text>
+  <text x="200" y="530" font-family="monospace" font-size="14" fill="${TOKEN_HEX.accent}" text-anchor="middle">siddharthsingh8418@gmail.com</text>
 </svg>`;
 const frontImage = `data:image/svg+xml,${encodeURIComponent(frontSvg)}`;
 const backImage = `data:image/svg+xml,${encodeURIComponent(backSvg)}`;
