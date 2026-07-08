@@ -43,17 +43,17 @@ export default function Projects() {
               title="Autonomous Firefighting Robot"
               description="25–28 kg tracked robot that finds and extinguishes fires: FPGA-deployed CNN, multi-sensor fusion. Published in IJFMR 2024."
               status="HARDWARE · PUBLISHED"
-              href="https://github.com/Siddharthsinghkumar/autonomous-firefighting-robot"
-              repo="autonomous-firefighting-robot"
-              fallbackStars={2}
+              href="https://github.com/Siddharthsinghkumar/firefighting-robot-public"
+              repo="firefighting-robot-public"
+              fallbackStars={3}
               fallbackPush=""
             />
             <ProjectCard
               title="MTK Firmware Unlock"
               description="Python toolchain for MediaTek bootloader unlock, firmware extraction, and root — security research."
               status="SYSTEMS · SECURITY"
-              href="https://github.com/Siddharthsinghkumar/mtk-firmware-unlock"
-              repo="mtk-firmware-unlock"
+              href="https://github.com/Siddharthsinghkumar/mtk-firmware-unlock-root"
+              repo="mtk-firmware-unlock-root"
               fallbackStars={8}
               fallbackPush=""
             />
