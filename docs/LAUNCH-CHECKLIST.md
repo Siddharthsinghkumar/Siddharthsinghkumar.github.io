@@ -52,14 +52,14 @@
 
 - [ ] Push to `Siddharthsinghkumar/Siddharthsinghkumar.github.io` repo, `main` branch
 - [ ] GitHub Actions: verify deploy workflow runs green (typecheck → lint → build → deploy)
-- [ ] Verify: `https://Siddharthsinghkumar.github.io` loads all 6 pages (/, /prospect, /travel-planner, /projects, /about, /404)
+- [ ] Verify: `https://Siddharthsinghkumar.github.io` loads all 6 pages (/, /prospect, /travel-planner, /projects, /knowme, /404)
 - [ ] Verify: resume PDF link works
 - [ ] Verify: nightly cron fires and redeploys
 
 ## 7. Post-Launch (optional)
 
 - [ ] **merlin-cli-bridge**: if publishing — ⚠️ `auth.json` holds real cookies, scrub before pushing
-- [x] **Lanyard 3D card**: shipped on /about page (2026-07-05 T12-A8) — error boundary + static fallback
+- [x] **Lanyard 3D card**: shipped on /knowme page (2026-07-05 T12-A8) — error boundary + static fallback
 - [ ] **GridMotion**: reconsider if wanted later (heavy, decorative — DESIGN.md D6 rejected at launch)
 - [ ] Performance: run Lighthouse against live URL, verify perf ≥ 55 (home), ≥ 75 (case), a11y ≥ 95, SEO ≥ 95
 
@@ -70,12 +70,12 @@
 
 ### What shipped
 
-- 6 pages: `/`, `/prospect/`, `/travel-planner/`, `/projects/`, `/about/`, `/404`
+- 6 pages: `/`, `/prospect/`, `/travel-planner/`, `/projects/`, `/knowme/`, `/404`
 - 3D home scene (Prospect Engine): icosahedron core, data streams, stage ring, satellite, dust, grid floor, 5 scroll waypoints
 - GooeyLoader intro screen with real asset-progress counter
 - PaperInk WebGL atmosphere on case-study pages (autonomous ink blobs)
 - GridBackdrop tiles on /projects
-- CSS dust + glow void on /about with draggable Lanyard physics card
+- CSS dust + glow void on /knowme with draggable Lanyard physics card
 - CSS grain + glow on /404 with DecryptedText
 - AMPED RGB micro-glitch (240ms) on section eyebrows
 - FlutedGlass nav (@paper-design/shaders-react)
@@ -94,7 +94,7 @@
 1. Replace resume PDF (fix "6 weeks" claim)
 2. 4 screenshots for placeholder frames
 3. Drop tile images into `site/public/tiles/`
-4. Supply photo for /about card face
+4. Supply photo for /knowme card face
 5. Push to `Siddharthsinghkumar/Siddharthsinghkumar.github.io` main
 6. GitHub Pages → Settings → Enforce HTTPS
 
