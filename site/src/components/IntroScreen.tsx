@@ -39,8 +39,8 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
     const phase2 = () => { if (phaseRef.current < 2) { doneRef.current = true; setCounter(100); phaseRef.current = 2; setPhase(2); } };
 
     // Sync module-level progress → window bridge for rAF poll
-    const unsub = onEngineProgress((p) => {
-      (window as any).__engineProgress = p;
+    const unsub = onEngineProgress((p: number) => {
+      (window as unknown as Record<string, number>).__engineProgress = p;
     });
 
     if (waitForEngine) {
@@ -65,7 +65,7 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
 
       const tick = () => {
         if (doneRef.current) return;
-        const target = (window as any).__engineProgress ?? 0;
+        const target = (window as unknown as Record<string, number>).__engineProgress ?? 0;
         if (target > counterRef.current) {
           counterRef.current = Math.max(counterRef.current, Math.min(target, counterRef.current + Math.ceil((target - counterRef.current) * 0.15)));
           setCounter(counterRef.current);
@@ -95,7 +95,7 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
 
       const tick = () => {
         if (doneRef.current) return;
-        const target = (window as any).__engineProgress ?? 0;
+        const target = (window as unknown as Record<string, number>).__engineProgress ?? 0;
         if (target > counterRef.current) {
           counterRef.current = Math.max(counterRef.current, Math.min(target, counterRef.current + Math.ceil((target - counterRef.current) * 0.15)));
           setCounter(counterRef.current);

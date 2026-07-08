@@ -263,12 +263,14 @@ function SceneInner({ coarse }: { coarse: boolean }) {
           satOpacity = Math.max(0, ((wpc.pMax + 0.08) - p) / 0.14);
         }
         
-        satelliteRef.current.traverse((child: any) => {
-          if (child.material) {
+        satelliteRef.current.traverse((child) => {
+          const mesh = child as THREE.Mesh;
+          const mat = mesh.material as THREE.Material | undefined;
+          if (mat) {
             if (child.userData.baseOpacity === undefined) {
-              child.userData.baseOpacity = child.material.opacity;
+              child.userData.baseOpacity = mat.opacity;
             }
-            child.material.opacity = child.userData.baseOpacity * satOpacity;
+            mat.opacity = child.userData.baseOpacity * satOpacity;
           }
         });
       }
