@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function Projects() {
   return (
     <>
-      <PageBackground image="/test/final-df-h.jpg" />
+      <PageBackground image="/test/final-df-h.webp" />
       <div className="pt-24 pb-24">
       {/* ── Project Grid ────────────────────────────────────── */}
       <Section className="relative overflow-hidden min-h-screen">
