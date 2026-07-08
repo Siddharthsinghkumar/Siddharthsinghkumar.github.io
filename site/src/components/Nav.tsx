@@ -62,7 +62,7 @@ export default function Nav() {
       >
         <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-4 relative">
           {/* Wordmark */}
-          <a
+          <Link
             href="/"
             className="nav-link font-mono text-[10px] xs:text-[11px] md:text-[13px] uppercase tracking-[0.08em] text-[--text] whitespace-nowrap no-underline group"
           >
@@ -100,7 +100,7 @@ export default function Nav() {
                 Siddharth Singh
               </span>
             ) : null}
-          </a>
+          </Link>
 
           <div className="flex items-center gap-3 xs:gap-5 md:gap-8">
             {links.map(({ href, label }) => {

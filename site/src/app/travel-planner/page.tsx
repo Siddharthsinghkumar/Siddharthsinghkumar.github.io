@@ -3,7 +3,6 @@ import Section from "@/components/Section";
 import Eyebrow from "@/components/Eyebrow";
 import Button from "@/components/Button";
 import TravelPlannerDiagram from "@/components/TravelPlannerDiagram";
-import DecryptedText from "@/components/DecryptedText";
 import PaperInkLoader from "@/components/PaperInkLoader";
 import ChoreoReveal from "@/components/ChoreoReveal";
 import PageBackground from "@/components/PageBackground";

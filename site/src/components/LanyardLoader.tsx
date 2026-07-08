@@ -24,7 +24,8 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const _coarse = window.matchMedia("(pointer: coarse)").matches;
+    void _coarse;
 
     if (reduced || !supportsWebGL()) {
       setUseFallback(true);

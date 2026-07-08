@@ -191,9 +191,9 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null
         </RigidBody>
       </group>
       <mesh ref={band}>
-        {/* @ts-ignore */}
+        {/* @ts-expect-error — meshline v2.0 types incomplete; runtime compatible */}
         <meshLineGeometry />
-        {/* @ts-ignore */}
+        {/* @ts-expect-error — meshline v2.0 types incomplete; runtime compatible */}
         <meshLineMaterial color="white" depthTest={false} resolution={isMobile ? [1000, 2000] : [1000, 1000]} useMap map={texture} repeat={[-4, 1]} lineWidth={lanyardWidth} />
       </mesh>
     </>

@@ -6,7 +6,7 @@
 // Failsafe: 2.5s CSS auto-dismiss. Skips on reduced-motion / repeat visits.
 // B2/D43: counter tracks REAL asset progress (fonts→chunk→first-frame→poster).
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import DecryptedText from "./DecryptedText";
 import { engineReady, onEngineProgress, reportProgress } from "./engine/engine-ready";
 
@@ -24,7 +24,6 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
   // Hydration-safe skip: always render the overlay structurally (match SSR),
   // then immediately dismiss. The CSS html.intro-skip rule hides it before
   // first paint, so no flash. The early return caused hydration mismatch.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (typeof document !== "undefined" && document.documentElement.classList.contains("intro-skip")) {
       setPhase(3);

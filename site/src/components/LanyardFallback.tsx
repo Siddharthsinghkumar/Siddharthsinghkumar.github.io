@@ -5,6 +5,7 @@
 // band, mono name. NOT a screenshot placeholder.
 
 export default function LanyardFallback({ frontImage: _frontImage }: { frontImage: string }) {
+  void _frontImage;
   return (
     <div className="lanyard-wrapper">
       <div

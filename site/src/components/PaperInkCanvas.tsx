@@ -126,7 +126,8 @@ export default function PaperInkCanvas() {
       if (!s) return;
       s.time = ts;
 
-      const { gl, locs, dpr, trail, autoBlobs } = s;
+      const { gl, locs, dpr: _dpr, trail, autoBlobs } = s;
+      void _dpr;
       const dt = 0.016;
       const t = ts * 0.001;
 
@@ -220,7 +221,6 @@ export default function PaperInkCanvas() {
       window.removeEventListener("touchmove", onTouch);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
