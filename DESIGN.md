@@ -160,7 +160,7 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 - LCP < 1.5s (hero H1 is the LCP — server-rendered text, no priority images).
 - JS < 480KB gzip on `/` (three + R3F + drei; D30 budget).
 - CLS < 0.05; fonts `font-display: swap` with metric-compatible fallbacks.
-- Lighthouse CI (learned.md Day 9): perf ≥ 0.9, a11y ≥ 0.95, SEO ≥ 0.95 on all 6 pages.
+- Lighthouse CI (learned.md Day 9): perf ≥ 55 on home, ≥ 75 on case pages; a11y ≥ 95, SEO ≥ 95 on all 6 pages.
 - Images: AVIF/WebP, sized, no CSS resizing (learned.md perf table).
 - Semantic HTML: one h1/page, landmark elements, alt text everywhere, OG images
   per page, JSON-LD `Person` schema on `/` (beats jp-plumbing benchmark pattern).

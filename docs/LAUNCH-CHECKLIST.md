@@ -117,8 +117,6 @@ workflow in a location GitHub Actions cannot read (`site/.github/`), no git remo
 and privacy-sensitive files tracked in git (personal photos, phone number in
 `local-resume-references.md`). **Do not push until the Phase 5 list is worked
 through: [`docs/plans/phase5-todolist.md`](plans/phase5-todolist.md).**
-Note: `/about` references in the sections above are stale — the page is `/knowme`
-since D51 (2026-07-07).
 
 ---
 
