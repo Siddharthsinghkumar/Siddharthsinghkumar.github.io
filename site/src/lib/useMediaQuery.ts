@@ -1,9 +1,5 @@
 import { useSyncExternalStore } from "react";
 
-function getServerSnapshotFalse() {
-  return false;
-}
-
 export function useMediaQuery(query: string, serverFallback = false): boolean {
   const subscribe = (cb: () => void) => {
     const mql = window.matchMedia(query);

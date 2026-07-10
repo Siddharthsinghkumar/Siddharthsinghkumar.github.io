@@ -14,7 +14,14 @@ import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 const MAX_WAIT = 10000;
 
 export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: boolean }) {
-  const [phase, setPhase] = useState(0); // 0: black, 1: loading, 2: exiting, 3: done
+  const [phase, setPhase] = useState(() => {
+    if (typeof document === "undefined") return 0;
+    if (document.documentElement.classList.contains("intro-skip")) return 3;
+    try {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return 3;
+    } catch {}
+    return 0;
+  }); // 0: black, 1: loading, 2: exiting, 3: done
   const [counter, setCounter] = useState(0);
   const phaseRef = useRef(0);
   const counterRef = useRef(0);
@@ -28,14 +35,6 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
   // first paint, so no flash.
   useEffect(() => {
     startRef.current ??= Date.now();
-    if (typeof document !== "undefined" && document.documentElement.classList.contains("intro-skip")) {
-      setPhase(3);
-      return;
-    }
-    if (prefersReduced) {
-      setPhase(3);
-      return;
-    }
 
     let rafId: number;
     const phase1 = () => { if (phaseRef.current === 0) { phaseRef.current = 1; setPhase(1); } };

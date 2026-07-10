@@ -13,38 +13,27 @@ const links = [
   { href: "/knowme", label: "KnowMe" },
 ];
 
-export default function Nav() {
-  const pathname = usePathname();
-  const isHome = pathname === "/";
-
-  const [canDecrypt, setCanDecrypt] = useState(false);
+/** Stateful nav content remounts on pathname change — serves as the reset. */
+function NavContent({ pathname, isHome }: { pathname: string; isHome: boolean }) {
+  const [canDecrypt, setCanDecrypt] = useState(() => !isHome);
   const [decryptDone, setDecryptDone] = useState(false);
-  const [waveFlash, setWaveFlash] = useState(false); // orange text flash during wave
-  const navRef = useRef<HTMLElement>(null);
+  const [waveFlash, setWaveFlash] = useState(false);
 
-  // Reset on pathname change
+  // Trigger decrypt sequence on mount for home page (non-home starts decrypted)
   useEffect(() => {
-    setCanDecrypt(false);
-    setDecryptDone(false);
-    setWaveFlash(false);
-
-    if (isHome) {
-      import("./engine/engine-ready").then(({ engineReady }) => {
-        engineReady.then(() => {
-          setTimeout(() => setCanDecrypt(true), 500);
-        });
+    if (!isHome) return;
+    import("./engine/engine-ready").then(({ engineReady }) => {
+      engineReady.then(() => {
+        setTimeout(() => setCanDecrypt(true), 500);
       });
-    } else {
-      setCanDecrypt(true);
-    }
-  }, [isHome, pathname]);
+    });
+  }, [isHome]);
 
   // Mark decrypt complete → trigger initial orange flash
   useEffect(() => {
     if (!canDecrypt) return;
     const timer = setTimeout(() => {
       setDecryptDone(true);
-      // Flash nav links orange
       setWaveFlash(true);
       setTimeout(() => setWaveFlash(false), 300);
     }, 1500);
@@ -55,94 +44,106 @@ export default function Nav() {
     "font-mono text-[10px] xs:text-[11px] uppercase tracking-[0.08em] transition-colors duration-[--dur-fast]";
 
   return (
+    <>
+      {/* Wordmark */}
+      <Link
+        href="/"
+        className="nav-link font-mono text-[10px] xs:text-[11px] md:text-[13px] uppercase tracking-[0.08em] text-[--text] whitespace-nowrap no-underline group"
+      >
+        {canDecrypt ? (
+          <span className="hidden xs:inline">
+            <DecryptedText
+              text="Siddharth Singh"
+              animateOn="view"
+              speed={30}
+              maxIterations={8}
+              sequential={true}
+              revealDirection="center"
+              className="text-[--text]"
+              encryptedClassName="text-[--muted]"
+              parentClassName="font-mono uppercase tracking-[0.08em]"
+            />
+          </span>
+        ) : null}
+        {canDecrypt ? (
+          <span className="xs:hidden">
+            <DecryptedText
+              text="SS"
+              animateOn="view"
+              speed={30}
+              maxIterations={4}
+              sequential={false}
+              className="text-[--text]"
+              encryptedClassName="text-[--muted]"
+              parentClassName="font-mono uppercase tracking-[0.08em]"
+            />
+          </span>
+        ) : null}
+        {!canDecrypt ? (
+          <span className="font-mono uppercase tracking-[0.08em] text-[--text]">
+            Siddharth Singh
+          </span>
+        ) : null}
+      </Link>
+
+      <div className="flex items-center gap-3 xs:gap-5 md:gap-8">
+        {links.map(({ href, label }) => {
+          const active = pathname === href;
+          const colorClass = active
+            ? "text-[--accent]"
+            : "text-[--muted]";
+          const hoverClass = decryptDone
+            ? "group-hover:text-[--accent]"
+            : "";
+          const flashClass = waveFlash ? "text-[--accent] transition-colors duration-75" : "";
+          return (
+            <Link key={href} href={href} className="nav-link group">
+              {canDecrypt ? (
+                <DecryptedText
+                  text={label}
+                  animateOn="view"
+                  speed={40}
+                  maxIterations={8}
+                  sequential={true}
+                  revealDirection="center"
+                  className={`${linkBaseClass} ${colorClass} ${hoverClass} ${flashClass}`}
+                  encryptedClassName={`font-mono text-[10px] xs:text-[11px] uppercase tracking-[0.08em] text-[--line]`}
+                  parentClassName="font-mono text-[10px] xs:text-[11px] uppercase tracking-[0.08em]"
+                />
+              ) : (
+                <span className={`${linkBaseClass} ${colorClass} ${flashClass}`}>
+                  {label}
+                </span>
+              )}
+            </Link>
+          );
+        })}
+
+        <Button
+          variant="primary"
+          href="/resume/resume-siddharth-singh.pdf"
+          className="text-[10px] xs:text-[11px] px-2 xs:px-3 py-1.5 whitespace-nowrap expanded-hit-area"
+        >
+          Resume ↓
+        </Button>
+      </div>
+    </>
+  );
+}
+
+export default function Nav() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const navRef = useRef<HTMLElement>(null);
+
+  return (
     <nav
       ref={navRef}
         className="fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-[300ms] ease-[--ease] border-b border-[--line]"
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
         <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-4 relative">
-          {/* Wordmark */}
-          <Link
-            href="/"
-            className="nav-link font-mono text-[10px] xs:text-[11px] md:text-[13px] uppercase tracking-[0.08em] text-[--text] whitespace-nowrap no-underline group"
-          >
-            {canDecrypt ? (
-              <span className="hidden xs:inline">
-                <DecryptedText
-                  text="Siddharth Singh"
-                  animateOn="view"
-                  speed={30}
-                  maxIterations={8}
-                  sequential={true}
-                  revealDirection="center"
-                  className="text-[--text]"
-                  encryptedClassName="text-[--muted]"
-                  parentClassName="font-mono uppercase tracking-[0.08em]"
-                />
-              </span>
-            ) : null}
-            {canDecrypt ? (
-              <span className="xs:hidden">
-                <DecryptedText
-                  text="SS"
-                  animateOn="view"
-                  speed={30}
-                  maxIterations={4}
-                  sequential={false}
-                  className="text-[--text]"
-                  encryptedClassName="text-[--muted]"
-                  parentClassName="font-mono uppercase tracking-[0.08em]"
-                />
-              </span>
-            ) : null}
-            {!canDecrypt ? (
-              <span className="font-mono uppercase tracking-[0.08em] text-[--text]">
-                Siddharth Singh
-              </span>
-            ) : null}
-          </Link>
-
-          <div className="flex items-center gap-3 xs:gap-5 md:gap-8">
-            {links.map(({ href, label }) => {
-              const active = pathname === href;
-              const colorClass = active
-                ? "text-[--accent]"
-                : "text-[--muted]";
-              const hoverClass = decryptDone
-                ? "group-hover:text-[--accent]"
-                : "";
-              const flashClass = waveFlash ? "text-[--accent] transition-colors duration-75" : "";
-              return (
-                <Link key={href} href={href} className="nav-link group">
-                  {canDecrypt ? (
-                    <DecryptedText
-                      text={label}
-                      animateOn="view"
-                      speed={40}
-                      maxIterations={8}
-                      sequential={true}
-                      revealDirection="center"
-                      className={`${linkBaseClass} ${colorClass} ${hoverClass} ${flashClass}`}
-                      encryptedClassName={`font-mono text-[10px] xs:text-[11px] uppercase tracking-[0.08em] text-[--line]`}
-                      parentClassName="font-mono text-[10px] xs:text-[11px] uppercase tracking-[0.08em]"
-                    />
-                  ) : (
-                    <span className={`${linkBaseClass} ${colorClass} ${flashClass}`}>
-                      {label}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-
-            <Button
-              variant="primary"
-              href="/resume-siddharth-singh.pdf"
-              className="text-[10px] xs:text-[11px] px-2 xs:px-3 py-1.5 whitespace-nowrap expanded-hit-area"
-            >
-              Resume ↓
-            </Button>
-          </div>
+          <NavContent key={pathname} pathname={pathname} isHome={isHome} />
         </div>
       </nav>
   );

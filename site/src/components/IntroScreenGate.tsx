@@ -1,22 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import IntroScreen from "./IntroScreen";
 import { isIntroShown, markIntroShown } from "./intro-session";
 
 export default function IntroScreenGate() {
   const pathname = usePathname();
-  const [show, setShow] = useState(false);
-  const [waitForEngine, setWaitForEngine] = useState(true);
+  const shown = useSyncExternalStore(
+    () => () => {},
+    isIntroShown,
+    () => false,
+  );
+  const show = !shown;
+  const waitForEngine = pathname === "/";
 
   useEffect(() => {
-    if (!isIntroShown()) {
+    if (!shown) {
       markIntroShown();
-      setShow(true);
-      setWaitForEngine(pathname === "/");
     }
-  }, [pathname]);
+  }, [shown]);
 
   if (!show) return null;
   return <IntroScreen waitForEngine={waitForEngine} />;

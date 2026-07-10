@@ -23,30 +23,26 @@ const bottoms = [
 
 export default function ProspectDiagram() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [litStage, setLitStage] = useState(-1);
   const prefersReduced = usePrefersReducedMotion();
   const motionOn = !prefersReduced;
+  const [observedStage, setObservedStage] = useState(-1);
+  const litStage = prefersReduced ? stages.length : observedStage;
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
-    if (prefersReduced) {
-      setLitStage(stages.length);
-      return;
-    }
+    if (prefersReduced) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
-        // Calculate how far through the diagram we've scrolled
         const ratio = entry.intersectionRatio;
-        // Map ratio [0, 1] to stage count. Light stages as the viewer scrolls down.
         const stageIndex = Math.min(
           stages.length - 1,
           Math.floor(ratio * stages.length * 1.3),
         );
-        setLitStage(Math.max(0, stageIndex));
+        setObservedStage(Math.max(0, stageIndex));
       },
       { threshold: Array.from({ length: 21 }, (_, i) => i * 0.05) }, // 0, 0.05, 0.10, ..., 1.0
     );

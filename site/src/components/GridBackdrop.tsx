@@ -93,13 +93,9 @@ const COLS = 6;
 export default function GridBackdrop() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [enabled, setEnabled] = useState(true);
   const prefersReduced = useMediaQuery("(prefers-reduced-motion: reduce)");
   const isFinePointer = useMediaQuery("(any-pointer: fine)", true);
-
-  useEffect(() => {
-    setEnabled(!prefersReduced && isFinePointer);
-  }, [prefersReduced, isFinePointer]);
+  const enabled = !prefersReduced && isFinePointer;
 
   const tiles = useMemo<ReactNode[]>(() => {
     const imageTiles: ReactNode[] = manifest.tiles.map((src, i) => (

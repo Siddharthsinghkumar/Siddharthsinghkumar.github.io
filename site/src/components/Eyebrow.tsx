@@ -14,22 +14,19 @@ interface EyebrowProps {
 
 export default function Eyebrow({ children, className = "" }: EyebrowProps) {
   const ref = useRef<HTMLParagraphElement>(null);
-  const [fired, setFired] = useState(false);
   const prefersReduced = usePrefersReducedMotion();
+  const [observed, setObserved] = useState(false);
 
   useEffect(() => {
-    if (prefersReduced) {
-      setFired(true);
-      return;
-    }
+    if (prefersReduced) return;
 
     const el = ref.current;
     if (!el) return;
 
     const obs = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !fired) {
-          setFired(true);
+        if (entry.isIntersecting && !observed) {
+          setObserved(true);
           el.classList.add("eyebrow-glitch");
           el.addEventListener("animationend", () => {
             el.classList.remove("eyebrow-glitch");
@@ -42,7 +39,7 @@ export default function Eyebrow({ children, className = "" }: EyebrowProps) {
 
     obs.observe(el);
     return () => obs.disconnect();
-  }, [fired, prefersReduced]);
+  }, [observed, prefersReduced]);
 
   return (
     <p
