@@ -163,7 +163,11 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null
     return composite;
   }, [frontImage, backImage, imageFit, frontTex, backTex, typedMaterials.base.map]);
 
-  const [curve] = useState(() => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]));
+  const [curve] = useState(() => {
+    const c = new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]);
+    c.curveType = 'chordal' as CurveType;
+    return c;
+  });
   const [dragged, drag] = useState<THREE.Vector3 | false>(false);
   const [hovered, hover] = useState(false);
 
@@ -212,7 +216,9 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null
     }
   });
 
-  curve.curveType = 'chordal' as CurveType;
+  // curve.curveType set in useState initializer above — moved to allocation site
+
+  // eslint-disable-next-line react-hooks/immutability -- useTexture v10 lacks wrap config; load-time setup, never re-runs
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 
   return (

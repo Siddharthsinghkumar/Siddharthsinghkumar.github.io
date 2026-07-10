@@ -161,7 +161,6 @@ function SceneInner({ coarse }: { coarse: boolean }) {
 
   // ── Init camera ─────────────────────────────────────────
   useEffect(() => {
-    scene.fog = new THREE.FogExp2(COLORS.bg, 0.012);
     const wp = waypointsRef.current;
     if (wp.length > 0) {
       camera.position.copy(wp[0].camPos);
@@ -170,6 +169,7 @@ function SceneInner({ coarse }: { coarse: boolean }) {
   }, [scene, camera]);
 
   // ── Frame loop ──────────────────────────────────────────
+  // eslint-disable-next-line react-hooks/immutability -- R3F useFrame imperatively mutates camera fov per frame; no declarative equivalent
   useFrame((_, delta) => {
     const t = timeRef.current;
     timeRef.current += delta;
@@ -185,6 +185,7 @@ function SceneInner({ coarse }: { coarse: boolean }) {
     const aspect = window.innerWidth / window.innerHeight;
     if (camera instanceof THREE.PerspectiveCamera) {
       const targetFov = aspect < 1.2 ? 45 + (1.2 - aspect) * 30 : 45;
+      // eslint-disable-next-line react-hooks/immutability -- R3F frame-loop imperative fov lerp; no declarative equivalent
       camera.fov += (targetFov - camera.fov) * 0.02;
       camera.updateProjectionMatrix();
     }
@@ -295,6 +296,9 @@ function SceneInner({ coarse }: { coarse: boolean }) {
 
   return (
     <group ref={sceneGroupRef}>
+      {/* Scene fog */}
+      <fogExp2 attach="fog" args={[COLORS.bg, 0.012]} />
+
       {/* Core */}
       <group ref={coreRef}>
         <Core radius={coarse ? 2.0 : 2.9} />
