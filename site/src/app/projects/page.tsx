@@ -3,7 +3,6 @@ import Section from "@/components/Section";
 import Eyebrow from "@/components/Eyebrow";
 import ProjectCard from "@/components/ProjectCard";
 import GridBackdrop from "@/components/GridBackdrop";
-import PageBackground from "@/components/PageBackground";
 
 export const metadata: Metadata = {
   title: "Projects | Siddharth Singh",
@@ -18,7 +17,6 @@ export const metadata: Metadata = {
 export default function Projects() {
   return (
     <>
-      {/* <PageBackground image="/test/final-df-h.webp" /> Can be restored if visuals require */}
       <div className="pt-24 pb-24">
       {/* ── Project Grid ────────────────────────────────────── */}
       <Section className="relative overflow-hidden min-h-screen">
