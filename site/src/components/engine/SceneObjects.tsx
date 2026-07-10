@@ -81,36 +81,45 @@ export function GridFloor() {
   );
 }
 
+// ── Seeded PRNG (mulberry32) — deterministic across renders ──
+function mulberry32(seed: number): () => number {
+  return () => {
+    let t = (seed += 0x6d2b79f5);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 // ── Dust field — spans full frame with z-parallax layers ──
 export function DustField({ count = 2500 }: { count?: number }) {
   const meshRef = useRef<THREE.Points>(null);
-  const driftOffsets = useRef<Float32Array | null>(null);
 
-  const positions = useMemo(() => {
+  const particleData = useMemo(() => {
     const arr = new Float32Array(count * 3);
     const offsets = new Float32Array(count * 3);
+    const rng = mulberry32(42);
     for (let i = 0; i < count; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 22;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 14;
-      arr[i * 3 + 2] = (Math.random() * 18) - 4;
-      offsets[i * 3] = (Math.random() - 0.5) * 0.005;
-      offsets[i * 3 + 1] = (Math.random() - 0.5) * 0.003;
-      offsets[i * 3 + 2] = (Math.random() - 0.5) * 0.004;
+      arr[i * 3] = (rng() - 0.5) * 22;
+      arr[i * 3 + 1] = (rng() - 0.5) * 14;
+      arr[i * 3 + 2] = (rng() * 18) - 4;
+      offsets[i * 3] = (rng() - 0.5) * 0.005;
+      offsets[i * 3 + 1] = (rng() - 0.5) * 0.003;
+      offsets[i * 3 + 2] = (rng() - 0.5) * 0.004;
     }
-    driftOffsets.current = offsets;
-    return arr;
+    return { positions: arr, driftOffsets: offsets };
   }, [count]);
 
   const geo = useMemo(() => {
     const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    g.setAttribute("position", new THREE.BufferAttribute(particleData.positions, 3));
     return g;
-  }, [positions]);
+  }, [particleData.positions]);
 
   useFrame(() => {
-    if (!meshRef.current || !driftOffsets.current) return;
+    if (!meshRef.current) return;
     const pos = meshRef.current.geometry.attributes.position as THREE.BufferAttribute;
-    const off = driftOffsets.current;
+    const off = particleData.driftOffsets;
     for (let i = 0; i < count; i++) {
       pos.array[i * 3] += off[i * 3];
       pos.array[i * 3 + 1] += off[i * 3 + 1];
