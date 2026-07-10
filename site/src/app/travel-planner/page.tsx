@@ -5,7 +5,6 @@ import Button from "@/components/Button";
 import TravelPlannerDiagram from "@/components/TravelPlannerDiagram";
 import PaperInkLoader from "@/components/PaperInkLoader";
 import ChoreoReveal from "@/components/ChoreoReveal";
-import PageBackground from "@/components/PageBackground";
 import ScreenshotFrame from "@/components/ScreenshotFrame";
 
 export const metadata: Metadata = {
@@ -23,7 +22,6 @@ export const metadata: Metadata = {
 export default function TravelPlannerPage() {
   return (
     <>
-      {/* <PageBackground image="/test/final-df-h.webp" /> Can be restored if visuals require */}
       {/* Hero */}
       <Section className="pt-[calc(4rem+96px)] relative overflow-hidden min-h-[75svh] flex flex-col justify-center">
         <PaperInkLoader />
@@ -153,7 +151,7 @@ export default function TravelPlannerPage() {
           <Button href="mailto:siddharthsingh8418@gmail.com">
             Email me
           </Button>
-          <Button variant="ghost" href="/resume-siddharth-singh.pdf">
+          <Button variant="ghost" href="/resume/resume-siddharth-singh.pdf">
             Resume ↓
           </Button>
         </div>

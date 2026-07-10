@@ -7,7 +7,6 @@ import ProspectDiagram from "@/components/ProspectDiagram";
 import DecryptedText from "@/components/DecryptedText";
 import PaperInkLoader from "@/components/PaperInkLoader";
 import ChoreoReveal from "@/components/ChoreoReveal";
-import PageBackground from "@/components/PageBackground";
 import ScreenshotFrame from "@/components/ScreenshotFrame";
 
 export const metadata: Metadata = {
@@ -58,7 +57,6 @@ const components = [
 export default function ProspectPage() {
   return (
     <>
-      {/* <PageBackground image="/test/final-df-h.webp" /> Can be restored if visuals require */}
       <Section className="pt-[calc(4rem+96px)] relative overflow-hidden min-h-[75svh] flex flex-col justify-center">
         <PaperInkLoader />
         <ChoreoReveal variant="hero-item" heroIndex={0}>
@@ -205,7 +203,7 @@ export default function ProspectPage() {
           <Button href="mailto:siddharthsingh8418@gmail.com">
             Email me
           </Button>
-          <Button variant="ghost" href="/resume-siddharth-singh.pdf">
+          <Button variant="ghost" href="/resume/resume-siddharth-singh.pdf">
             Resume ↓
           </Button>
         </div>

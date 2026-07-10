@@ -90,7 +90,7 @@ export default function Home() {
               <Button href="mailto:siddharthsingh8418@gmail.com" className="border-white text-white border-2">
                 Email me
               </Button>
-              <Button variant="ghost" href="/resume-siddharth-singh.pdf" className="border-white text-white border-2 bg-white/10">
+              <Button variant="ghost" href="/resume/resume-siddharth-singh.pdf" className="border-white text-white border-2 bg-white/10">
                 Resume ↓
               </Button>
             </div>
