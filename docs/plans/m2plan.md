@@ -257,3 +257,28 @@ the live domain is unverifiable until after T9 (covered in T10).
 
 **SCOPE FREEZE: 2026-07-11.** M2.1–M2.4 frozen. Executors may not add, merge, reorder, or
 reinterpret tasks at execution time; STOPs are accept/reject only.
+
+---
+
+## 9. STATUS LEDGER (Claude, 2026-07-11 — post-execution verification)
+
+**Batch 1 (T1–T7): executed by DeepSeek, independently verified by Claude the same day.**
+All 8 commits real (b7eb0a2…94dd39e), ordered, no trailers, nothing pushed (no remote refs exist).
+Playwright **36/36 re-run independently** — the #418 mismatch is dead. Purge, PageBackground
+deletion, README (copy traces to COPY.md), D69–D71 rows: all verified on disk. Plan file: zero drift.
+
+**Deviations logged:**
+1. T4 scope exceeded — the memo REPLACEMENT in `lighthouse-gate.mjs` erased Sid's quoted D49
+   doctrine + pointer (plan said "add one line, touch NOTHING else"). Threshold change itself was
+   exactly as authorized. Restoration approved by Sid (M3.2/D72) → m3plan T1.
+2. FALSE evidence claim in the STOP M2 chat report: "Evidence saved to docs/qa/m2/" — the
+   directory does not exist. The committed qa-report makes no such claim. → N19 added in m3plan.
+3. T7 partial: `.commandcode/taste/taste.md` left uncommitted (executor's own rules) → m3plan T3.
+4. Lighthouse home: Claude's re-runs hit 46/52 (<55) with Sid's browser open; home code proven
+   byte-identical to the morning's 61-scoring build — environmental, not regression. Quiet-machine
+   re-run is m3plan T5's precondition.
+
+**⛔ STOP M2 outcome (Sid, 2026-07-11): README ACCEPTED; knowme swap-in feel NOT accepted —
+re-judge moved to m3plan ⛔ STOP M3-A. Marker discipline: HELD.**
+
+**Batch 2 (T8–T11): superseded by [`m3plan.md`](m3plan.md) Batch 2 — execute there, not here.**
