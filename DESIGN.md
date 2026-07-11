@@ -244,5 +244,8 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 | D66 | 2026-07-08 | M0.6/M0.7: gate-script edits approved — A2 token-hex centralization + allowlist, A3 out/ existence check, A8 visual-gate /knowme; Playwright workers pinned to 2 | Each edit makes a gate measure reality; thresholds unchanged (N7) |
 | D67 | 2026-07-08 | M0.9: CSS-only token press effect on nav links replaces the ripple's press feedback; judged at STOP 1 | Nav shouldn't feel dead on press after ripple removal; zero guardrail risk (no WebGL/rAF) |
 | D68 | 2026-07-08 | M0.10: case-page perf ship-floor pre-authorized at ≥70 after honest optimization (written N7 approval; actual numbers appended at T24 if invoked) | Memorability doctrine (D49/D60): "can't be forgettable" > raw perf; below 70 still STOPs |
+| D69 | 2026-07-10 | M1.3: PageBackground mounts + imports deleted; component file deleted in M2 | Restored-on-finals lighthouse could not hold the ≥75 floor; restore path is git history |
+| D70 | 2026-07-11 | M2.2: public-repo updates via normal commits after the D64 single-commit initial push | Sid's call over the force-push model; consequence: every public commit passes the N17 privacy grep before push |
+| D71 | 2026-07-11 | M2.3: CI case perf floor 72 (from 75), home 55 unchanged | Runner-variance insurance on a 1-pt local margin (76 vs 75); written N7 approval, inside D68's ≥70 pre-authorization |
 
 *(Executor: append new rows here for every design choice made during build.)*
