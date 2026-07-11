@@ -10,6 +10,7 @@ export default function ConsoleFix() {
         if (args[0].includes("THREE.Clock: This module has been deprecated")) return;
         if (args[0].includes("Uniform location for u_worldWidth not found")) return;
         if (args[0].includes("Uniform location for u_worldHeight not found")) return;
+        if (args[0].includes("using deprecated parameters for the initialization function")) return;
       }
       originalWarn(...args);
     };
