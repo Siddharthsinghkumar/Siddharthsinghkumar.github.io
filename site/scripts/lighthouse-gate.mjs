@@ -9,12 +9,11 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-// Memo: home perf gate 55 (was 85), case perf gate 75 (was 90). Sid 2026-07-05:
-// "performance is not the issue — it's a portfolio, people can wait. The problem
-// is it can't be forgettable." Honest floors for the N17-locked heavy 3D scene
-// + GooeyLoader on simulated throttling. D49 in DESIGN.md §6.
+// Memo: home perf gate 55 (was 85), case perf gate 72 (was 75 then 90).
+// Sid 2026-07-11 (D71): case floor 72 — CI runner-variance insurance on a
+// 1-pt margin; D68 pre-authorized ≥70. Home 55 unchanged.
 const HOME_PERF = 55;
-const CASE_PERF = 75;
+const CASE_PERF = 72;
 const THRESHOLDS = { performance: 90, accessibility: 95, seo: 95 };
 const PAGES = ["", "prospect/", "travel-planner/"];
 
