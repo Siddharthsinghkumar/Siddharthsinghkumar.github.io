@@ -21,31 +21,32 @@ function supportsWebGL(): boolean {
 
 /** Module-level: is the client Mounted state */
 let isMounted = false;
+let webglSupported: boolean | null = null;
 const listeners = new Set<() => void>();
 function subscribeMount(cb: () => void) {
   listeners.add(cb);
   return () => listeners.delete(cb);
 }
 function getIsMounted() { return isMounted; }
+function getWebglSupported() { return webglSupported; }
 
 export default function LanyardLoader(props: { frontImage: string; backImage: string }) {
   const prefersReduced = usePrefersReducedMotion();
-  const webglOk = typeof window !== "undefined" && supportsWebGL();
   const mounted = useSyncExternalStore(subscribeMount, getIsMounted, () => false);
+  const cachedWebglOk = useSyncExternalStore(subscribeMount, getWebglSupported, () => null);
 
-  // Signal mount — runs once per session, idempotent
+  // Signal mount + probe WebGL — runs once per session, idempotent
   useEffect(() => {
     if (!isMounted) {
+      webglSupported = supportsWebGL();
       isMounted = true;
       listeners.forEach(fn => fn());
     }
   }, []);
 
-  if (prefersReduced || !webglOk) {
+  if (prefersReduced || !mounted || !cachedWebglOk) {
     return <LanyardFallback frontImage={props.frontImage} />;
   }
-
-  if (!mounted) return null;
 
   return (
     <LanyardErrorBoundary frontImage={props.frontImage} backImage={props.backImage}>
