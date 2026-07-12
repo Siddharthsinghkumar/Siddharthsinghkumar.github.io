@@ -1,76 +1,229 @@
-# M5 Plan — The Not-Forgettable Upgrade (scroll-video, textured renders, real assets)
+# M5 Plan — The Not-Forgettable Upgrade (FULL, 2026-07-12)
 
 > **This file:** `/home/sidd/project/freelance/portfolio-website/docs/plans/m5plan.md`
-> Runs after ⛔ STOP M4-A is accepted ([`m4plan.md`](m4plan.md)). Feeds [`m6plan.md`](m6plan.md)
-> (cert + launch). **Nothing lands after launch — Batch P (from m2–m4) is DEAD; D2/D3 land here.**
-> **STATUS: SCOPE FROZEN 2026-07-12 (verdicts M5.1–M5.9). Task blocks + kickoff prompts get
-> frozen at m5 kickoff, AFTER m4 lands (anchors shift with the L0 restore).**
+> Follows [`m4plan.md`](m4plan.md) — **⛔ STOP M4-A was REJECTED-FORWARD** (m4plan §9): m4's
+> engineering is gates-green and stands; Sid's two visual rejects land HERE as binding scope.
+> Feeds [`m6plan.md`](m6plan.md) (cert + launch). Nothing lands after launch.
+> Executors: **DeepSeek v4 Flash @ HIGH** (Batch 1 — mechanical) and **Gemini 3.1 Pro @ HIGH**
+> (Batch 2 — perceptual). Same-model tasks bunched per Sid. Claude runs Batch 0 (demo + prompt
+> pack). Sid switches at every **⛔** marker himself. An executor must NEVER continue past one.
+> **STATUS: FROZEN — verdicts M5.1–M5.11 taken by Sid 2026-07-12.**
+
+## 0. Cold-start reading list (in order, nothing else)
+
+1. `/home/sidd/project/freelance/portfolio-website/CLAUDE.md` — build rules. Wins all conflicts.
+2. `/home/sidd/project/freelance/portfolio-website/site/AGENTS.md` — "This is NOT the Next.js you
+   know." Read the relevant `site/node_modules/next/dist/docs/` guide before touching any Next API.
+3. **This plan, top to bottom.** m0plan §3 (N1–N13), m1plan §2 (N14–N16), m2plan §2 (N17–N18),
+   m3plan §3 (N19), m4plan §3 (N20) remain law verbatim; §3 below adds N21–N23.
+4. Advisory input (if present): `docs/plans/inputs/uiuxpromax-portfolio.md` — recommendations
+   only; DESIGN.md tokens win every conflict.
+5. Per-task: ONLY files named in the task block.
 
 ## 1. Mission & definition of DONE
 
-**Bring the case pages to hatom/km-grade craft** — directed motion, textured atmosphere, real
-assets — without touching what already works.
+**Bring the subpages to hatom/km-grade craft: full-bleed directed motion, textured atmosphere,
+real assets.**
 
-1. `/prospect` + `/travel-planner` heroes: **scroll-EVENT video** (scrub tied to scroll position,
-   NOT an autoplay background loop) from Sid's generated media. Poster = the seed image.
-2. Final L0/underlay art on the 3 big pages (supersedes m4's interim default).
-3. **D2 real screenshots** (Sid's captures — NEVER generated) in the case-page frames;
-   **D3 tiles** (generated brand art allowed) in `/projects`.
-4. Every media element: poster + `prefers-reduced-motion` static + mobile/lite fallback (device
-   detect). 60fps feel on mid-range mobile is a review criterion, not a wish.
-5. Suite green (floors unchanged 55/72 via lazy-mount; red at cert = N18 STOP).
-6. Sid taste-accepted every ⛔ STOP on `:4173` (N20).
+1. **Full-bleed heroes (STOP M4-A reject #1):** on `/prospect` + `/travel-planner` the hero media
+   covers the ENTIRE viewport width of the hero section (scroll-scrub video after Sid's drop);
+   `/projects` gets its backdrop full-bleed. No more media clamped to the 1200px text column.
+2. **Lanyard swap polish (STOP M4-A reject #2):** no placeholder flash on fast loads — fallback
+   appears only if the scene needs >400ms; the swap reads as ONE settle, never two cards at once.
+3. Scroll-EVENT video on the two case heroes (scrub tied to scroll, not autoplay), from Sid's
+   generated media; poster = seed image.
+4. D2 real screenshots in the case-page frames; D3 tiles in `/projects`; final L0 art if Sid's
+   drop includes it (else the D77 bake stays).
+5. Every media element: poster + `prefers-reduced-motion` static + mobile/lite fallback.
+6. Suite green (floors 55/72 via lazy-mount; red at cert = N18 STOP). Sid said yes at every ⛔.
 
-DONE is NOT: home changes (its 3D engine stays king), knowme changes (accepted state), any new or
-edited copy (M5.6), the v2 parking lot (ripple donor, GridMotion, authored .glb, merlin-cli-bridge).
+DONE is NOT: home changes, knowme layout changes (only the swap polish), any copy change, audio
+(v2 — Sid may override), the v2 parking lot (ripple donor, GridMotion, authored .glb,
+merlin-cli-bridge).
 
 ## 2. FROZEN VERDICTS (Sid, 2026-07-12)
 
 | # | Verdict |
 |---|---|
-| M5.1 | **Video = scroll event, not background.** `video.currentTime` scrubbing (2026 default over image sequences), keyframe-dense encode (all-intra or near, e.g. `ffmpeg -g 1`-class), webm+mp4, target ≤4 MB per hero, 5–8 s master. Mapping via rAF/scrollTimeline; backward-scrub must be smooth or the demo fails. |
-| M5.2 | **Scope: the two case heroes only.** Scroll-video REPLACES PaperInk in those heroes (D37 upheld per-region: hero = video, text sections below = L0 paper). Knowme/home/projects get NO video. |
-| M5.3 | **Lazy-mount, floors keep (N7 verdict in writing):** poster is the LCP; video assets fetch on idle/approach. Lighthouse floors stay 55/72; <72 at cert = N18 STOP with numbers, Sid decides then. |
-| M5.4 | **Asset pipeline:** Claude authors a PROMPT PACK — per asset: image prompt (high-detail, token-hex palette accents, research-backed, D60 not-forgettable) + paired Seedance 2.0 video prompt using that image as seed frame + encode spec. Sid generates (GPT Image 2 / Nano Banana Pro → Seedance 2.0 / Veo 3.1) and drops files. Executors wire; they never generate. |
-| M5.5 | **Generated media = ambience/brand art ONLY.** Never fake UI, screenshots, or metrics of Sid's tools (verified-claims rule). D2 screenshots are real captures by Sid. |
-| M5.6 | **Copy untouched.** The km/hatom quality Sid wants is craft (art direction + directed motion), not ad CTAs. Zero new words. |
-| M5.7 | **Skills:** `ui-ux-pro-max` audit runs BEFORE task freeze (Sid runs it; output → `docs/plans/inputs/uiuxpromax-portfolio.md`; advisory — DESIGN.md tokens win). **Taste Skill** (tasteskill.dev anti-slop) attaches to the perceptual batch if installed. **ponytail** attaches to mechanical batches only, never perceptual. |
-| M5.8 | **Cheapest-demo-first:** Claude builds a THROWAWAY scrub demo on ONE hero (prospect) with placeholder media → ⛔ STOP M5-A feel check on `:4173` BEFORE Sid burns model credits on finals. Reject = technique rethink; no sunk assets. |
-| M5.9 | Model split per M4.4 precedent: mechanical wiring = DeepSeek v4 Flash @ MAX; perceptual tuning = Gemini 3.1 Pro @ HIGH; same-model tasks bunched. |
+| M5.1 | Video = **scroll event**, not background: `video.currentTime` scrubbing, keyframe-dense encode (all-intra class), webm+mp4, ≤4 MB/hero, 5–8 s master; mapping via rAF; backward scrub must be smooth or the demo fails. |
+| M5.2 | Video on the TWO case heroes only, replacing PaperInk there (D37 per-region: hero = video, sections below = L0 paper). Knowme/home/projects: no video. |
+| M5.3 | **Lazy-mount, floors keep (written N7):** poster is the LCP; video fetches on idle/approach; floors stay 55/72; <72 at cert = N18 STOP, Sid decides with numbers. |
+| M5.4 | Asset pipeline: Claude authors the PROMPT PACK (per asset: high-detail image prompt, token-hex accents, research-backed, D60 + paired Seedance 2.0 video prompt using the image as seed frame + encode spec). Sid generates (GPT Image 2 / Nano Banana Pro → Seedance 2.0 / Veo 3.1) and drops files. Executors wire; they never generate. Pack targets 1080p / 5–8 s defaults; Sid adjusts to his real model limits at generation time. |
+| M5.5 | Generated media = ambience/brand art ONLY — never UI, screenshots, data, or metrics of Sid's tools. D2 screenshots are real captures by Sid. |
+| M5.6 | Copy untouched — craft, not ad CTAs. |
+| M5.7 | Skills: `ui-ux-pro-max` audit as advisory input; **Taste Skill** on the Gemini batch IF installed; **ponytail** on the DeepSeek batch only. |
+| M5.8 | Cheapest-demo-first: Claude builds a THROWAWAY full-bleed scrub demo on `/prospect` with placeholder media → ⛔ STOP M5-A BEFORE Sid burns generation credits. Reject = technique rethink, no sunk assets. |
+| M5.9 | **Full-bleed hero is a binding spec** (STOP M4-A reject): hero media renders at section level (`absolute inset-0`, full viewport width), text stays in the 1200px column. Applies to prospect, travel-planner, projects. |
+| M5.10 | **Lanyard delay-show:** fallback hidden for the first ~400ms after mount+webgl-ok (fast loads never see it); crossfade offset so the fallback is faded OUT before the canvas reaches full opacity — never two cards visible at once. Slow-load behavior (fallback while assets download) stays. |
+| M5.11 | Model split: **DeepSeek v4 Flash @ HIGH** = Batch 1 mechanical; **Gemini 3.1 Pro @ HIGH** = Batch 2 perceptual; bunched, one ⛔ SWITCH MODEL between. Launch stays Sid+Claude (m6). |
 
-## 3. Execution shape (task blocks frozen at kickoff)
-
-```
-B0 — INPUTS (parallel):
-   Sid: run ui-ux-pro-max audit → docs/plans/inputs/ · confirm Taste Skill installed
-   Claude: scrub demo on /prospect hero (throwaway) + the full prompt pack
-→ ⛔ STOP M5-A: demo feel on :4173 + prompt-pack approval (accept/reject/adjust)
-→ Sid generates + drops: hero videos + seeds, final underlays, D2 captures, D3 tiles
-B1 — DeepSeek v4 Flash @ MAX (mechanical): ScrollVideo component (error boundary, poster,
-   reduced-motion, device detect, lazy-mount) · hero wiring per layer schema (video = the hero
-   layer, PaperInk retired there) · L0 art swap · D2 frames · D3 tiles → cert 1×
-→ ⛔ SWITCH MODEL
-B2 — Gemini 3.1 Pro @ HIGH (perceptual, + Taste Skill): scrub mapping curve + easing feel ·
-   light/contrast pass · spacing/type polish vs the audit → evidence set under docs/qa/m5/
-→ ⛔ STOP M5-B: full taste pass, all 6 pages on :4173 → accept ⇒ m6plan
-```
-
-## 4. Rules
-
-N1–N20 verbatim, plus:
+## 3. DON'T-WANT — N1–N20 binding, plus:
 
 | # | Rule |
 |---|---|
-| N21 | A media element without poster + reduced-motion static + mobile fallback is REJECTED regardless of how good it looks. |
-| N22 | No generated imagery that depicts UI, screenshots, data, or metrics of Sid's tools — ambience and brand art only. |
+| N21 | A media element without poster + reduced-motion static + mobile fallback is REJECTED regardless of how it looks. |
+| N22 | No generated imagery depicting UI, screenshots, data, or metrics of Sid's tools — ambience and brand art only. |
+| N23 | **Evidence discipline (post-breach):** every claimed screenshot is md5-unique per page, captured on `:4173` ≥5 s after load (idle-mounts settled). A duplicate or blank frame = false report, whole report suspect. Certification commits happen ONLY on a fully green suite — a red gate in a "cert" commit is a protocol breach even if disclosed. |
 
-Playwright floor 36/36. One task = one commit. NEVER push. Evidence per N19, judged per N20.
+## 4. Execution order
 
-## 5. Confidence: scope 9/10 — execution TBD at kickoff
+```
+B0 (Claude): C1 full-bleed scrub demo on /prospect (throwaway) · C2 prompt pack
+   Sid in parallel: ui-ux-pro-max audit → docs/plans/inputs/ · confirm Taste Skill installed
+→ ⛔ STOP M5-A: Sid judges demo feel on :4173 + approves prompt pack
+→ Sid generates + drops assets (videos + seed posters, D2 captures, D3 tiles, optional L0 art)
+   → demo edits reverted; executors start from a clean tree
+B1 (DeepSeek v4 Flash @ HIGH): T1 Section backdrop slot → T2 ScrollVideo component →
+   T3 projects full-bleed → T4 lanyard swap polish → ⛔ STOP ASSETS (wait for Sid's drop if not
+   yet landed) → T5 hero video wiring → T6 D2 frames + D3 tiles → T7 cert 1× + D-rows
+→ ⛔ SWITCH MODEL
+B2 (Gemini 3.1 Pro @ HIGH): T8 scrub feel pass → T9 polish vs audit → T10 evidence set
+→ ⛔ STOP M5-B: Sid full taste pass, all 6 pages on :4173 → accept ⇒ m6plan
+```
 
-Grounded in today's research (scrub-over-sequences is the settled 2026 technique; award juries
-score art direction + directed motion + mid-range-mobile 60fps — exactly D60). The two real risks
-are gated early by design: technique feel (STOP M5-A demo before assets) and asset quality (Sid
-holds the generators; prompt pack is iterable without code churn).
+One task = one commit. Build green before every commit. No attribution trailers. **NEVER push.**
 
-**SCOPE FREEZE: 2026-07-12.** M5.1–M5.9 frozen; task blocks may not reinterpret them.
+---
+
+## BATCH 0 — Claude (demo + prompt pack)
+
+### C1 — Full-bleed scrub demo (throwaway)
+`/prospect` hero: media layer moved to section level (prototype of T1/T2), placeholder loop
+scrubbed by scroll. Judged at ⛔ STOP M5-A on `:4173`. All demo edits reverted after the verdict.
+### C2 — Prompt pack → `docs/plans/inputs/m5-prompt-pack.md`
+Per asset (prospect hero, travel-planner hero, D3 tiles, optional L0 art): image prompt +
+Seedance/Veo prompt (seed = the image) + encode spec (`ffmpeg` all-intra webm+mp4, ≤4 MB) +
+poster/export naming (`site/public/media/<page>-hero.{webm,mp4}`, poster
+`<page>-hero-poster.webp`).
+
+## ⛔ STOP M5-A — demo feel + prompt pack (accept/reject/adjust). Then Sid generates + drops.
+
+---
+
+## BATCH 1 — Mechanical (DeepSeek v4 Flash @ HIGH; ponytail attached)
+
+### T1 — Section backdrop slot (M5.9 root fix)
+- **File:** `site/src/components/Section.tsx`. Add optional `backdrop?: ReactNode`; when present,
+  render `<div className="absolute inset-0">{backdrop}</div>` INSIDE the `<section>` BEFORE the
+  `max-w-[1200px]` div. Section must have `relative` when backdrop is used (hero Sections already
+  do; add a safe default). Content div keeps `relative z-[20]`.
+- **Done:** build green; no visual change yet (no caller). Commit: `feat(layout): Section backdrop slot for full-bleed hero media`
+
+### T2 — ScrollVideo component (M5.1, from C1's demo learnings)
+- **New:** `site/src/components/ScrollVideo.tsx` (+ loader if needed). Props: `webm`, `mp4`,
+  `poster`. Behavior: renders poster `<img>` immediately (LCP); video element mounts on
+  `requestIdleCallback` (PaperInkCanvas.tsx:40 pattern), `preload="none"` until near-viewport;
+  scroll→`currentTime` mapping via rAF, clamped, passive listeners, paused when tab hidden;
+  `prefers-reduced-motion` OR `(pointer: coarse)` OR save-data ⇒ poster only (N21); error ⇒
+  poster (boundary). No new dependencies (N3).
+- **Done:** build green; component renders poster-only with no assets present (T5 wires real
+  files). Commit: `feat(media): ScrollVideo scroll-scrub component`
+
+### T3 — Projects full-bleed (M5.9)
+- **File:** `site/src/app/projects/page.tsx` — move `<GridBackdrop />` from Section children into
+  `backdrop={<GridBackdrop />}` on the hero Section. GridBackdrop fills its parent; verify it
+  spans the viewport on `:4173` (N23 screenshot under `docs/qa/m5/`).
+- **Done:** backdrop spans full width behind the grid; links clickable; build green.
+  Commit: `fix(projects): full-bleed grid backdrop per M5.9`
+
+### T4 — Lanyard swap polish (M5.10)
+- **File:** `site/src/components/LanyardLoader.tsx` ONLY. Add a 400ms delay-show: the fallback
+  renders `opacity-0` until a 400ms timer fires (then fades in) — if `sceneReady` lands first,
+  it never appears. Offset the swap: fallback fade-out (~200ms) completes BEFORE the canvas
+  container fades in (~300ms, slight delay). Server/hydration render byte-identical (all timers
+  client-side, initial classes unchanged). #418 regression = instant STOP.
+- **Done:** on `:4173`: hard-reload (fast) shows NO fallback flash, card fades in once; with
+  devtools Slow 4G the fallback appears after ~400ms, then swaps without both cards visible.
+  Playwright 36/36. Commit: `fix(knowme): lanyard fallback delay-show + offset crossfade`
+
+## ⛔ STOP ASSETS — if Sid's drop has not landed, stop here completely and report. Resume at T5
+only after Sid confirms the files exist under `site/public/media/` (+ D2/D3 under their paths).
+
+### T5 — Hero video wiring (M5.2 + M5.9)
+- **Files:** `site/src/app/prospect/page.tsx`, `site/src/app/travel-planner/page.tsx`.
+  Hero Section gets `backdrop={<ScrollVideo webm=... mp4=... poster=... />}`; `<PaperInkLoader />`
+  is REMOVED from these two heroes (D37 per-region; the import too). Text/readability: keep the
+  existing text z-layers; if contrast suffers, a token-only scrim div inside the backdrop is
+  allowed (no new hexes).
+- **Done:** both heroes full-bleed, scrub responds to scroll both directions smoothly, poster
+  paints first; N23 screenshots. Commit: `feat(cases): full-bleed scroll-scrub hero videos`
+
+### T6 — D2 frames + D3 tiles
+- Wire Sid's real screenshots into the case-page frames (replace `public/placeholders/*.svg`
+  references) and tiles into `/projects` (`public/tiles/`, `scan-tiles.mjs` already builds the
+  manifest). AVIF/WebP sizing per DESIGN.md §5.
+- **Done:** no placeholder assets referenced anywhere; build green; N23 screenshots.
+  Commit: `feat(assets): real screenshots + project tiles`
+
+### T7 — Certification 1× + D-rows
+- DESIGN.md §6 rows (after D77, no blank line): D78 full-bleed hero spec (M5.9, STOP M4-A
+  reject), D79 ScrollVideo scroll-scrub system (M5.1/M5.2), D80 lanyard delay-show (M5.10).
+- Full suite: build → tsc → lint → guards → playwright → lighthouse-gate → visual-gate.
+  Visual-gate baselines will change (full-bleed heroes) — regenerate + commit; if the gate's
+  DETECTION logic needs changes, that is N7: STOP and ask Sid, never edit it yourself.
+  Case <72 = N18 STOP with numbers. Cert commit ONLY if all green (N23).
+- **Done:** suite summary + qa-report 3-liner. Commit: `docs(qa): M5 batch 1 certification`
+
+## ⛔ SWITCH MODEL — DeepSeek done permanently.
+
+---
+
+## BATCH 2 — Perceptual (Gemini 3.1 Pro @ HIGH; Taste Skill if installed)
+
+### T8 — Scrub feel pass
+- Tune the scroll→time mapping (easing/damping, dwell zones so key frames land where text sits).
+  Numbers live in ScrollVideo props/consts — no structural edits. Before/after notes in the report.
+### T9 — Polish vs the audit
+- Apply accepted `ui-ux-pro-max` recommendations that are token-compatible (spacing, type scale,
+  contrast). DESIGN.md tokens win; no copy changes (M5.6); list every applied/rejected item.
+### T10 — Evidence set
+- `docs/qa/m5/`: all 6 pages at p0 + hero mid-scrub + lanyard fast/slow series, every file
+  md5-unique, `:4173`, ≥5 s waits (N23). Full suite 1× green.
+  Commit: `docs(qa): M5 perceptual pass + evidence`
+
+## ⛔ STOP M5-B — Sid's full taste pass (all 6 pages, `:4173`). Accept ⇒ [`m6plan.md`](m6plan.md).
+Reject ⇒ full stop, re-planned with Claude.
+
+## 5. KICKOFF PROMPTS
+
+**Batch 1 — DeepSeek v4 Flash @ HIGH:**
+```
+Read, in order: /home/sidd/project/freelance/portfolio-website/CLAUDE.md, then
+/home/sidd/project/freelance/portfolio-website/site/AGENTS.md, then m0plan.md §3, m1plan.md §2,
+m2plan.md §2, m3plan.md §3, m4plan.md §3, then the ENTIRE plan at
+/home/sidd/project/freelance/portfolio-website/docs/plans/m5plan.md.
+Execute Batch 1 (T1–T7) strictly in order. Non-negotiables: edit only files named in the current
+task; no new dependencies; every claimed screenshot md5-unique from the served prod build :4173
+after ≥5s settle (N23) — a duplicate or blank frame is a false report; certification commits only
+on a fully green suite; any case-page lighthouse <72 = STOP with the number, no retries, no
+threshold edits; never edit gate scripts (N7) — if visual-gate detection needs changes, STOP and
+ask Sid; STOP COMPLETELY at ⛔ STOP ASSETS if Sid's media files are absent; build green before
+every commit; one task = one commit; no attribution trailers; NEVER push. If a fix isn't clean in
+ONE attempt, STOP and report. STOP COMPLETELY at ⛔ SWITCH MODEL after T7. Address the user as Sid.
+```
+
+**Batch 2 — Gemini 3.1 Pro @ HIGH:**
+```
+Read, in order: /home/sidd/project/freelance/portfolio-website/CLAUDE.md, then
+/home/sidd/project/freelance/portfolio-website/site/AGENTS.md, then m0plan.md §3, m1plan.md §2,
+m2plan.md §2, m3plan.md §3, m4plan.md §3, then the ENTIRE plan at
+/home/sidd/project/freelance/portfolio-website/docs/plans/m5plan.md, plus the advisory audit at
+docs/plans/inputs/uiuxpromax-portfolio.md if present.
+Execute Batch 2 (T8–T10) strictly in order. Non-negotiables: perceptual tuning only — no
+structural or copy changes; DESIGN.md tokens win over any audit recommendation; every screenshot
+md5-unique from :4173 after ≥5s settle (N23); full suite green before your final commit; build
+green before every commit; one task = one commit; no attribution trailers; NEVER push. STOP
+COMPLETELY at ⛔ STOP M5-B, post the completeness table with real evidence paths (N19), and wait —
+launch is not executor work. Address the user as Sid.
+```
+
+## 6. Confidence: 9.0/10 — frozen
+
+Both M4-A rejects are root-caused in code (Section's `max-w-[1200px]` clamps all hero media; the
+crossfade shows both cards). The riskiest unknowns are gated before cost: technique feel at STOP
+M5-A (before assets), asset quality via the iterable prompt pack (Sid holds the generators), and
+scrub smoothness has an explicit fail criterion. Residual: video weight vs the 72 floor (M5.3
+lazy-mount + N18 STOP), Gemini's taste vs Sid's (STOP M5-B is accept/reject only).
+
+**SCOPE FREEZE: 2026-07-12.** M5.1–M5.11 frozen. Executors may not add, merge, reorder, or
+reinterpret tasks; STOPs are accept/reject only.

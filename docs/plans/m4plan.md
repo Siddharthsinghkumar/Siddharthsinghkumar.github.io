@@ -205,3 +205,12 @@ behind `LIVE_SHADER` flag per Sid ("don't remove the code in case I want to go b
 **ALL GATES GREEN** — 36/36; prospect 75 / travel-planner 75 (floor 72); visual-gate all rows;
 evidence PNGs md5-unique, properly timed, replacing the fakes. D77 recorded.
 **⛔ STOP M4-A now awaits Sid's ritual only.**
+
+**⛔ STOP M4-A outcome (Sid, 2026-07-12): REJECTED-FORWARD.** m4's engineering stands (gates
+green, honest evidence) but two visual verdicts against the result:
+1. Hero media on prospect/travel-planner/projects is clamped to the 1200px text column
+   (`Section.tsx`'s `max-w-[1200px]` wraps PaperInkLoader/GridBackdrop) — Sid's spec: hero
+   media covers the FULL viewport width of the hero section.
+2. The lanyard fallback card flashes for ~0.5s on fast loads and the crossfade shows both
+   cards at once (Sid's screenshot 21-36-52).
+Both are BINDING m5 scope (m5plan M5.9 + M5.10). No further m4 work; m4 closes here.
