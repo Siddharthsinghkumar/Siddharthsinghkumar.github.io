@@ -256,4 +256,6 @@ they render outside the §6 table (fix = m4plan T1).
    pick at ⛔ STOP M4-A. Knowme's own layers confirmed intact (Sid 2026-07-12: after reloads
    "it works as I planned").
 
-**Batch 2 (T5–T9): NOT RUN — superseded verbatim by m4plan Batch 3.** Batch P unchanged.
+**Batch 2 (T5–T9): NOT RUN — superseded.** Sid consolidated all remaining work 2026-07-12 into
+three plans: m4 (fixes) → m5 (visual upgrade: scroll-video, textured renders, D2/D3 assets) →
+m6 (cert + launch). **Batch P is DEAD — nothing lands after launch; D2/D3 land in m5.**
