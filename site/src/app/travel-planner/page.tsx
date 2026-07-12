@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PageBackground from "@/components/PageBackground";
 import Section from "@/components/Section";
 import Eyebrow from "@/components/Eyebrow";
 import Button from "@/components/Button";
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
 export default function TravelPlannerPage() {
   return (
     <>
+      <PageBackground />
       {/* Hero */}
       <Section className="pt-[calc(4rem+96px)] relative overflow-hidden min-h-[75svh] flex flex-col justify-center">
         <PaperInkLoader />

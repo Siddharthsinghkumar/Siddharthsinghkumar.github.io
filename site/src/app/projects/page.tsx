@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PageBackground from "@/components/PageBackground";
 import Section from "@/components/Section";
 import Eyebrow from "@/components/Eyebrow";
 import ProjectCard from "@/components/ProjectCard";
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
 export default function Projects() {
   return (
     <>
+      <PageBackground />
       <div className="pt-24 pb-24">
       {/* ── Project Grid ────────────────────────────────────── */}
       <Section className="relative overflow-hidden min-h-screen">
