@@ -8,6 +8,9 @@
 > (Batch 2 — perceptual). Same-model tasks bunched per Sid. Claude runs Batch 0 (demo + prompt
 > pack). Sid switches at every **⛔** marker himself. An executor must NEVER continue past one.
 > **STATUS: FROZEN — verdicts M5.1–M5.11 taken by Sid 2026-07-12.**
+> **REV 2026-07-12 (Sid):** M5.1 + M5.4 amended by Sid the same day — pipeline changed from
+> video-file scrubbing to start/end-frame generation → Flow interpolation → shipped **frame
+> sequence** scrubbed on a canvas. Originals in git history. Scope freeze otherwise intact.
 
 ## 0. Cold-start reading list (in order, nothing else)
 
@@ -30,8 +33,8 @@ real assets.**
    `/projects` gets its backdrop full-bleed. No more media clamped to the 1200px text column.
 2. **Lanyard swap polish (STOP M4-A reject #2):** no placeholder flash on fast loads — fallback
    appears only if the scene needs >400ms; the swap reads as ONE settle, never two cards at once.
-3. Scroll-EVENT video on the two case heroes (scrub tied to scroll, not autoplay), from Sid's
-   generated media; poster = seed image.
+3. Scroll-EVENT teardown sequence on the two case heroes (canvas image sequence scrubbed by
+   scroll, not autoplay), from Sid's generated media; poster = first frame.
 4. D2 real screenshots in the case-page frames; D3 tiles in `/projects`; final L0 art if Sid's
    drop includes it (else the D77 bake stays).
 5. Every media element: poster + `prefers-reduced-motion` static + mobile/lite fallback.
@@ -45,10 +48,10 @@ merlin-cli-bridge).
 
 | # | Verdict |
 |---|---|
-| M5.1 | Video = **scroll event**, not background: `video.currentTime` scrubbing, keyframe-dense encode (all-intra class), webm+mp4, ≤4 MB/hero, 5–8 s master; mapping via rAF; backward scrub must be smooth or the demo fails. |
+| M5.1 | **(REV 2026-07-12)** Motion = **scroll event**, not background: **canvas image-sequence scrub** (Apple AirPods technique) — shipped webp frames, scroll→frame-index mapping via rAF, redraw on index change only. No video element, no GSAP (N3; lenis/native scroll). ~100–140 frames/hero (15 fps ship-set from a 5–8 s master), target ≤4 MB/hero, poster = first frame. Backward scrub is exact by construction. Pin-while-scrub is prototyped in C1 and judged at ⛔ STOP M5-A, not pre-frozen. |
 | M5.2 | Video on the TWO case heroes only, replacing PaperInk there (D37 per-region: hero = video, sections below = L0 paper). Knowme/home/projects: no video. |
 | M5.3 | **Lazy-mount, floors keep (written N7):** poster is the LCP; video fetches on idle/approach; floors stay 55/72; <72 at cert = N18 STOP, Sid decides with numbers. |
-| M5.4 | Asset pipeline: Claude authors the PROMPT PACK (per asset: high-detail image prompt, token-hex accents, research-backed, D60 + paired Seedance 2.0 video prompt using the image as seed frame + encode spec). Sid generates (GPT Image 2 / Nano Banana Pro → Seedance 2.0 / Veo 3.1) and drops files. Executors wire; they never generate. Pack targets 1080p / 5–8 s defaults; Sid adjusts to his real model limits at generation time. |
+| M5.4 | **(REV 2026-07-12)** Asset pipeline = the `product-teardown-scroll` skill: Nano Banana Pro / GPT Image 2 generate a START frame (assembled) + END frame (exploded teardown, start frame as reference image) → Google Flow **Frames to Video** interpolates between them (5–8 s, locked camera) → ffmpeg extracts frames (30 fps master, 15 fps webp ship-set + poster). Claude authored the pack at `docs/plans/inputs/m5-prompt-pack.md` (token-hex, dark studio `#0B0B0D` / accent `#FF5C1A`; prospect = newspaper-reading machine, travel-planner = mechanical globe — Sid's picks). Sid generates and drops frame folders + posters. Executors wire; they never generate. |
 | M5.5 | Generated media = ambience/brand art ONLY — never UI, screenshots, data, or metrics of Sid's tools. D2 screenshots are real captures by Sid. |
 | M5.6 | Copy untouched — craft, not ad CTAs. |
 | M5.7 | Skills: `ui-ux-pro-max` audit as advisory input; **Taste Skill** on the Gemini batch IF installed; **ponytail** on the DeepSeek batch only. |
@@ -68,12 +71,13 @@ merlin-cli-bridge).
 ## 4. Execution order
 
 ```
-B0 (Claude): C1 full-bleed scrub demo on /prospect (throwaway) · C2 prompt pack
+B0 (Claude): C1 full-bleed canvas-sequence demo on /prospect (throwaway) · C2 prompt pack ✅ DONE
+   2026-07-12 (docs/plans/inputs/m5-prompt-pack.md)
    Sid in parallel: ui-ux-pro-max audit → docs/plans/inputs/ · confirm Taste Skill installed
-→ ⛔ STOP M5-A: Sid judges demo feel on :4173 + approves prompt pack
-→ Sid generates + drops assets (videos + seed posters, D2 captures, D3 tiles, optional L0 art)
+→ ⛔ STOP M5-A: Sid judges demo feel (incl. pin yes/no) on :4173 + approves prompt pack
+→ Sid generates + drops assets (frame sequences + posters, D2 captures, D3 tiles, optional L0 art)
    → demo edits reverted; executors start from a clean tree
-B1 (DeepSeek v4 Flash @ HIGH): T1 Section backdrop slot → T2 ScrollVideo component →
+B1 (DeepSeek v4 Flash @ HIGH): T1 Section backdrop slot → T2 ScrollSequence component →
    T3 projects full-bleed → T4 lanyard swap polish → ⛔ STOP ASSETS (wait for Sid's drop if not
    yet landed) → T5 hero video wiring → T6 D2 frames + D3 tiles → T7 cert 1× + D-rows
 → ⛔ SWITCH MODEL
@@ -87,14 +91,16 @@ One task = one commit. Build green before every commit. No attribution trailers.
 
 ## BATCH 0 — Claude (demo + prompt pack)
 
-### C1 — Full-bleed scrub demo (throwaway)
-`/prospect` hero: media layer moved to section level (prototype of T1/T2), placeholder loop
-scrubbed by scroll. Judged at ⛔ STOP M5-A on `:4173`. All demo edits reverted after the verdict.
-### C2 — Prompt pack → `docs/plans/inputs/m5-prompt-pack.md`
-Per asset (prospect hero, travel-planner hero, D3 tiles, optional L0 art): image prompt +
-Seedance/Veo prompt (seed = the image) + encode spec (`ffmpeg` all-intra webm+mp4, ≤4 MB) +
-poster/export naming (`site/public/media/<page>-hero.{webm,mp4}`, poster
-`<page>-hero-poster.webp`).
+### C1 — Full-bleed canvas-sequence demo (throwaway)
+`/prospect` hero: media layer moved to section level (prototype of T1/T2), placeholder frame
+sequence scrubbed by scroll on a canvas — built BOTH ways (pinned section vs free-scroll) so Sid
+judges pin yes/no at ⛔ STOP M5-A on `:4173`. All demo edits reverted after the verdict.
+### C2 — Prompt pack → `docs/plans/inputs/m5-prompt-pack.md` — ✅ DONE 2026-07-12
+Per asset (prospect hero, travel-planner hero, D3 tiles, optional L0 art): start/end-frame image
+prompts (end uses start as reference image) + Flow frames-to-video motion prompt + `ffmpeg`
+extraction spec (30 fps master → 15 fps webp ship-set, target ≤4 MB/hero) + drop naming
+(`site/public/media/<page>-seq/0001.webp…`, poster `<page>-hero-poster.webp`). Pipeline
+reference: `product-teardown-scroll` skill.
 
 ## ⛔ STOP M5-A — demo feel + prompt pack (accept/reject/adjust). Then Sid generates + drops.
 
@@ -109,15 +115,19 @@ poster/export naming (`site/public/media/<page>-hero.{webm,mp4}`, poster
   do; add a safe default). Content div keeps `relative z-[20]`.
 - **Done:** build green; no visual change yet (no caller). Commit: `feat(layout): Section backdrop slot for full-bleed hero media`
 
-### T2 — ScrollVideo component (M5.1, from C1's demo learnings)
-- **New:** `site/src/components/ScrollVideo.tsx` (+ loader if needed). Props: `webm`, `mp4`,
-  `poster`. Behavior: renders poster `<img>` immediately (LCP); video element mounts on
-  `requestIdleCallback` (PaperInkCanvas.tsx:40 pattern), `preload="none"` until near-viewport;
-  scroll→`currentTime` mapping via rAF, clamped, passive listeners, paused when tab hidden;
-  `prefers-reduced-motion` OR `(pointer: coarse)` OR save-data ⇒ poster only (N21); error ⇒
-  poster (boundary). No new dependencies (N3).
+### T2 — ScrollSequence component (M5.1-REV, from C1's demo learnings)
+- **New:** `site/src/components/ScrollSequence.tsx` (+ loader if needed). Props: `framesDir`,
+  `frameCount`, `poster` (+ `pinned` flag per the STOP M5-A verdict). Behavior: renders poster
+  `<img>` immediately (LCP); canvas mounts on `requestIdleCallback` (PaperInkCanvas.tsx:40
+  pattern); frames preload as `Image()` objects only on near-viewport (IntersectionObserver);
+  scroll→frame-index mapping via rAF (`index = clamp(round(progress*(frameCount-1)))`), redraw
+  only when index changes, passive listeners, rAF paused when tab hidden or off-screen;
+  `devicePixelRatio`-scaled draw (cap 2) for sharpness; `prefers-reduced-motion` OR
+  `(pointer: coarse)` OR save-data ⇒ poster only (N21); any frame load error ⇒ poster
+  (boundary), never a blank canvas. No new dependencies (N3) — NO GSAP/ScrollTrigger; native
+  scroll (lenis is already the page scroller).
 - **Done:** build green; component renders poster-only with no assets present (T5 wires real
-  files). Commit: `feat(media): ScrollVideo scroll-scrub component`
+  files). Commit: `feat(media): ScrollSequence canvas scroll-scrub component`
 
 ### T3 — Projects full-bleed (M5.9)
 - **File:** `site/src/app/projects/page.tsx` — move `<GridBackdrop />` from Section children into
@@ -137,16 +147,18 @@ poster/export naming (`site/public/media/<page>-hero.{webm,mp4}`, poster
   Playwright 36/36. Commit: `fix(knowme): lanyard fallback delay-show + offset crossfade`
 
 ## ⛔ STOP ASSETS — if Sid's drop has not landed, stop here completely and report. Resume at T5
-only after Sid confirms the files exist under `site/public/media/` (+ D2/D3 under their paths).
+only after Sid confirms the frame folders + posters exist under `site/public/media/`
+(`<page>-seq/0001.webp…` + `<page>-hero-poster.webp`; Sid reports frame counts) and D2/D3 files
+under their paths.
 
-### T5 — Hero video wiring (M5.2 + M5.9)
+### T5 — Hero sequence wiring (M5.2 + M5.9)
 - **Files:** `site/src/app/prospect/page.tsx`, `site/src/app/travel-planner/page.tsx`.
-  Hero Section gets `backdrop={<ScrollVideo webm=... mp4=... poster=... />}`; `<PaperInkLoader />`
-  is REMOVED from these two heroes (D37 per-region; the import too). Text/readability: keep the
-  existing text z-layers; if contrast suffers, a token-only scrim div inside the backdrop is
-  allowed (no new hexes).
+  Hero Section gets `backdrop={<ScrollSequence framesDir=... frameCount=... poster=... />}`
+  (frameCount from Sid's drop report); `<PaperInkLoader />` is REMOVED from these two heroes
+  (D37 per-region; the import too). Text/readability: keep the existing text z-layers; if
+  contrast suffers, a token-only scrim div inside the backdrop is allowed (no new hexes).
 - **Done:** both heroes full-bleed, scrub responds to scroll both directions smoothly, poster
-  paints first; N23 screenshots. Commit: `feat(cases): full-bleed scroll-scrub hero videos`
+  paints first; N23 screenshots. Commit: `feat(cases): full-bleed scroll-scrub hero sequences`
 
 ### T6 — D2 frames + D3 tiles
 - Wire Sid's real screenshots into the case-page frames (replace `public/placeholders/*.svg`
@@ -157,7 +169,8 @@ only after Sid confirms the files exist under `site/public/media/` (+ D2/D3 unde
 
 ### T7 — Certification 1× + D-rows
 - DESIGN.md §6 rows (after D77, no blank line): D78 full-bleed hero spec (M5.9, STOP M4-A
-  reject), D79 ScrollVideo scroll-scrub system (M5.1/M5.2), D80 lanyard delay-show (M5.10).
+  reject), D79 ScrollSequence canvas scroll-scrub system (M5.1-REV/M5.2), D80 lanyard
+  delay-show (M5.10).
 - Full suite: build → tsc → lint → guards → playwright → lighthouse-gate → visual-gate.
   Visual-gate baselines will change (full-bleed heroes) — regenerate + commit; if the gate's
   DETECTION logic needs changes, that is N7: STOP and ask Sid, never edit it yourself.
@@ -220,10 +233,13 @@ launch is not executor work. Address the user as Sid.
 ## 6. Confidence: 9.0/10 — frozen
 
 Both M4-A rejects are root-caused in code (Section's `max-w-[1200px]` clamps all hero media; the
-crossfade shows both cards). The riskiest unknowns are gated before cost: technique feel at STOP
-M5-A (before assets), asset quality via the iterable prompt pack (Sid holds the generators), and
-scrub smoothness has an explicit fail criterion. Residual: video weight vs the 72 floor (M5.3
-lazy-mount + N18 STOP), Gemini's taste vs Sid's (STOP M5-B is accept/reject only).
+crossfade shows both cards). The riskiest unknowns are gated before cost: technique feel + pin
+verdict at STOP M5-A (before assets), asset quality via the iterable prompt pack (Sid holds the
+generators). The REV pipeline removes the old #1 risk — backward scrub is exact by construction
+(shipped frames, no video seeking). Residual: frame-payload weight vs the 72 floor (M5.3
+lazy-mount + N18 STOP), Flow interpolation drift (mitigated: end frame generated from the start
+frame as reference; regenerate endpoint before blaming Flow), Gemini's taste vs Sid's (STOP M5-B
+is accept/reject only).
 
 **SCOPE FREEZE: 2026-07-12.** M5.1–M5.11 frozen. Executors may not add, merge, reorder, or
 reinterpret tasks; STOPs are accept/reject only.
