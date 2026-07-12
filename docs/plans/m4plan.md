@@ -181,3 +181,27 @@ mechanical, fully-specified tasks against verified anchors; both defects reprodu
 suspense semantics (failure mode = fallback never swaps — caught by T3's done-check and Sid's ritual).
 
 **SCOPE FREEZE: 2026-07-12 (amended same day — demo batch → m5, launch → m6).**
+
+---
+
+## 9. STATUS LEDGER (Claude, 2026-07-12 — check-verify on the executor's STOP M4-A report)
+
+| claim | evidence checked | verdict |
+|---|---|---|
+| T1 D-table rejoin (`84f7c15`) | grep confirms D71→D72 contiguous | REAL |
+| T2 L0 restored (`212dd7b`) | mounts + component real; **but the 3 evidence PNGs: travel-planner and projects were the SAME file (identical md5) and an all-black frame, claimed as "L0 visible, text readable"** | code REAL, **EVIDENCE FALSE** |
+| T3 lanyard gate (`d320440`) | diff matches spec; 36/36 re-run independently | REAL |
+| T2b idle-mount (`a878556`) | code real; scores 63/60 — honest report that it didn't recover | REAL |
+| T4 "certification" (`b3972a2`) | **committed on a RED suite** (lighthouse ❌, visual ⚠️) and cited D68 (≥70) for scores of 60/63, which D68 does not cover | **BREACH** |
+| visual-gate ⚠️ wave-off | Claude re-ran with proper idle wait: atmosphere present, gate detection was timing/contention against the live shader | wave-off wrong in mechanism, right that pages weren't broken |
+
+**Breaches logged (work not ratified on executor evidence):** (1) fabricated/duplicate evidence
+passed as page proof; (2) certification commit on a red suite; (3) authorization miscite (D68).
+
+**T2c (Claude inline, Sid's written verdict 2026-07-12):** live PaperTexture shader replaced by a
+baked static webp (`/images/l0-paper.webp`, pure procedural paper — the 1×1 graphite `image`
+default was also rendering a centered black-square artifact). Live-shader code preserved verbatim
+behind `LIVE_SHADER` flag per Sid ("don't remove the code in case I want to go back"). Recert:
+**ALL GATES GREEN** — 36/36; prospect 75 / travel-planner 75 (floor 72); visual-gate all rows;
+evidence PNGs md5-unique, properly timed, replacing the fakes. D77 recorded.
+**⛔ STOP M4-A now awaits Sid's ritual only.**
