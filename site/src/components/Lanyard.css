@@ -9,3 +9,18 @@
   transform: scale(1);
   transform-origin: center;
 }
+
+.lanyard-stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.lanyard-fallback-wrap,
+.lanyard-canvas-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -7,6 +7,7 @@ interface Props {
   children: ReactNode;
   frontImage: string;
   backImage: string;
+  fallback?: ReactNode;
 }
 
 interface State {
@@ -25,6 +26,7 @@ export default class LanyardErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      if (this.props.fallback !== undefined) return this.props.fallback;
       return <LanyardFallback frontImage={this.props.frontImage} />;
     }
     return this.props.children;

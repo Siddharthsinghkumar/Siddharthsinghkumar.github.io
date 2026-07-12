@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 import LanyardErrorBoundary from "./LanyardErrorBoundary";
@@ -34,8 +34,12 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
   const prefersReduced = usePrefersReducedMotion();
   const mounted = useSyncExternalStore(subscribeMount, getIsMounted, () => false);
   const cachedWebglOk = useSyncExternalStore(subscribeMount, getWebglSupported, () => null);
+  const [sceneReady, setSceneReady] = useState(false);
 
-  // Signal mount + probe WebGL — runs once per session, idempotent
+  const handleFirstFrame = useCallback(() => {
+    setSceneReady(true);
+  }, []);
+
   useEffect(() => {
     if (!isMounted) {
       webglSupported = supportsWebGL();
@@ -49,8 +53,29 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
   }
 
   return (
-    <LanyardErrorBoundary frontImage={props.frontImage} backImage={props.backImage}>
-      <Lanyard {...props} />
-    </LanyardErrorBoundary>
+    <div className="lanyard-stage">
+      <div
+        className="lanyard-fallback-wrap"
+        style={{
+          opacity: sceneReady ? 0 : 1,
+          transition: "opacity 400ms ease-in-out",
+          pointerEvents: sceneReady ? "none" : "auto",
+        }}
+        aria-hidden={sceneReady}
+      >
+        <LanyardFallback frontImage={props.frontImage} />
+      </div>
+      <div
+        className="lanyard-canvas-wrap"
+        style={{
+          opacity: sceneReady ? 1 : 0,
+          transition: "opacity 400ms ease-in-out",
+        }}
+      >
+        <LanyardErrorBoundary frontImage={props.frontImage} backImage={props.backImage} fallback={null}>
+          <Lanyard {...props} onFirstFrame={handleFirstFrame} />
+        </LanyardErrorBoundary>
+      </div>
+    </div>
   );
 }

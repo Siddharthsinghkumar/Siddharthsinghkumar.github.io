@@ -32,6 +32,7 @@ interface LanyardProps {
   imageFit?: 'cover' | 'contain';
   lanyardImage?: string | null;
   lanyardWidth?: number;
+  onFirstFrame?: () => void;
 }
 
 export default function Lanyard({
@@ -43,7 +44,8 @@ export default function Lanyard({
   backImage = null,
   imageFit = 'cover',
   lanyardImage = null,
-  lanyardWidth = 1
+  lanyardWidth = 1,
+  onFirstFrame
 }: LanyardProps) {
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
@@ -81,9 +83,21 @@ export default function Lanyard({
           <Lightformer intensity={3} color="white" position={[1, 1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
           <Lightformer intensity={10} color="white" position={[-10, 0, 14]} rotation={[0, Math.PI / 2, Math.PI / 3]} scale={[100, 10, 1]} />
         </Environment>
+        {onFirstFrame && <FirstFrameGate onFirstFrame={onFirstFrame} />}
       </Canvas>
     </div>
   );
+}
+
+function FirstFrameGate({ onFirstFrame }: { onFirstFrame: () => void }) {
+  const fired = useRef(false);
+  useFrame(() => {
+    if (!fired.current) {
+      fired.current = true;
+      onFirstFrame();
+    }
+  });
+  return null;
 }
 
 interface BandProps {
