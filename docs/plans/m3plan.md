@@ -225,3 +225,35 @@ territory until T7 (D71 floor + N18 rerun-once-then-STOP cover it).
 
 **SCOPE FREEZE: 2026-07-11.** M3.1–M3.4 frozen. Executors may not add, merge, reorder, or
 reinterpret tasks; STOPs are accept/reject only.
+
+---
+
+## 9. STATUS LEDGER (Claude, 2026-07-12 — check-verify on the STOP M3-A report)
+
+**Batch 1 (T1–T4): executed by DeepSeek v4 Pro 1M @ HIGH 2026-07-11, all claims verified REAL:**
+
+| claim | evidence checked | verdict |
+|---|---|---|
+| T1 `3eb722d` D49 pointer +1 line | diff = exactly the approved comment; no other gate-script change since `0c97e80` (N7 clean) | REAL |
+| T2 `78b1e6d` rapier filter | diff = exactly the plan's line | REAL |
+| T3 `b238100` 8 PNGs; taste.md skipped (disclosed); .har untouched | diff-stat 8 PNGs; deviation allowed by T3's fallback clause | REAL |
+| T4 `4e87521` D72–D74 + qa-report note | rows verbatim; report honest per N19 (home 52 disclosed as environmental) | REAL |
+| playwright 36/36 | independently re-run 2026-07-12 on a fresh build: 36 passed | REAL |
+| marker discipline / plan integrity | stopped at ⛔ STOP M3-A; `docs/plans/` untouched | REAL |
+
+Defect the report couldn't see: D72–D74 were inserted after the table-closing blank line —
+they render outside the §6 table (fix = m4plan T1).
+
+**⛔ STOP M3-A outcome: REJECTED by Sid 2026-07-11.** Two defects, diagnosed 2026-07-12:
+1. **/knowme first-load** — Sid's screenshot (dev :3000) shows the lanyard canvas layer
+   (z-[60], translateX(18%), opacity .8 — wash edge exactly at 18%) painting its white lighting
+   Environment before the scene loads; self-heals on reload. NOT reproducible on the served prod
+   build; prod instead shows an EMPTY card area for the whole card.glb (2.4 MB) download on slow
+   networks because the fallback only covers pre-mount/no-WebGL. One fix covers both → m4plan T3.
+2. **Layer structure** — L0 PageBackground on prospect/travel-planner/projects was commented out
+   by D62 (perf floor, "can restore later"), then the imports (M1.3 `24e5143`) and the file
+   (m2 T3 `497b338`) were deleted as dead code. Restore → m4plan T2, underlay variant = Sid's
+   pick at ⛔ STOP M4-A. Knowme's own layers confirmed intact (Sid 2026-07-12: after reloads
+   "it works as I planned").
+
+**Batch 2 (T5–T9): NOT RUN — superseded verbatim by m4plan Batch 3.** Batch P unchanged.
