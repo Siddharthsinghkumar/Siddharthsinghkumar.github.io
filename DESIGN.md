@@ -250,5 +250,7 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 | D72 | 2026-07-11 | M3.2: D49 doctrine pointer restored to lighthouse-gate memo (comment-only N7 edit) | Executor's D71 edit erased the quoted rationale; provenance chain in-file matters; Sid's written approval 2026-07-11 |
 | D73 | 2026-07-11 | M3.3: rapier WASM init deprecation added to ConsoleFix known-noise filter | Prod-real but library-internal (@react-three/rapier 2.2.0) and cosmetic; upgrade parked to v2 |
 | D74 | 2026-07-11 | Context Lost logs on route change triaged BENIGN — R3F disposing the previous page's renderer | Prod probe with route attribution 2026-07-11: live canvas always survives; disposal working as designed |
+| D75 | 2026-07-12 | STOP M3-A rejected: L0 PageBackground restored (D62 regression; restore hatch destroyed by M1.3 + m2 T3 cleanups) and knowme swap-in gated on the scene's first rendered frame | Sid's re-judge 2026-07-11; layer schema D56/W4 is binding; first-load wash was the canvas painting its lighting Environment pre-load |
+| D76 | 2026-07-12 | L0 shader idle-mounts (requestIdleCallback, flat graphite pre-idle) — lazy-mount doctrine (M5.3) extended to L0 | N18 tripwire fired at 60/63 vs 72 after eager restore; idle-mount recovered to 63/60 — shader cost is rendering, not init; floor decision is now Sid's |
 
 *(Executor: append new rows here for every design choice made during build.)*
