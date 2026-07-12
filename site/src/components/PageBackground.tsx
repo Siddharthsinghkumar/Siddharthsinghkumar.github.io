@@ -15,7 +15,15 @@ interface PageBackgroundProps {
 
 export default function PageBackground({ image, className = "" }: PageBackgroundProps) {
   const [dimensions, setDimensions] = useState({ width: 1280, height: 720 });
+  const [idle, setIdle] = useState(false);
   const prefersReduced = usePrefersReducedMotion();
+
+  useEffect(() => {
+    const schedule = window.requestIdleCallback || ((fn: () => void) => setTimeout(fn, 200));
+    const cancel = window.cancelIdleCallback || clearTimeout;
+    const id = schedule(() => setIdle(true));
+    return () => cancel(id as number);
+  }, []);
 
   useEffect(() => {
     const updateSize = () => {
@@ -29,7 +37,7 @@ export default function PageBackground({ image, className = "" }: PageBackground
     return () => window.removeEventListener("resize", updateSize);
   }, []);
 
-  if (prefersReduced) {
+  if (prefersReduced || !idle) {
     return (
       <div
         className={`fixed inset-0 pointer-events-none select-none -z-10 opacity-[0.05] ${className}`}
