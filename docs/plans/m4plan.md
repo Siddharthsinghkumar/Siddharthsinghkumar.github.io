@@ -54,11 +54,14 @@
 
 Perf tripwire (D68/D71/N18): any case page <72 after the restore → report the number and STOP.
 No threshold edits, no retry loops.
+**Tripwire FIRED 2026-07-12** (prospect 60 / travel-planner 63; executor stopped correctly
+mid-T4). **Sid's written verdict: T2b idle-mount, floors keep** — the M5.3 lazy-mount doctrine
+extended to L0. Executor resumes at T2b → T4 full recert.
 
 ## 5. Execution order
 
 ```
-BATCH 1 (DeepSeek v4 Flash @ MAX): T1 → T2 → T3 → T4 (cert)
+BATCH 1 (DeepSeek v4 Flash @ MAX): T1 → T2 → T3 → T2b (tripwire fix) → T4 (cert)
    → ⛔ STOP M4-A (Sid accepts/rejects both fixes on :4173) → m5plan takes over
 ```
 
@@ -104,9 +107,28 @@ Strictly T-order. One task = one commit. Build green before every commit. No att
   crossfades to the 3D card (state the check method); playwright 36/36 (a #418 regression = instant
   STOP). Commit: `fix(knowme): fallback visible until lanyard first frame, crossfade swap-in`
 
-### T4 — Certification 1× + D-row
+### T2b — Idle-mount the L0 shader (tripwire fix; Sid's written N18 verdict 2026-07-12)
+- **File:** `site/src/components/PageBackground.tsx` ONLY. Add an `idle` state (initially false),
+  set true via the existing in-repo idle pattern (`PaperInkCanvas.tsx:40`):
+  ```ts
+  const [idle, setIdle] = useState(false);
+  useEffect(() => {
+    const schedule = window.requestIdleCallback || ((fn: () => void) => setTimeout(fn, 200));
+    const cancel = window.cancelIdleCallback || clearTimeout;
+    const id = schedule(() => setIdle(true));
+    return () => cancel(id as number);
+  }, []);
+  ```
+  Widen the existing early-return branch to `if (prefersReduced || !idle)` — the flat graphite div
+  is the pre-idle render. NO other changes (no fade-in; Sid adds it at the STOP only if he sees a pop).
+- **Done:** build green; `node scripts/lighthouse-gate.mjs` case pages back ≥72 (paste numbers +
+  environment note). Still <72 = STOP again — engineering is then exhausted and the floor becomes
+  Sid's decision. Commit: `perf(layers): idle-mount L0 shader per lazy-mount doctrine`
+
+### T4 — Certification 1× + D-rows
 - Append to DESIGN.md §6 (4-column, directly after D74 — no blank line):
   - `| D75 | 2026-07-12 | STOP M3-A rejected: L0 PageBackground restored (D62 regression; restore hatch destroyed by M1.3 + m2 T3 cleanups) and knowme swap-in gated on the scene's first rendered frame | Sid's re-judge 2026-07-11; layer schema D56/W4 is binding; first-load wash was the canvas painting its lighting Environment pre-load |`
+  - `| D76 | 2026-07-12 | L0 shader idle-mounts (requestIdleCallback, flat graphite pre-idle) — lazy-mount doctrine (M5.3) extended to L0 | N18 tripwire fired at 60/63 vs 72 after eager restore; Sid's written verdict: honest engineering before any floor talk |`
 - Full suite 1×: build → tsc → lint → guards → playwright → lighthouse-gate → visual-gate.
   Visual-gate baselines (`docs/qa/t10/*.png`) change because L0 is back — regenerate and commit
   (b238100 pattern). Report lighthouse with the environment observation; case <72 = STOP per §4.
