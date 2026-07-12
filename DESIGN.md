@@ -247,7 +247,6 @@ no default-blue focus, no missing states (learned.md: shadcn-grade states).
 | D69 | 2026-07-10 | M1.3: PageBackground mounts + imports deleted; component file deleted in M2 | Restored-on-finals lighthouse could not hold the ≥75 floor; restore path is git history |
 | D70 | 2026-07-11 | M2.2: public-repo updates via normal commits after the D64 single-commit initial push | Sid's call over the force-push model; consequence: every public commit passes the N17 privacy grep before push |
 | D71 | 2026-07-11 | M2.3: CI case perf floor 72 (from 75), home 55 unchanged | Runner-variance insurance on a 1-pt local margin (76 vs 75); written N7 approval, inside D68's ≥70 pre-authorization |
-
 | D72 | 2026-07-11 | M3.2: D49 doctrine pointer restored to lighthouse-gate memo (comment-only N7 edit) | Executor's D71 edit erased the quoted rationale; provenance chain in-file matters; Sid's written approval 2026-07-11 |
 | D73 | 2026-07-11 | M3.3: rapier WASM init deprecation added to ConsoleFix known-noise filter | Prod-real but library-internal (@react-three/rapier 2.2.0) and cosmetic; upgrade parked to v2 |
 | D74 | 2026-07-11 | Context Lost logs on route change triaged BENIGN — R3F disposing the previous page's renderer | Prod probe with route attribution 2026-07-11: live canvas always survives; disposal working as designed |
