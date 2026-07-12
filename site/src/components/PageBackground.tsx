@@ -1,7 +1,13 @@
 "use client";
 
-// T14: PaperTexture full-page background using @paper-design/shaders-react.
-// Applied to all pages except KnowMe (which uses FlutedGlass).
+// T14/D75: L0 full-page background layer. Applied to all pages except KnowMe
+// (which uses FlutedGlass).
+// D77: the live PaperTexture shader cost ~12 lighthouse points at steady state
+// to draw a static texture, so its output is baked to /images/l0-paper.webp
+// (pure procedural paper, no image overlay — the old 1×1 graphite default
+// rendered as a centered black square). Flip LIVE_SHADER to true to roll back
+// to the live shader render.
+const LIVE_SHADER = false;
 
 import { useEffect, useState } from "react";
 import { PaperTexture } from "@paper-design/shaders-react";
@@ -14,6 +20,21 @@ interface PageBackgroundProps {
 }
 
 export default function PageBackground({ image, className = "" }: PageBackgroundProps) {
+  if (LIVE_SHADER) return <PageBackgroundLive image={image} className={className} />;
+  return (
+    <div
+      className={`fixed inset-0 pointer-events-none select-none -z-10 opacity-15 ${className}`}
+      style={{
+        backgroundImage: `url(${image || "/images/l0-paper.webp"})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+      aria-hidden="true"
+    />
+  );
+}
+
+function PageBackgroundLive({ image, className = "" }: PageBackgroundProps) {
   const [dimensions, setDimensions] = useState({ width: 1280, height: 720 });
   const [idle, setIdle] = useState(false);
   const prefersReduced = usePrefersReducedMotion();
