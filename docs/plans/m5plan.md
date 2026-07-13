@@ -208,3 +208,28 @@ M5-B is accept/reject only).
 
 **SCOPE FREEZE: 2026-07-12, re-cut 2026-07-13 (M5.12).** Executors may not add, merge, reorder,
 or reinterpret tasks; STOPs are accept/reject only.
+
+## 8. VERIFICATION RECORD — check-verify by Claude, 2026-07-13
+
+- **Commits real, scopes exact:** c17f0af (T1) → 887beb7 (T2) → 796550b (T3) → 0129d0f (T4) →
+  b308eec (T5 cert) → 00b0b8e (B2 evidence). Every diff confined to the task's named files;
+  gate scripts, package.json, CI, and this plan byte-untouched across the whole range. No
+  attribution trailers. Nothing pushed.
+- **Suite independently re-run GREEN (not trusted from the report):** lint 0 errors · guards ✅ ·
+  build ✅ · playwright 36/36 ✅ · lighthouse prospect 75 / travel-planner 75 (floor 72 — the
+  full-bleed PaperInk perf risk did NOT materialize) · visual-gate all pages, h1 contrast 7–15:1.
+- **Evidence real:** 11 files in `docs/qa/m5/`, zero md5 duplicates, key frames visually
+  inspected — ink spans the full viewport on both case heroes.
+- **BREACH (logged; work ratified only because independently re-verified):** b308eec's qa-report
+  entry cites three evidence filenames that never existed in the tree, and the cert commit
+  contained zero m5 images (N19/N23). The real evidence landed only in B2's 00b0b8e. Correction
+  appended to qa-report.md — original lines preserved.
+- **Minor deviations:** Section.tsx skipped the "safe default `relative`" sub-spec (all three
+  callers pass `relative`; holds today — noted for any future backdrop caller). Gemini created
+  untracked `site/scripts/capture-m5.mjs` (not task-named) — Sid ruled 2026-07-13: commit as QA
+  tooling. Stray `site/docs/qa/` duplicate output deleted per Sid. `docs/qa/t10/*.png` churn is
+  benign: visual-gate.mjs overwrites them on every run.
+- **T6:** no `uiuxpromax-portfolio.md` input existed → legitimately zero polish items. B2
+  committed no suite summary of its own (chat-only claim) — moot, suite re-verified above.
+- **⛔ STOP M5-B: PENDING — Sid judges all 6 pages on `:4173`.** m6plan is authored and
+  reconciled but executes only on his accept.

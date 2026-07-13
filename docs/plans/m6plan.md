@@ -3,7 +3,24 @@
 > **This file:** `/home/sidd/project/freelance/portfolio-website/docs/plans/m6plan.md`
 > Runs after ⛔ STOP M5-B is accepted ([`m5plan.md`](m5plan.md)). **Sid+Claude ONLY — no executors.**
 > Inherits the launch runbook from m2plan T8–T10 / m3plan Batch 2 verbatim.
-> **STATUS: FROZEN 2026-07-12.** "m6 done = fully functional and launched." Nothing lands after.
+> **STATUS: FROZEN 2026-07-12; reconciled 2026-07-13 after the m5 check-verify (m5plan §8).**
+> "m6 done = fully functional and launched." Nothing lands after except the post-launch queue
+> (m5plan §7 — teardown heroes, D2 captures, D3 tiles, L0 art). **GATE: ⛔ STOP M5-B pending —
+> Sid's :4173 taste pass. Nothing below runs until he accepts.**
+
+## T0 — Preconditions (verified 2026-07-13, Claude)
+
+Launch-blocking human assets are DONE — confirmed in-tree, nothing waits on Sid's captures:
+- Resume PDF real: `site/public/resume/resume-siddharth-singh.pdf` (81 KB, ships in `out/`);
+  Sid confirmed 2026-07-13 the "six weeks" Sindhey claim matches site copy. Home button href
+  `/resume/resume-siddharth-singh.pdf` — T5 verifies it live.
+- Knowme card face: real photo (`/images/profile.jpeg`), not the monogram.
+- Per M5.12: the 4 placeholder SVGs (case-page frames) and empty `public/tiles/` LAUNCH AS-IS —
+  post-launch queue, NOT blockers. LAUNCH-CHECKLIST §§1–2b annotated accordingly.
+- Housekeeping done: stray `site/docs/qa/` deleted; `capture-m5.mjs` committed as QA tooling;
+  m5 breach corrected in qa-report (m5plan §8). `docs/qa/t10/*.png` refresh on every
+  visual-gate run — each cert commit includes the refresh; only `.har` +
+  `.commandcode/taste/taste.md` may stay dirty (Sid's files).
 
 ## T1 — Final certification (roadmap M8 discipline)
 - Full suite **3× consecutive**: build → tsc → lint → guards → playwright → lighthouse-gate →

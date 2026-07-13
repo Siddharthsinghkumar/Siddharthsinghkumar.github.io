@@ -5,15 +5,16 @@
 
 ---
 
-## 1. Resume PDF
+## 1. Resume PDF — ✅ DONE (verified 2026-07-13)
 
-- [ ] Export AI-Backend resume as PDF from your source document
-- [ ] **Fix "6 months" → "six weeks"** for Sindhey claim — site says six weeks, resume must match
-- [ ] Save as `resume-siddharth-singh.pdf`
-- [ ] Replace placeholder at: `site/public/resume-siddharth-singh.pdf`
-- [ ] Verify: open `https://Siddharthsinghkumar.github.io/resume-siddharth-singh.pdf` returns the PDF
+- [x] Real PDF at `site/public/resume/resume-siddharth-singh.pdf` (81 KB, ships in `out/`)
+- [x] "six weeks" Sindhey claim matches site copy — Sid confirmed 2026-07-13
+- [ ] Verify live after deploy: `https://Siddharthsinghkumar.github.io/resume/resume-siddharth-singh.pdf` (m6plan T5)
 
-## 2. Screenshots (4 captures needed)
+## 2. Screenshots (4 captures) — ⏩ POST-LAUNCH (M5.12, Sid 2026-07-13)
+
+> Site launches with the styled placeholder SVGs; captures land via the post-launch queue
+> (m5plan §7). Items below are NOT launch-blocking.
 
 - [ ] Prospect page: "Telegram alert arriving with ranked matches" screenshot
   - Replace placeholder frame in site/src/app/prospect/page.tsx (search `Sid to capture`)
@@ -26,13 +27,13 @@
 - Format: AVIF or WebP, crop to 16:9, place in `site/public/screenshots/`
 - Update component paths accordingly
 
-## 2b. Assets for Sid to supply
+## 2b. Assets for Sid to supply — status 2026-07-13
 
-- [ ] **Tile screenshots** — drop images into `site/public/tiles/` (auto-picked next build, scan-tiles.mjs → GridBackdrop renders them)
-- [ ] **Card face photo** — replace monogram on /knowme Lanyard card: update `frontImage` data URI in `site/src/app/knowme/KnowMeClient.tsx`
-- [ ] **Replace all `site/public/test/` images with final assets** — personal photo currently public on /knowme, /prospect, /projects, /travel-planner. Re-point PageBackground `image` props to final images.
-- [ ] **Re-verify KnowMe text tone after image swap** — text color is statically chosen per current image; may need adjustment.
-- [ ] **Capture + drop in the four real screenshots** — frames + captions ready in ScreenshotFrame.
+- [ ] **Tile screenshots** — ⏩ POST-LAUNCH (M5.12); `site/public/tiles/` empty at launch, grid renders fine without
+- [x] **Card face photo** — real photo shipped (`/images/profile.jpeg` via KnowMeClient frontImage)
+- [x] **`site/public/test/` images** — removed from git in m2 (M2.1); L0 is the D77 baked paper webp
+- [x] **KnowMe text tone** — certified across m4/m5 visual gates (h1 contrast 7.1:1)
+- [ ] **Four real screenshots** — ⏩ POST-LAUNCH (M5.12), frames + captions stay ready in ScreenshotFrame
 
 ## 3. LinkedIn Verification
 
