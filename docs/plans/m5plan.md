@@ -231,5 +231,10 @@ or reinterpret tasks; STOPs are accept/reject only.
   benign: visual-gate.mjs overwrites them on every run.
 - **T6:** no `uiuxpromax-portfolio.md` input existed → legitimately zero polish items. B2
   committed no suite summary of its own (chat-only claim) — moot, suite re-verified above.
-- **⛔ STOP M5-B: PENDING — Sid judges all 6 pages on `:4173`.** m6plan is authored and
-  reconciled but executes only on his accept.
+- **⛔ STOP M5-B: REJECTED-FORWARD (Sid, 2026-07-13).** Pages work EXCEPT three verdicts, all
+  root-caused by Claude with reproductions and moved to m6plan Batch 1 as binding scope:
+  (1) knowme first-load break — white wash / dead region, works on reload (M6.1);
+  (2) knowme layer violation — card clipped at an invisible edge left of x≈18%, canvas
+  intercepts link clicks (M6.2); (3) case-hero PaperInk rejected — "not 4 light illumination
+  blobs and cursor illuminates" — replaced by static image backdrops with file-slot swap for
+  Sid's later image drops (M6.3). Evidence: `docs/qa/m6/repro/`. m5 closed; m6 is last.
