@@ -1,8 +1,14 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Button from "@/components/Button";
 import LanyardLoader from "@/components/LanyardLoader";
 import { TOKEN_HEX } from "@/lib/token-hex";
+
+// Must match Lanyard.tsx camera defaults (position z / fov) — used to convert
+// the KNOWME nav link's screen position into scene world units.
+const CAM_Z = 30;
+const CAM_FOV = 20;
 
 const backSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">
   <rect width="400" height="600" fill="${TOKEN_HEX.bg}"/>
@@ -18,10 +24,65 @@ const frontImage = "/images/profile.jpeg";
 const backImage = `data:image/svg+xml,${encodeURIComponent(backSvg)}`;
 
 export default function KnowMeClient() {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [lanyard, setLanyard] = useState<{
+    anchor: [number, number];
+    fraction: number;
+    key: string;
+  } | null>(null);
+
+  // Anchor the strap's top under the KNOWME nav link: measure the link and
+  // the canvas region, convert to world units. Resize remounts the scene
+  // (physics bodies take their positions at creation).
+  useEffect(() => {
+    const compute = () => {
+      const wrap = wrapRef.current;
+      if (!wrap) return;
+      const rect = wrap.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      let fraction = 0.68;
+      // trailingSlash export renders href="/knowme/"
+      for (const a of document.querySelectorAll('a[href^="/knowme"]')) {
+        const r = a.getBoundingClientRect();
+        if (r.top < 100 && r.width > 0) {
+          fraction = (r.left + r.width / 2 - rect.left) / rect.width;
+          break;
+        }
+      }
+      const visH = 2 * CAM_Z * Math.tan((CAM_FOV * Math.PI) / 360);
+      const visW = visH * (rect.width / rect.height);
+      setLanyard({
+        anchor: [(fraction - 0.5) * visW, visH / 2 + 0.3],
+        fraction,
+        key: `${Math.round(rect.width)}x${Math.round(rect.height)}`,
+      });
+    };
+    compute();
+    let t: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(t);
+      t = setTimeout(compute, 400);
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
   return (
     <>
-      <div className="absolute inset-0 z-[60] pointer-events-none">
-        <LanyardLoader frontImage={frontImage} backImage={backImage} anchorX={3} />
+      <div ref={wrapRef} className="absolute inset-0 z-[60] pointer-events-none">
+        {lanyard && (
+          <LanyardLoader
+            key={lanyard.key}
+            frontImage={frontImage}
+            backImage={backImage}
+            anchor={lanyard.anchor}
+            anchorFraction={lanyard.fraction}
+            cardScale={2}
+          />
+        )}
       </div>
 
       <div className="relative z-[2] flex flex-col justify-center min-h-[80svh] px-4">

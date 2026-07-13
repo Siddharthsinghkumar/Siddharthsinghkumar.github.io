@@ -34,7 +34,8 @@ interface LanyardProps {
   lanyardWidth?: number;
   onFirstFrame?: () => void;
   onContextLost?: () => void;
-  anchorX?: number;
+  anchor?: [number, number];
+  cardScale?: number;
 }
 
 export default function Lanyard({
@@ -49,7 +50,8 @@ export default function Lanyard({
   lanyardWidth = 1,
   onFirstFrame,
   onContextLost,
-  anchorX = 0
+  anchor = [0, 4] as [number, number],
+  cardScale = 1
 }: LanyardProps) {
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
@@ -90,7 +92,8 @@ export default function Lanyard({
             lanyardImage={lanyardImage}
             lanyardWidth={lanyardWidth}
             onFirstFrame={onFirstFrame}
-            anchorX={anchorX}
+            anchor={anchor}
+            cardScale={cardScale}
           />
         </Physics>
         <Environment blur={0.75}>
@@ -114,7 +117,8 @@ interface BandProps {
   lanyardImage?: string | null;
   lanyardWidth?: number;
   onFirstFrame?: () => void;
-  anchorX?: number;
+  anchor?: [number, number];
+  cardScale?: number;
 }
 
 interface Vec3Like { x: number; y: number; z: number }
@@ -123,7 +127,7 @@ function toVec3(v: Vec3Like): THREE.Vector3 {
   return new THREE.Vector3(v.x, v.y, v.z);
 }
 
-function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null, backImage = null, imageFit = 'cover', lanyardImage = null, lanyardWidth = 1, onFirstFrame, anchorX = 0 }: BandProps) {
+function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null, backImage = null, imageFit = 'cover', lanyardImage = null, lanyardWidth = 1, onFirstFrame, anchor = [0, 4] as [number, number], cardScale = 1 }: BandProps) {
   const band = useRef<THREE.Mesh>(null);
   const fixed = useRef<RapierRigidBody>(null);
   const j1 = useRef<RapierRigidBody>(null);
@@ -196,7 +200,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null
   useRopeJoint(fixed as unknown as RefObject<RapierRigidBody>, j1 as unknown as RefObject<RapierRigidBody>, [[0, 0, 0], [0, 0, 0], 1]);
   useRopeJoint(j1 as unknown as RefObject<RapierRigidBody>, j2 as unknown as RefObject<RapierRigidBody>, [[0, 0, 0], [0, 0, 0], 1]);
   useRopeJoint(j2 as unknown as RefObject<RapierRigidBody>, j3 as unknown as RefObject<RapierRigidBody>, [[0, 0, 0], [0, 0, 0], 1]);
-  useSphericalJoint(j3 as unknown as RefObject<RapierRigidBody>, card as unknown as RefObject<RapierRigidBody>, [[0, 0, 0], [0, 1.5, 0]]);
+  useSphericalJoint(j3 as unknown as RefObject<RapierRigidBody>, card as unknown as RefObject<RapierRigidBody>, [[0, 0, 0], [0, 1.5 * cardScale, 0]]);
 
   useEffect(() => {
     if (hovered) {
@@ -246,16 +250,16 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null
 
   return (
     <>
-      <group position={[anchorX, 4, 0]}>
+      <group position={[anchor[0], anchor[1], 0]}>
         <RigidBody ref={fixed} {...segmentProps} type="fixed" />
         <RigidBody position={[0.5, 0, 0]} ref={j1} {...segmentProps}><BallCollider args={[0.1]} /></RigidBody>
         <RigidBody position={[1, 0, 0]} ref={j2} {...segmentProps}><BallCollider args={[0.1]} /></RigidBody>
         <RigidBody position={[1.5, 0, 0]} ref={j3} {...segmentProps}><BallCollider args={[0.1]} /></RigidBody>
         <RigidBody position={[2, 0, 0]} ref={card} {...segmentProps} type={dragged ? 'kinematicPosition' : 'dynamic'}>
-          <CuboidCollider args={[0.8, 1.125, 0.01]} />
+          <CuboidCollider args={[0.8 * cardScale, 1.125 * cardScale, 0.01]} />
           <group
-            scale={2.25}
-            position={[0, -1.2, -0.05]}
+            scale={2.25 * cardScale}
+            position={[0, -1.2 * cardScale, -0.05 * cardScale]}
             onPointerOver={() => hover(true)}
             onPointerOut={() => hover(false)}
             onPointerUp={(e: ThreeEvent<PointerEvent>) => {

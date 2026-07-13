@@ -31,7 +31,13 @@ function subscribeMount(cb: () => void) {
 function getIsMounted() { return isMounted; }
 function getWebglSupported() { return webglSupported; }
 
-export default function LanyardLoader(props: { frontImage: string; backImage: string; anchorX?: number }) {
+export default function LanyardLoader(props: {
+  frontImage: string;
+  backImage: string;
+  anchor?: [number, number];
+  anchorFraction?: number;
+  cardScale?: number;
+}) {
   const prefersReduced = usePrefersReducedMotion();
   const mounted = useSyncExternalStore(subscribeMount, getIsMounted, () => false);
   const cachedWebglOk = useSyncExternalStore(subscribeMount, getWebglSupported, () => null);
@@ -101,6 +107,8 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
           opacity: sceneError ? 1 : sceneReady ? 0 : showFallback ? 1 : 0,
           transition: "opacity 200ms ease-in-out",
           pointerEvents: sceneError ? "auto" : sceneReady || !showFallback ? "none" : "auto",
+          // Sit at the same horizontal spot as the 3D card's anchor.
+          transform: `translateX(${((props.anchorFraction ?? 0.68) - 0.5) * 100}%)`,
         }}
         aria-hidden={!sceneError && (sceneReady || !showFallback)}
       >
@@ -117,7 +125,14 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
           }}
         >
           <LanyardErrorBoundary key={retryKey} frontImage={props.frontImage} backImage={props.backImage} fallback={null} onError={failScene}>
-            <Lanyard {...props} onFirstFrame={handleFirstFrame} onContextLost={failScene} anchorX={props.anchorX} />
+            <Lanyard
+              frontImage={props.frontImage}
+              backImage={props.backImage}
+              anchor={props.anchor}
+              cardScale={props.cardScale}
+              onFirstFrame={handleFirstFrame}
+              onContextLost={failScene}
+            />
           </LanyardErrorBoundary>
         </div>
       )}
