@@ -59,8 +59,7 @@ export default function ProspectPage() {
   return (
     <>
       <PageBackground />
-      <Section className="pt-[calc(4rem+96px)] relative overflow-hidden min-h-[75svh] flex flex-col justify-center">
-        <PaperInkLoader />
+      <Section className="pt-[calc(4rem+96px)] relative overflow-hidden min-h-[75svh] flex flex-col justify-center" backdrop={<PaperInkLoader />}>
         <ChoreoReveal variant="hero-item" heroIndex={0}>
           <p className="font-mono text-[11px] uppercase tracking-[0.08em] mb-3 relative z-10">
             <DecryptedText
