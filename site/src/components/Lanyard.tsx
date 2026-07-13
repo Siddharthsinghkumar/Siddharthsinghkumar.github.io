@@ -72,7 +72,12 @@ export default function Lanyard({
         eventSource={typeof document !== "undefined" ? document.getElementById("knowme-root") ?? undefined : undefined}
         onCreated={({ gl }) => {
           gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1);
-          gl.domElement.addEventListener("webglcontextlost", () => onContextLost?.());
+          gl.domElement.addEventListener("webglcontextlost", (e) => {
+            e.preventDefault();
+            // Disposal of a replaced canvas (dev strict-mode remount, route
+            // change) also fires this event — only a live canvas counts.
+            if (gl.domElement.isConnected) onContextLost?.();
+          });
         }}
       >
         <ambientLight intensity={Math.PI} />

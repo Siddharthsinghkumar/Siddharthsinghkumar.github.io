@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 import LanyardErrorBoundary from "./LanyardErrorBoundary";
@@ -37,9 +37,23 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
   const [sceneReady, setSceneReady] = useState(false);
   const [sceneError, setSceneError] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
+  const retriedRef = useRef(false);
 
   const handleFirstFrame = useCallback(() => {
     setSceneReady(true);
+  }, []);
+
+  // Scene failed (boundary error, context loss, or watchdog timeout):
+  // remount the canvas once; a second failure settles on the static fallback.
+  const failScene = useCallback(() => {
+    if (!retriedRef.current) {
+      retriedRef.current = true;
+      setSceneReady(false);
+      setRetryKey((k) => k + 1);
+    } else {
+      setSceneError(true);
+    }
   }, []);
 
   // Show fallback only after 400ms if scene isn't ready yet (fast loads skip it)
@@ -48,6 +62,14 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
     const timer = setTimeout(() => setShowFallback(true), 400);
     return () => clearTimeout(timer);
   }, [prefersReduced, mounted, cachedWebglOk]);
+
+  // Watchdog: a mounted scene that never reaches its first model frame is a
+  // silent stall (intermittent warm-load race) — recover instead of hanging.
+  useEffect(() => {
+    if (prefersReduced || !mounted || !cachedWebglOk || sceneReady || sceneError) return;
+    const timer = setTimeout(failScene, 6000);
+    return () => clearTimeout(timer);
+  }, [prefersReduced, mounted, cachedWebglOk, sceneReady, sceneError, retryKey, failScene]);
 
   useEffect(() => {
     if (!isMounted) {
@@ -76,6 +98,7 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
       </div>
       {!sceneError && (
         <div
+          key={retryKey}
           className="lanyard-canvas-wrap"
           style={{
             opacity: sceneReady ? 1 : 0,
@@ -83,8 +106,8 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
             transitionDelay: sceneReady ? "250ms" : "0ms",
           }}
         >
-          <LanyardErrorBoundary frontImage={props.frontImage} backImage={props.backImage} fallback={null} onError={() => setSceneError(true)}>
-            <Lanyard {...props} onFirstFrame={handleFirstFrame} onContextLost={() => setSceneError(true)} anchorX={props.anchorX} />
+          <LanyardErrorBoundary key={retryKey} frontImage={props.frontImage} backImage={props.backImage} fallback={null} onError={failScene}>
+            <Lanyard {...props} onFirstFrame={handleFirstFrame} onContextLost={failScene} anchorX={props.anchorX} />
           </LanyardErrorBoundary>
         </div>
       )}

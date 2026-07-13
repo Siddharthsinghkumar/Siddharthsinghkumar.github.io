@@ -24,3 +24,9 @@
   justify-content: center;
   align-items: center;
 }
+
+/* The 3D card is anchored right-of-center inside the scene (anchorX); the DOM
+   fallback must sit at the same spot, clear of the text column. */
+.lanyard-fallback-wrap {
+  transform: translateX(18%);
+}
