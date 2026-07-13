@@ -20,14 +20,12 @@ const backImage = `data:image/svg+xml,${encodeURIComponent(backSvg)}`;
 export default function KnowMeClient() {
   return (
     <>
-      <div className="absolute inset-0 z-[60]" style={{ opacity: 0.8, transform: "translateX(18%)" }}>
-        <LanyardLoader frontImage={frontImage} backImage={backImage} />
+      <div className="absolute inset-0 z-[60] pointer-events-none">
+        <LanyardLoader frontImage={frontImage} backImage={backImage} anchorX={3} />
       </div>
 
       <div className="relative z-[2] flex flex-col justify-center min-h-[80svh] px-4">
-        {/* T14: dark backdrop for text readability on light images */}
-        <div className="absolute inset-0 bg-[--bg]/60 backdrop-blur-sm rounded-[--r-md]" style={{ maxWidth: "65ch", left: 0 }} />
-        <div className="relative max-w-[60ch]">
+        <div className="relative max-w-[60ch] bg-[--bg]/60 backdrop-blur-sm rounded-[--r-md] p-8">
           <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-6">
             Know Me
           </h1>

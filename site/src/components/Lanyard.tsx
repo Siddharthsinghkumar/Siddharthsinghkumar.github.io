@@ -34,6 +34,7 @@ interface LanyardProps {
   lanyardWidth?: number;
   onFirstFrame?: () => void;
   onContextLost?: () => void;
+  anchorX?: number;
 }
 
 export default function Lanyard({
@@ -47,7 +48,8 @@ export default function Lanyard({
   lanyardImage = null,
   lanyardWidth = 1,
   onFirstFrame,
-  onContextLost
+  onContextLost,
+  anchorX = 0
 }: LanyardProps) {
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
@@ -66,6 +68,8 @@ export default function Lanyard({
         camera={{ position: position, fov: fov }}
         dpr={[1, isMobile ? 1.5 : 2]}
         gl={{ alpha: transparent }}
+        style={{ pointerEvents: "none" }}
+        eventSource={typeof document !== "undefined" ? document.getElementById("knowme-root") ?? undefined : undefined}
         onCreated={({ gl }) => {
           gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1);
           gl.domElement.addEventListener("webglcontextlost", () => onContextLost?.());
@@ -81,6 +85,7 @@ export default function Lanyard({
             lanyardImage={lanyardImage}
             lanyardWidth={lanyardWidth}
             onFirstFrame={onFirstFrame}
+            anchorX={anchorX}
           />
         </Physics>
         <Environment blur={0.75}>
@@ -104,6 +109,7 @@ interface BandProps {
   lanyardImage?: string | null;
   lanyardWidth?: number;
   onFirstFrame?: () => void;
+  anchorX?: number;
 }
 
 interface Vec3Like { x: number; y: number; z: number }
@@ -112,7 +118,7 @@ function toVec3(v: Vec3Like): THREE.Vector3 {
   return new THREE.Vector3(v.x, v.y, v.z);
 }
 
-function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null, backImage = null, imageFit = 'cover', lanyardImage = null, lanyardWidth = 1, onFirstFrame }: BandProps) {
+function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null, backImage = null, imageFit = 'cover', lanyardImage = null, lanyardWidth = 1, onFirstFrame, anchorX = 0 }: BandProps) {
   const band = useRef<THREE.Mesh>(null);
   const fixed = useRef<RapierRigidBody>(null);
   const j1 = useRef<RapierRigidBody>(null);
@@ -235,7 +241,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null
 
   return (
     <>
-      <group position={[0, 4, 0]}>
+      <group position={[anchorX, 4, 0]}>
         <RigidBody ref={fixed} {...segmentProps} type="fixed" />
         <RigidBody position={[0.5, 0, 0]} ref={j1} {...segmentProps}><BallCollider args={[0.1]} /></RigidBody>
         <RigidBody position={[1, 0, 0]} ref={j2} {...segmentProps}><BallCollider args={[0.1]} /></RigidBody>

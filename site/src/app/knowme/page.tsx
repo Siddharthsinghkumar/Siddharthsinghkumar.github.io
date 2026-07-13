@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function KnowMePage() {
   return (
-    <div className="pt-24 pb-24 min-h-[100svh] relative overflow-hidden">
+    <div id="knowme-root" className="pt-24 pb-24 min-h-[100svh] relative overflow-hidden">
       <KnowMeBackground />
       <KnowMeClient />
     </div>

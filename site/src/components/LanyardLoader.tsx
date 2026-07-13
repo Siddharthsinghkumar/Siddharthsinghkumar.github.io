@@ -30,7 +30,7 @@ function subscribeMount(cb: () => void) {
 function getIsMounted() { return isMounted; }
 function getWebglSupported() { return webglSupported; }
 
-export default function LanyardLoader(props: { frontImage: string; backImage: string }) {
+export default function LanyardLoader(props: { frontImage: string; backImage: string; anchorX?: number }) {
   const prefersReduced = usePrefersReducedMotion();
   const mounted = useSyncExternalStore(subscribeMount, getIsMounted, () => false);
   const cachedWebglOk = useSyncExternalStore(subscribeMount, getWebglSupported, () => null);
@@ -84,7 +84,7 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
           }}
         >
           <LanyardErrorBoundary frontImage={props.frontImage} backImage={props.backImage} fallback={null} onError={() => setSceneError(true)}>
-            <Lanyard {...props} onFirstFrame={handleFirstFrame} onContextLost={() => setSceneError(true)} />
+            <Lanyard {...props} onFirstFrame={handleFirstFrame} onContextLost={() => setSceneError(true)} anchorX={props.anchorX} />
           </LanyardErrorBoundary>
         </div>
       )}
