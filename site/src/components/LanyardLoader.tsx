@@ -35,10 +35,18 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
   const mounted = useSyncExternalStore(subscribeMount, getIsMounted, () => false);
   const cachedWebglOk = useSyncExternalStore(subscribeMount, getWebglSupported, () => null);
   const [sceneReady, setSceneReady] = useState(false);
+  const [showFallback, setShowFallback] = useState(false);
 
   const handleFirstFrame = useCallback(() => {
     setSceneReady(true);
   }, []);
+
+  // Show fallback only after 400ms if scene isn't ready yet (fast loads skip it)
+  useEffect(() => {
+    if (prefersReduced || !mounted || !cachedWebglOk) return;
+    const timer = setTimeout(() => setShowFallback(true), 400);
+    return () => clearTimeout(timer);
+  }, [prefersReduced, mounted, cachedWebglOk]);
 
   useEffect(() => {
     if (!isMounted) {
@@ -57,11 +65,11 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
       <div
         className="lanyard-fallback-wrap"
         style={{
-          opacity: sceneReady ? 0 : 1,
-          transition: "opacity 400ms ease-in-out",
-          pointerEvents: sceneReady ? "none" : "auto",
+          opacity: sceneReady ? 0 : showFallback ? 1 : 0,
+          transition: "opacity 200ms ease-in-out",
+          pointerEvents: sceneReady || !showFallback ? "none" : "auto",
         }}
-        aria-hidden={sceneReady}
+        aria-hidden={sceneReady || !showFallback}
       >
         <LanyardFallback frontImage={props.frontImage} />
       </div>
@@ -69,7 +77,8 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
         className="lanyard-canvas-wrap"
         style={{
           opacity: sceneReady ? 1 : 0,
-          transition: "opacity 400ms ease-in-out",
+          transition: "opacity 300ms ease-in-out",
+          transitionDelay: sceneReady ? "250ms" : "0ms",
         }}
       >
         <LanyardErrorBoundary frontImage={props.frontImage} backImage={props.backImage} fallback={null}>
