@@ -6,7 +6,7 @@ import Button from "@/components/Button";
 import StatusPill from "@/components/StatusPill";
 import ProspectDiagram from "@/components/ProspectDiagram";
 import DecryptedText from "@/components/DecryptedText";
-import PaperInkLoader from "@/components/PaperInkLoader";
+import ImageBackdrop from "@/components/ImageBackdrop";
 import ChoreoReveal from "@/components/ChoreoReveal";
 import ScreenshotFrame from "@/components/ScreenshotFrame";
 
@@ -59,7 +59,7 @@ export default function ProspectPage() {
   return (
     <>
       <PageBackground />
-      <Section className="pt-[calc(4rem+96px)] relative overflow-hidden min-h-[75svh] flex flex-col justify-center" backdrop={<PaperInkLoader />}>
+      <Section className="pt-[calc(4rem+96px)] relative overflow-hidden min-h-[75svh] flex flex-col justify-center" backdrop={<ImageBackdrop src="/images/prospect-hero.webp" />}>
         <ChoreoReveal variant="hero-item" heroIndex={0}>
           <p className="font-mono text-[11px] uppercase tracking-[0.08em] mb-3 relative z-10">
             <DecryptedText
