@@ -14,6 +14,7 @@ export default function IntroScreenGate() {
   );
   const show = !shown;
   const waitForEngine = pathname === "/";
+  const waitForLanyard = pathname.startsWith("/knowme");
 
   useEffect(() => {
     if (!shown) {
@@ -22,5 +23,5 @@ export default function IntroScreenGate() {
   }, [shown]);
 
   if (!show) return null;
-  return <IntroScreen waitForEngine={waitForEngine} />;
+  return <IntroScreen waitForEngine={waitForEngine} waitForLanyard={waitForLanyard} />;
 }

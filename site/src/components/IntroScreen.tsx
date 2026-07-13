@@ -9,11 +9,12 @@
 import { useEffect, useState, useRef } from "react";
 import DecryptedText from "./DecryptedText";
 import { engineReady, onEngineProgress, reportProgress } from "./engine/engine-ready";
+import { lanyardSettled } from "./lanyard-ready";
 import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 const MAX_WAIT = 10000;
 
-export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: boolean }) {
+export default function IntroScreen({ waitForEngine = true, waitForLanyard = false }: { waitForEngine?: boolean; waitForLanyard?: boolean }) {
   const [phase, setPhase] = useState(() => {
     if (typeof document === "undefined") return 0;
     if (document.documentElement.classList.contains("intro-skip")) return 3;
@@ -78,7 +79,10 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
       };
       rafId = requestAnimationFrame(tick);
     } else {
-      // Subpage: no 3D engine — fonts + document ready + min 1000ms
+      // Subpage: no 3D engine — fonts + document ready + min 1000ms.
+      // Knowme additionally holds for the lanyard region to settle (real 3D
+      // card, settled fallback, or static path) so the reveal never catches
+      // the placeholder mid-swap.
       const start = startRef.current!;
       const dismiss = () => {
         if (!doneRef.current) {
@@ -90,10 +94,17 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
       };
 
       document.fonts.ready.then(() => { if (!doneRef.current) reportProgress(15); });
-      if (document.readyState === "complete") {
-        dismiss();
+      const pageLoaded = new Promise<void>((res) => {
+        if (document.readyState === "complete") res();
+        else window.addEventListener("load", () => res(), { once: true });
+      });
+      if (waitForLanyard) {
+        pageLoaded.then(() => { if (!doneRef.current) reportProgress(55); });
+        Promise.all([pageLoaded, lanyardSettled]).then(() => {
+          if (!doneRef.current) { reportProgress(100); dismiss(); }
+        });
       } else {
-        window.addEventListener("load", dismiss, { once: true });
+        pageLoaded.then(() => { if (!doneRef.current) { reportProgress(100); dismiss(); } });
       }
       maxTimerRef.current = setTimeout(() => { if (!doneRef.current) { phase2(); cancelAnimationFrame(rafId); } }, MAX_WAIT);
 
@@ -115,7 +126,7 @@ export default function IntroScreen({ waitForEngine = true }: { waitForEngine?: 
       cancelAnimationFrame(rafId);
       if (maxTimerRef.current) clearTimeout(maxTimerRef.current);
     };
-  }, [waitForEngine, prefersReduced]);
+  }, [waitForEngine, waitForLanyard, prefersReduced]);
 
   // Scroll lock effect (Layer 7 requirement)
   useEffect(() => {

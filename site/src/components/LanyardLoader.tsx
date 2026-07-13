@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 import LanyardErrorBoundary from "./LanyardErrorBoundary";
 import LanyardFallback from "./LanyardFallback";
+import { markLanyardSettled } from "./lanyard-ready";
 
 const Lanyard = dynamic(() => import("./Lanyard"), {
   ssr: false,
@@ -62,6 +63,15 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
     const timer = setTimeout(() => setShowFallback(true), 400);
     return () => clearTimeout(timer);
   }, [prefersReduced, mounted, cachedWebglOk]);
+
+  // Tell the intro overlay when this region has reached a stable state — the
+  // 3D card, the settled fallback, or the static path (reduced motion / no
+  // WebGL). The knowme intro holds until this fires.
+  useEffect(() => {
+    if (sceneReady || sceneError || prefersReduced || (mounted && cachedWebglOk === false)) {
+      markLanyardSettled();
+    }
+  }, [sceneReady, sceneError, prefersReduced, mounted, cachedWebglOk]);
 
   // Watchdog: a mounted scene that never reaches its first model frame is a
   // silent stall (intermittent warm-load race) — recover instead of hanging.
