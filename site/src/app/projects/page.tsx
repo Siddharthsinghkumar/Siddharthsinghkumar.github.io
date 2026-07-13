@@ -21,8 +21,7 @@ export default function Projects() {
       <PageBackground />
       <div className="pt-24 pb-24">
       {/* ── Project Grid ────────────────────────────────────── */}
-      <Section className="relative overflow-hidden min-h-screen">
-        <GridBackdrop />
+      <Section className="relative overflow-hidden min-h-screen" backdrop={<GridBackdrop />}>
         <div className="relative z-[1]">
           <Eyebrow>INDEX / ALL SYSTEMS</Eyebrow>
           <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-8">
