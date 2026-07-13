@@ -35,6 +35,7 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
   const mounted = useSyncExternalStore(subscribeMount, getIsMounted, () => false);
   const cachedWebglOk = useSyncExternalStore(subscribeMount, getWebglSupported, () => null);
   const [sceneReady, setSceneReady] = useState(false);
+  const [sceneError, setSceneError] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
 
   const handleFirstFrame = useCallback(() => {
@@ -65,26 +66,28 @@ export default function LanyardLoader(props: { frontImage: string; backImage: st
       <div
         className="lanyard-fallback-wrap"
         style={{
-          opacity: sceneReady ? 0 : showFallback ? 1 : 0,
+          opacity: sceneError ? 1 : sceneReady ? 0 : showFallback ? 1 : 0,
           transition: "opacity 200ms ease-in-out",
-          pointerEvents: sceneReady || !showFallback ? "none" : "auto",
+          pointerEvents: sceneError ? "auto" : sceneReady || !showFallback ? "none" : "auto",
         }}
-        aria-hidden={sceneReady || !showFallback}
+        aria-hidden={!sceneError && (sceneReady || !showFallback)}
       >
         <LanyardFallback frontImage={props.frontImage} />
       </div>
-      <div
-        className="lanyard-canvas-wrap"
-        style={{
-          opacity: sceneReady ? 1 : 0,
-          transition: "opacity 300ms ease-in-out",
-          transitionDelay: sceneReady ? "250ms" : "0ms",
-        }}
-      >
-        <LanyardErrorBoundary frontImage={props.frontImage} backImage={props.backImage} fallback={null}>
-          <Lanyard {...props} onFirstFrame={handleFirstFrame} />
-        </LanyardErrorBoundary>
-      </div>
+      {!sceneError && (
+        <div
+          className="lanyard-canvas-wrap"
+          style={{
+            opacity: sceneReady ? 1 : 0,
+            transition: "opacity 300ms ease-in-out",
+            transitionDelay: sceneReady ? "250ms" : "0ms",
+          }}
+        >
+          <LanyardErrorBoundary frontImage={props.frontImage} backImage={props.backImage} fallback={null} onError={() => setSceneError(true)}>
+            <Lanyard {...props} onFirstFrame={handleFirstFrame} onContextLost={() => setSceneError(true)} />
+          </LanyardErrorBoundary>
+        </div>
+      )}
     </div>
   );
 }

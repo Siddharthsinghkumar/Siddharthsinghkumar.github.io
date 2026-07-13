@@ -33,6 +33,7 @@ interface LanyardProps {
   lanyardImage?: string | null;
   lanyardWidth?: number;
   onFirstFrame?: () => void;
+  onContextLost?: () => void;
 }
 
 export default function Lanyard({
@@ -45,7 +46,8 @@ export default function Lanyard({
   imageFit = 'cover',
   lanyardImage = null,
   lanyardWidth = 1,
-  onFirstFrame
+  onFirstFrame,
+  onContextLost
 }: LanyardProps) {
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
@@ -64,7 +66,10 @@ export default function Lanyard({
         camera={{ position: position, fov: fov }}
         dpr={[1, isMobile ? 1.5 : 2]}
         gl={{ alpha: transparent }}
-        onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)}
+        onCreated={({ gl }) => {
+          gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1);
+          gl.domElement.addEventListener("webglcontextlost", () => onContextLost?.());
+        }}
       >
         <ambientLight intensity={Math.PI} />
         <Physics gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60}>
@@ -75,6 +80,7 @@ export default function Lanyard({
             imageFit={imageFit}
             lanyardImage={lanyardImage}
             lanyardWidth={lanyardWidth}
+            onFirstFrame={onFirstFrame}
           />
         </Physics>
         <Environment blur={0.75}>
@@ -83,21 +89,9 @@ export default function Lanyard({
           <Lightformer intensity={3} color="white" position={[1, 1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
           <Lightformer intensity={10} color="white" position={[-10, 0, 14]} rotation={[0, Math.PI / 2, Math.PI / 3]} scale={[100, 10, 1]} />
         </Environment>
-        {onFirstFrame && <FirstFrameGate onFirstFrame={onFirstFrame} />}
       </Canvas>
     </div>
   );
-}
-
-function FirstFrameGate({ onFirstFrame }: { onFirstFrame: () => void }) {
-  const fired = useRef(false);
-  useFrame(() => {
-    if (!fired.current) {
-      fired.current = true;
-      onFirstFrame();
-    }
-  });
-  return null;
 }
 
 interface BandProps {
@@ -109,6 +103,7 @@ interface BandProps {
   imageFit?: 'cover' | 'contain';
   lanyardImage?: string | null;
   lanyardWidth?: number;
+  onFirstFrame?: () => void;
 }
 
 interface Vec3Like { x: number; y: number; z: number }
@@ -117,7 +112,7 @@ function toVec3(v: Vec3Like): THREE.Vector3 {
   return new THREE.Vector3(v.x, v.y, v.z);
 }
 
-function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null, backImage = null, imageFit = 'cover', lanyardImage = null, lanyardWidth = 1 }: BandProps) {
+function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null, backImage = null, imageFit = 'cover', lanyardImage = null, lanyardWidth = 1, onFirstFrame }: BandProps) {
   const band = useRef<THREE.Mesh>(null);
   const fixed = useRef<RapierRigidBody>(null);
   const j1 = useRef<RapierRigidBody>(null);
@@ -177,6 +172,8 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null
     return composite;
   }, [frontImage, backImage, imageFit, frontTex, backTex, typedMaterials.base.map]);
 
+  const firedRef = useRef(false);
+
   const [curve] = useState(() => {
     const c = new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]);
     c.curveType = 'chordal' as CurveType;
@@ -198,6 +195,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false, frontImage = null
   }, [hovered, dragged]);
 
   useFrame((state, delta) => {
+    if (!firedRef.current) { firedRef.current = true; onFirstFrame?.(); }
     if (dragged) {
       vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
       dir.copy(vec).sub(state.camera.position).normalize();

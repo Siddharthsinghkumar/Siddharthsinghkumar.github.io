@@ -8,6 +8,7 @@ interface Props {
   frontImage: string;
   backImage: string;
   fallback?: ReactNode;
+  onError?: () => void;
 }
 
 interface State {
@@ -22,6 +23,10 @@ export default class LanyardErrorBoundary extends Component<Props, State> {
 
   static getDerivedStateFromError(): State {
     return { hasError: true };
+  }
+
+  componentDidCatch() {
+    this.props.onError?.();
   }
 
   render() {
