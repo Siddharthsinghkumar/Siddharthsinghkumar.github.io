@@ -41,7 +41,8 @@ export default function NotFound() {
         />
       </h1>
       <p className="relative z-10 text-[--muted] text-lg mb-8">
-        This route doesn&rsquo;t exist. The systems that do:
+        This route doesn&rsquo;t exist. I have five pages — how did you end up
+        here? The systems that do exist:
       </p>
 
       <div className="relative z-10 flex flex-wrap gap-4 mb-8">

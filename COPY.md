@@ -258,7 +258,9 @@ router", "SSE streaming agent", + name.
 
 > **`404 — NO SIGNAL`**
 >
-> This route doesn't exist. The systems that do:
+> This route doesn't exist. I have five pages — how did you end up here?
+> The systems that do exist:
+> *(smirk line added by Sid, 2026-07-13; five = /, prospect, travel-planner, projects, knowme)*
 >
 > [ Home ] [ Prospect ] [ Travel Planner ]
 >
