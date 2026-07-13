@@ -1,5 +1,11 @@
 # M5 Prompt Pack (C2) — generation prompts + specs for Sid's asset drop
 
+> **⛔ PARKED POST-LAUNCH (Sid, 2026-07-13 — m5plan M5.12).** Sid ran these prompts; the output
+> was high-resolution generic AI slop (bad colors, bad design). Do NOT burn more generation
+> credits pre-launch. Kept for the post-launch retry — iterate object specificity, style
+> references, and model choice before regenerating. Executors: no task references this file
+> until then.
+
 > Authored by Claude 2026-07-12 under the REV'd M5.4 pipeline (see m5plan §2):
 > start/end frames (Nano Banana Pro or GPT Image 2) → Google Flow **Frames to
 > Video** → ffmpeg frame export → webp sequence + poster. Full pipeline
