@@ -6,5 +6,6 @@ questions/
 *.har
 skills-lock.json
 references_research_paper/
-docs/qa/
+docs/qa/m*/
+docs/qa/t*/
 **/fonts/Inter.ttf

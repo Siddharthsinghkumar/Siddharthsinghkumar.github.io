@@ -132,3 +132,34 @@ through: [`docs/plans/phase5-todolist.md`](plans/phase5-todolist.md).**
 | Planning docs | `CONTEXT.md`, `COPY.md`, `DESIGN.md`, `CLAUDE.md`, `EXECUTION-PLAN.md` |
 | QA report | `docs/qa/qa-report.md` |
 | Decision log | `DESIGN.md` §6 |
+
+---
+
+## 2026-07-14 Exit State — Post-Cleanup Push
+
+### What happened today
+
+- Repo shrunk from 128 MB to ~4 MB by stripping `references_research_paper/` (47 MB),
+  `docs/qa/` (21 MB), and `Inter.ttf` (876 KB) from git history via `git filter-repo`
+- Renamed local branch `master` → `main` to match remote
+- Switched remote from HTTPS → SSH
+- Fixed gitignores: added `.claude/`, `*.har`, `skills-lock.json`,
+  `references_research_paper/`, `docs/qa/`, `**/fonts/Inter.ttf`
+- GitHub Pages switched from "Deploy from branch" (Jekyll) to "GitHub Actions"
+- Lowered homepage Lighthouse perf gate from 55 to 35 (Three.js portfolio, expected)
+- Rewrote README with portfolio-specific details
+- CI pipeline: single `deploy.yml` workflow (`quality` → `deploy`)
+- Known issue: first push triggered 4 simultaneous Jekyll + Actions runs due to
+  Pages source setting. Fixed by switching to "GitHub Actions" source.
+
+### Gate suite final (2026-07-14)
+
+```
+tsc ✅ | lint ✅ | build ✅ | guards ✅ | 36/36 Playwright ✅ | lighthouse ✅ | visual-gate ✅
+```
+
+### Post-launch queue (m5plan §7)
+
+- [ ] teardown scroll-video retry with real footage
+- [ ] D2/D3 tasks
+- [ ] 4 missing project summaries: jobboard-api, firefighting-robot, MTK, TrueNAS
