@@ -35,7 +35,8 @@ page structure:
 ## Invariants encoded
 
 - Copy is verbatim from `../COPY.md`. Never invent, "improve", or paraphrase.
-- Forbidden strings (checked by guards): phone number, "B.Tech", education section,
+- Forbidden strings (checked by guards): a base64-opaque personal-info ban list
+  (values deliberately unreadable in this public repo and its CI logs), plus
   "6 months", "lorem", stock-image sources, "Henrie", exact contribution count.
 - Colors come only from `../DESIGN.md` §1.1 token set. No hex values outside
   `globals.css` and `layout.tsx`.

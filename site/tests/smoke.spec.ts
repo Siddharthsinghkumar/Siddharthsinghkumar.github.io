@@ -71,12 +71,20 @@ test("project grid shows 4 cards with data (snapshot fallback works offline)", a
 });
 
 test("forbidden content never renders (phone, education, old claims)", async ({ page }) => {
+  // Base64-opaque + index-only failure messages: this file and CI logs are
+  // public — the banned values must never appear in either.
+  const banned = [
+    ...["ODI2Nzk=", "Qi5UZWNo", "R0FURQ==", "Qmlqbm9y"].map((enc) =>
+      Buffer.from(enc, "base64").toString(),
+    ),
+    "6 months",
+  ];
   for (const path of ["/", "/prospect", "/travel-planner"]) {
     await page.goto(path);
     const body = await page.locator("body").innerText();
-    for (const banned of ["82679", "B.Tech", "GATE", "6 months", "Bijnor"]) {
-      expect(body, `"${banned}" leaked on ${path}`).not.toContain(banned);
-    }
+    banned.forEach((str, i) => {
+      expect(body, `banned string #${i + 1} leaked on ${path}`).not.toContain(str);
+    });
   }
 });
 

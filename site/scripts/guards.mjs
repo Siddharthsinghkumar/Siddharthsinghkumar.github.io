@@ -50,9 +50,16 @@ for (const [page, str] of required) {
 
 // ── 2. Forbidden content (CONTEXT.md exclusions + anti-cheap signals) ───────
 console.log("[2] Forbidden content absent");
+// Personal-info ban list — base64-opaque and index-logged so neither this
+// public file nor public CI logs ever show the values (CONTEXT.md exclusions).
+const personalBans = ["ODI2Nzk=", "Qi5UZWNo", "Qmlqbm9y", "R0FURSAyMDI0"];
+personalBans.forEach((enc, i) => {
+  const val = Buffer.from(enc, "base64").toString();
+  allHtml.includes(val)
+    ? fail(`found forbidden [personal ban #${i + 1}]`)
+    : ok(`[personal ban #${i + 1}] absent`);
+});
 const forbidden = [
-  "82679",            // phone number — never on site
-  "B.Tech", "Bijnor", "GATE 2024", // education — deliberate exclusion
   "6 months",         // the corrected Sindhey claim
   "lorem", "Lorem",   // placeholder copy
   "unsplash", "Henrie", // donor demo content
