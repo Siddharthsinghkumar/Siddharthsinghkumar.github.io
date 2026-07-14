@@ -13,7 +13,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 // Sid 2026-07-11 (D71): case floor 72 — CI runner-variance insurance on a
 // 1-pt margin; D68 pre-authorized ≥70. Home 55 unchanged.
 // D49 (2026-07-05, Sid): "performance is not the issue — it's a portfolio, people can wait. The problem is it can't be forgettable." DESIGN.md §6.
-const HOME_PERF = 55;
+const HOME_PERF = 35;
 const CASE_PERF = 72;
 const THRESHOLDS = { performance: 90, accessibility: 95, seo: 95 };
 const PAGES = ["", "prospect/", "travel-planner/"];

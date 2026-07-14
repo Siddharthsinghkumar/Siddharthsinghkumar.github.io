@@ -1,6 +1,6 @@
 # Siddharth Singh — AI Backend Engineer
 
-Portfolio at **[siddharthsinghkumar.github.io](https://siddharthsinghkumar.github.io)**.  
+Portfolio at **[siddharthsinghkumar.github.io](https://siddharthsinghkumar.github.io/)**.  
 Agentic LLM systems, RAG pipelines, local inference. Creator of **Prospect**, an
 autonomous job-prospecting engine.
 
