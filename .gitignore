@@ -1,4 +1,7 @@
 .agents/
+.claude/
 .commandcode/
 .devin/
 questions/
+*.har
+skills-lock.json
