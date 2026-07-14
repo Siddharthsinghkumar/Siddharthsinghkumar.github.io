@@ -198,3 +198,22 @@ may need gradient tuning (bounded, gate-safe); Sid's hero images arrive later by
 files, no code risk.
 
 **SCOPE FREEZE: 2026-07-13.** F1–F4 + T1–T6 only. STOPs are accept/reject only. m6 is last.
+
+## 5. Verification record (2026-07-14)
+
+- ⛔ STOP M6-A: **ACCEPTED** — Sid judged on :4173, closed the server, ordered pre-push check.
+- T1: full suite 3× consecutive GREEN (build/tsc/lint 0-err/guards/playwright 36/36/lighthouse
+  prospect 75 + travel 75/visual). Gate screenshots refreshed + committed (c990565).
+- T2: satisfied by the T1 lighthouse runs — machine was quiet (Sid had closed server/browser).
+- T3: snapshot built + verified. Top level exactly `site/ .github/ README.md`, 117 files,
+  1 commit `Initial release`, no trailers. N17 grep zero hits.
+  **Finding during T3:** guards.mjs/smoke.spec.ts/TESTING.md carried the banned values as
+  plain-text literals ("82679" + phone comment; "Bijnor"/"B.Tech"/"GATE 2024" + education
+  comment) — the public repo and public CI logs would have revealed the excluded facts.
+  Sid ruled: encode. Fixed in b975747 (base64 values, index-only log/failure messages) —
+  a Sid-authorized gate-file edit, encoding only, detection values decode identical, no
+  thresholds touched (N7 logged). Suite re-run green after the edit; snapshot re-archived;
+  deep grep for the raw strings themselves now zero hits in the public tree.
+- T4 pending: origin/main holds unrelated placeholder history (.gitkeep + dead CNAME churn),
+  so the push MUST be `--force` from the snapshot dir. Sid pushes.
+- T5/T6 pending post-push.
