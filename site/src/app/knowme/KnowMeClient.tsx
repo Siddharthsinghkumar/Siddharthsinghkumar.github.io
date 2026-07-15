@@ -27,6 +27,7 @@ const backImage = `data:image/svg+xml,${encodeURIComponent(backSvg)}`;
 export default function KnowMeClient() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobileOrTablet = useMediaQuery("(max-width: 1023px)");
   // The cardScale and anchor depend on viewport. Catch initial state too.
   const cardScale = isMobile ? 1 : 2;
   const [lanyard, setLanyard] = useState<{
@@ -45,9 +46,10 @@ export default function KnowMeClient() {
       const rect = wrap.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
       let fraction = 0.68;
-      if (isMobile) {
-        // On mobile: center the card — the KNOWME nav link is in the hamburger
-        // menu and the 280px fallback image must sit fully inside the viewport.
+      if (isMobileOrTablet) {
+        // On mobile/tablet: center the card — the KNOWME nav link is in the
+        // hamburger menu and the 280px fallback card must sit fully inside
+        // the viewport. The 3D card is disabled below 1024px (forceFallback).
         fraction = 0.5;
       } else {
         // trailingSlash export renders href="/knowme/"
@@ -81,8 +83,8 @@ export default function KnowMeClient() {
       clearTimeout(t);
       window.removeEventListener("resize", onResize);
     };
-    // Re-compute when mobile state changes (the hook flips on first mount)
-  }, [isMobile]);
+    // Re-compute when mobile/tablet state changes (the hook flips on first mount)
+  }, [isMobile, isMobileOrTablet]);
 
   return (
     <>
@@ -95,6 +97,7 @@ export default function KnowMeClient() {
             anchor={lanyard.anchor}
             anchorFraction={lanyard.fraction}
             cardScale={cardScale}
+            forceFallback={isMobileOrTablet}
           />
         )}
       </div>
@@ -111,8 +114,7 @@ export default function KnowMeClient() {
             agents that survive their own failures. Before that I led the build
             of an autonomous firefighting robot, and took a healthcare platform
             from zero to production in six weeks. I like honest status labels,
-            observable systems, and tools that earn their place. The card is
-            real — drag it.
+            observable systems, and tools that earn their place.
           </p>
 
           <div className="flex flex-wrap gap-3 mb-6">

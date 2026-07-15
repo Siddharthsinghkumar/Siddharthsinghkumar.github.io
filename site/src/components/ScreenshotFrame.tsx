@@ -14,12 +14,14 @@ export default function ScreenshotFrame({ caption, placeholder }: ScreenshotFram
       <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-[--accent]" />
 
       {placeholder && (
-        // eslint-disable-next-line @next/next/no-img-element -- static export: next/image optimization unavailable
-        <img
-          src={placeholder}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
+        <div
           aria-hidden="true"
+          className="absolute inset-0 opacity-50"
+          style={{
+            backgroundImage: `url(${placeholder})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
         />
       )}
 
