@@ -99,7 +99,7 @@ export default function KnowMeClient() {
         )}
       </div>
 
-      <div className="relative z-[2] flex flex-col justify-center min-h-[80svh] px-4">
+      <div className="relative z-[2] flex flex-col justify-start md:justify-center pt-[68svh] md:pt-0 min-h-[100svh] md:min-h-[80svh] px-4">
         <div className="relative max-w-[60ch] bg-surface md:bg-bg/60 md:backdrop-blur-sm rounded-[--r-md] p-8">
           <h1 className="font-display text-[clamp(2.4rem,6vw,4.5rem)] leading-none tracking-[-0.02em] text-[--text] mb-6">
             Know Me
