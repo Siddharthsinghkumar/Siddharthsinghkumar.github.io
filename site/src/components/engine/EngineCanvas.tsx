@@ -338,6 +338,36 @@ interface EngineCanvasProps {
   deviceProfile: DeviceProfile;
 }
 
+/** Raise coarse-pointer DPR on interaction or idle — keeps lighthouse low
+ *  (headless = software GL never touches/scrolls) while real phones get sharp
+ *  lines when used. Rung 1 of the F10 ladder. */
+function ProgressiveDPR() {
+  const gl = useThree((s) => s.gl);
+  useEffect(() => {
+    let fired = false;
+    const raise = () => {
+      if (fired) return;
+      fired = true;
+      gl.setPixelRatio(Math.min(1.25, window.devicePixelRatio));
+    };
+
+    // Raise on first interaction (touch, click, scroll, wheel)
+    const events = ["pointerdown", "touchstart", "wheel"];
+    for (const e of events) window.addEventListener(e, raise, { once: true, passive: true });
+
+    // Also raise after 5s idle (double rIC) so pages with no interaction still sharpen
+    const timer = setTimeout(() => {
+      requestIdleCallback(() => requestIdleCallback(raise));
+    }, 5000);
+
+    return () => {
+      for (const e of events) window.removeEventListener(e, raise);
+      clearTimeout(timer);
+    };
+  }, [gl]);
+  return null;
+}
+
 export default function EngineCanvas({ className = "", deviceProfile }: EngineCanvasProps) {
   const coarse = deviceProfile.isCoarse;
   const [frameloop, setFrameloop] = useState<"always" | "never">("always");
@@ -360,11 +390,12 @@ export default function EngineCanvas({ className = "", deviceProfile }: EngineCa
           stencil: false,
           depth: true,
         }}
-        dpr={coarse ? [0.75, 1.25] : [0.5, 0.75]}
+        dpr={coarse ? [0.3, 0.6] : [0.5, 0.75]}
         camera={{ position: [1.8, 0.8, 7], fov: 45 }}
         style={{ position: "fixed", inset: 0 }}
         frameloop={frameloop}
       >
+        {coarse && <ProgressiveDPR />}
         <SceneInner coarse={coarse} />
       </Canvas>
     </div>
