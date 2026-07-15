@@ -119,8 +119,8 @@ function NavContent({ pathname, isHome }: { pathname: string; isHome: boolean })
         ) : null}
       </Link>
 
-      {/* Desktop nav links — hidden below md */}
-      <div className="hidden md:flex items-center gap-3 xs:gap-5 md:gap-8">
+      {/* Desktop nav links — overflow-x-auto on mobile so links stay accessible */}
+      <div className="flex md:flex items-center gap-1 xs:gap-2 md:gap-8 overflow-x-auto overflow-y-hidden shrink min-w-0 max-w-[50vw] md:max-w-none">
         {links.map(({ href, label }) => {
           const active = pathname === href;
           const colorClass = active
