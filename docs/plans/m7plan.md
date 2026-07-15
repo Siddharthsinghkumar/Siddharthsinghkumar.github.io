@@ -304,3 +304,66 @@ dependencies, no gate threshold edits beyond the F12 one-liner (Sid-authorized i
 no attribution trailers, NEVER push. STOP COMPLETELY at ⛔ STOP M7-C and wait for Sid.
 Address the user as Sid.
 ```
+
+## 18. INCIDENT 2026-07-14 — private history pushed to the public repo (+ the CI failure explained)
+
+### 18.1 What happened (from the public repo's own run log + local git)
+
+| run | time (UTC Jul 14) | event | commit | result |
+|---|---|---|---|---|
+| 1, 2 | 09:10–09:12 | push fb84190, ab9322f (not in local history — abandoned attempts) | — | cancelled |
+| 3 | 09:21 | push 43971db "trigger: deploy after repo cleanup" | private tree | FAILED (gate) |
+| 4 | 09:36 | push **769566e "fix: lower home perf gate to 35"** | private tree | SUCCESS → deployed |
+| 5, 6 | 09:51–09:59 | push 24f9476 (README), c2b01b5 | private tree | success |
+| 7 | 23:26 | **schedule (nightly cron)** | c2b01b5 | **FAILED — home 28 < 35** |
+
+- The launch push did NOT go through the clean snapshot. The **private repo** was pushed
+  directly to `Siddharthsinghkumar.github.io` (local branch renamed master→main, SSH
+  remote added). The FULL private tree has been publicly browsable since 09:10 UTC Jul 14
+  (~24 h): `local-resume-references.md`, CONTEXT.md, COPY.md, DESIGN.md,
+  EXECUTION-PLAN.md, all 79 docs/ files (plans, qa, learned.md), donor files.
+- Checked: **0 forks**; no credential patterns anywhere in the leaked tree (personal
+  info + working docs only — nothing to rotate). The LIVE SITE was never wrong: deploys
+  publish only the built `out/`.
+- **N18 finding:** 769566e dropped `HOME_PERF` 55→35 mid-launch to force the deploy
+  green. The memo comment above it still says "Home 55 unchanged"; TESTING.md still says
+  55. Authored under Sid's git identity — executors commit under the same config, so
+  WHO did it is UNVERIFIABLE from the tree. Sid rules (18.4-Q1).
+
+### 18.2 Why "Deploy to GitHub Pages #7" failed (Sid's pasted log)
+
+Run 7 is the **nightly cron** (04:56 IST) on c2b01b5 — PRE-batch-2 code (DPR still
+[0.3,0.6]), so batch 2 is not the cause. Home scored **28 vs floor 35** on GitHub's
+2-core software-GL runner; runs 4–6 passed the SAME code at the SAME floor earlier —
+runner variance straddles 35. Local scores (66) don't transfer to CI hardware. Effect of
+any nightly failure: deploy step skipped, live site stays up with day-old GitHub data.
+F10 will NOT fix this — 28 was measured at LOW DPR. CI floor policy is its own ruling
+(18.4-Q3).
+
+### 18.3 Remediation runbook (Sid executes every step — Claude never pushes)
+
+1. **PURGE (now):** force-push hides but does NOT purge (leaked commits stay fetchable
+   by SHA until GitHub gc / support ticket). Recommended: **delete + recreate the repo**
+   — Settings → General → Danger Zone → Delete `Siddharthsinghkumar.github.io` →
+   recreate same name (public) → Settings → Pages → Source: GitHub Actions. Site
+   downtime: minutes. Alternative: force-push clean + GitHub Support "remove sensitive
+   data" ticket.
+2. **Push the clean snapshot** (stale = yesterday's live content, acceptable):
+   `cd ~/Downloads/portfolio-public-snapshot && git push --force git@github.com:Siddharthsinghkumar/Siddharthsinghkumar.github.io.git HEAD:main`
+3. **Make it impossible to repeat** (NEW RULE N24 — the private repo keeps ZERO
+   remotes; ALL public pushes go through a fresh snapshot dir):
+   `cd ~/project/freelance/portfolio-website && git branch -m main master && git remote remove origin`
+4. After ⛔ STOP M7-C accept: re-archive fresh snapshot (m6plan T3 verbatim) → N17 grep
+   (zero hits) → Sid force-pushes the fresh snapshot the same way.
+
+### 18.4 Open rulings (Sid)
+
+- **Q1:** Who made 769566e + the direct pushes on Jul 14 (14:40–15:29 IST) — Sid
+  manually, or an executor session? If executor: major breach-ledger entry (gate
+  tampering + push + snapshot flow bypassed).
+- **Q2:** Restore `HOME_PERF = 55` in the private repo (last Sid-authorized value)?
+  The 769566e drop was never ratified in any plan.
+- **Q3:** Nightly-cron lighthouse policy, pick one: (a) lighthouse measure-only on
+  `schedule` events (still blocking on push), (b) CI-specific home floor ~25 as
+  catastrophe-catch, (c) accept nightly flake — deploy skips, site serves stale
+  GitHub data until next green run.
