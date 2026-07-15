@@ -81,7 +81,7 @@ function NavContent({ pathname, isHome }: { pathname: string; isHome: boolean })
       {/* Wordmark */}
       <Link
         href="/"
-        className="nav-link font-mono text-[10px] xs:text-[11px] md:text-[13px] uppercase tracking-[0.08em] text-[--text] whitespace-nowrap no-underline group"
+        className="nav-link font-mono text-[10px] xs:text-[11px] md:text-[13px] uppercase tracking-[0.08em] text-[--text] whitespace-nowrap no-underline group expanded-hit-area"
       >
         {canDecrypt ? (
           <span className="hidden xs:inline">
