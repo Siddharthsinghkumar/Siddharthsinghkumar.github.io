@@ -47,6 +47,12 @@ test("404 page renders NO SIGNAL for unknown routes", async ({ page }) => {
 
 test("nav links reach both case studies and back", async ({ page }) => {
   await page.goto("/");
+  // On mobile (below md) the desktop nav links are hidden behind the
+  // hamburger — open the menu so getByRole can find them.
+  const menuBtn = page.locator('button[aria-controls="mobile-menu"]');
+  if (await menuBtn.isVisible()) {
+    await menuBtn.click();
+  }
   await page.getByRole("link", { name: /prospect/i }).first().click();
   await expect(page).toHaveURL(/prospect/);
   await expect(page.locator("h1")).toContainText(/morning papers/i);
@@ -55,8 +61,16 @@ test("nav links reach both case studies and back", async ({ page }) => {
 test("primary CTAs exist: email + resume", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator('a[href^="mailto:siddharthsingh8418@gmail.com"]').first()).toBeVisible();
-  const resume = page.locator('a[href*="resume"]').first();
-  await expect(resume).toBeVisible();
+  // On mobile the nav-bar Resume button is behind the hamburger; open the
+  // menu so a visible resume link exists.
+  const menuBtn = page.locator('button[aria-controls="mobile-menu"]');
+  if (await menuBtn.isVisible()) {
+    await menuBtn.click();
+    // The menu contains its own Resume button
+    await expect(page.locator('#mobile-menu a[href*="resume"]')).toBeVisible();
+  } else {
+    await expect(page.locator('a[href*="resume"]').first()).toBeVisible();
+  }
 });
 
 test("project grid shows 4 cards with data (snapshot fallback works offline)", async ({ page }) => {
