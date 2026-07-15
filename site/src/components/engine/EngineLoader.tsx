@@ -89,10 +89,10 @@ export default function EngineLoader() {
       {/* No-JS fallback: scene poster. Moved to server-rendered layout.tsx
           so it actually renders when JS is disabled. */}
       {/* Note: noscript poster now lives in layout.tsx for proper server-side rendering */}
-      {/* Reduced motion or mobile/tablet (coarse): poster only — canvas never mounts. */}
-      {prefersReduced || isCoarse ? <PosterDiv /> : null}
+      {/* Reduced motion: poster only — canvas never mounts. */}
+      {prefersReduced ? <PosterDiv /> : null}
       {/* Normal path: live canvas once rIC fires; poster on WebGL failure. */}
-      {!prefersReduced && !isCoarse && canvasReady ? (
+      {!prefersReduced && canvasReady ? (
         <EngineErrorBoundary fallback={<PosterDiv />}>
           <EngineCanvas deviceProfile={profile} />
         </EngineErrorBoundary>

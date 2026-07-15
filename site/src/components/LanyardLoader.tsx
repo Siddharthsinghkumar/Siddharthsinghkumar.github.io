@@ -6,6 +6,7 @@ import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 import LanyardErrorBoundary from "./LanyardErrorBoundary";
 import LanyardFallback from "./LanyardFallback";
 import { markLanyardSettled } from "./lanyard-ready";
+import "./Lanyard.css";
 
 const Lanyard = dynamic(() => import("./Lanyard"), {
   ssr: false,
