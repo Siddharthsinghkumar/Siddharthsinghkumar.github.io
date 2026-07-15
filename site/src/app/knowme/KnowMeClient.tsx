@@ -5,6 +5,7 @@ import Button from "@/components/Button";
 import LanyardLoader from "@/components/LanyardLoader";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 import { TOKEN_HEX } from "@/lib/token-hex";
+import { markLanyardSettled } from "@/components/lanyard-ready";
 
 // Must match Lanyard.tsx camera defaults (position z / fov) — used to convert
 // the KNOWME nav link's screen position into scene world units.
@@ -36,6 +37,12 @@ export default function KnowMeClient() {
     key: string;
   } | null>(null);
 
+  // On mobile/tablet the lanyard never renders — tell the intro overlay
+  // immediately so it skips the 10 s lanyard-wait.
+  useEffect(() => {
+    if (isMobileOrTablet) markLanyardSettled();
+  }, [isMobileOrTablet]);
+
   // Anchor the strap's top under the KNOWME nav link: measure the link and
   // the canvas region, convert to world units. Resize remounts the scene
   // (physics bodies take their positions at creation).
@@ -46,10 +53,9 @@ export default function KnowMeClient() {
       const rect = wrap.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
       let fraction = 0.68;
-      if (isMobileOrTablet) {
-        // On mobile/tablet: center the card — the KNOWME nav link is in the
-        // hamburger menu and the 280px fallback card must sit fully inside
-        // the viewport. The 3D card is disabled below 1024px (forceFallback).
+      if (isMobile) {
+        // On mobile: center the card — the KNOWME nav link is in the hamburger
+        // menu and the 280px fallback image must sit fully inside the viewport.
         fraction = 0.5;
       } else {
         // trailingSlash export renders href="/knowme/"
@@ -83,13 +89,13 @@ export default function KnowMeClient() {
       clearTimeout(t);
       window.removeEventListener("resize", onResize);
     };
-    // Re-compute when mobile/tablet state changes (the hook flips on first mount)
-  }, [isMobile, isMobileOrTablet]);
+    // Re-compute when mobile state changes (the hook flips on first mount)
+  }, [isMobile]);
 
   return (
     <>
       <div ref={wrapRef} className="absolute inset-0 z-[60] pointer-events-none">
-        {lanyard && (
+        {lanyard && !isMobileOrTablet && (
           <LanyardLoader
             key={lanyard.key}
             frontImage={frontImage}
@@ -97,7 +103,6 @@ export default function KnowMeClient() {
             anchor={lanyard.anchor}
             anchorFraction={lanyard.fraction}
             cardScale={cardScale}
-            forceFallback={isMobileOrTablet}
           />
         )}
       </div>
@@ -114,7 +119,8 @@ export default function KnowMeClient() {
             agents that survive their own failures. Before that I led the build
             of an autonomous firefighting robot, and took a healthcare platform
             from zero to production in six weeks. I like honest status labels,
-            observable systems, and tools that earn their place.
+            observable systems, and tools that earn their place. The card is
+            real — drag it.
           </p>
 
           <div className="flex flex-wrap gap-3 mb-6">

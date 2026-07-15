@@ -6,7 +6,6 @@ import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 import LanyardErrorBoundary from "./LanyardErrorBoundary";
 import LanyardFallback from "./LanyardFallback";
 import { markLanyardSettled } from "./lanyard-ready";
-import "./Lanyard.css";
 
 const Lanyard = dynamic(() => import("./Lanyard"), {
   ssr: false,
@@ -38,7 +37,6 @@ export default function LanyardLoader(props: {
   anchor?: [number, number];
   anchorFraction?: number;
   cardScale?: number;
-  forceFallback?: boolean;
 }) {
   const prefersReduced = usePrefersReducedMotion();
   const mounted = useSyncExternalStore(subscribeMount, getIsMounted, () => false);
@@ -67,27 +65,27 @@ export default function LanyardLoader(props: {
 
   // Show fallback only after 400ms if scene isn't ready yet (fast loads skip it)
   useEffect(() => {
-    if (props.forceFallback || prefersReduced || !mounted || !cachedWebglOk) return;
+    if (prefersReduced || !mounted || !cachedWebglOk) return;
     const timer = setTimeout(() => setShowFallback(true), 400);
     return () => clearTimeout(timer);
-  }, [props.forceFallback, prefersReduced, mounted, cachedWebglOk]);
+  }, [prefersReduced, mounted, cachedWebglOk]);
 
   // Tell the intro overlay when this region has reached a stable state — the
   // 3D card, the settled fallback, or the static path (reduced motion / no
-  // WebGL / forced fallback). The knowme intro holds until this fires.
+  // WebGL). The knowme intro holds until this fires.
   useEffect(() => {
-    if (props.forceFallback || sceneReady || sceneError || prefersReduced || (mounted && cachedWebglOk === false)) {
+    if (sceneReady || sceneError || prefersReduced || (mounted && cachedWebglOk === false)) {
       markLanyardSettled();
     }
-  }, [props.forceFallback, sceneReady, sceneError, prefersReduced, mounted, cachedWebglOk]);
+  }, [sceneReady, sceneError, prefersReduced, mounted, cachedWebglOk]);
 
   // Watchdog: a mounted scene that never reaches its first model frame is a
   // silent stall (intermittent warm-load race) — recover instead of hanging.
   useEffect(() => {
-    if (props.forceFallback || prefersReduced || !mounted || !cachedWebglOk || sceneReady || sceneError) return;
+    if (prefersReduced || !mounted || !cachedWebglOk || sceneReady || sceneError) return;
     const timer = setTimeout(failScene, 6000);
     return () => clearTimeout(timer);
-  }, [props.forceFallback, prefersReduced, mounted, cachedWebglOk, sceneReady, sceneError, retryKey, failScene]);
+  }, [prefersReduced, mounted, cachedWebglOk, sceneReady, sceneError, retryKey, failScene]);
 
   useEffect(() => {
     if (!isMounted) {
@@ -97,7 +95,7 @@ export default function LanyardLoader(props: {
     }
   }, []);
 
-  if (props.forceFallback || prefersReduced || !mounted || !cachedWebglOk) {
+  if (prefersReduced || !mounted || !cachedWebglOk) {
     return <LanyardFallback frontImage={props.frontImage} />;
   }
 
