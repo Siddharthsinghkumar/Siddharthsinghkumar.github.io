@@ -360,7 +360,7 @@ export default function EngineCanvas({ className = "", deviceProfile }: EngineCa
           stencil: false,
           depth: true,
         }}
-        dpr={coarse ? [0.3, 0.6] : [0.5, 0.75]}
+        dpr={coarse ? [0.75, 1.25] : [0.5, 0.75]}
         camera={{ position: [1.8, 0.8, 7], fov: 45 }}
         style={{ position: "fixed", inset: 0 }}
         frameloop={frameloop}
