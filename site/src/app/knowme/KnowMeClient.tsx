@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "@/components/Button";
 import LanyardLoader from "@/components/LanyardLoader";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 import { TOKEN_HEX } from "@/lib/token-hex";
 
 // Must match Lanyard.tsx camera defaults (position z / fov) — used to convert
@@ -25,6 +26,9 @@ const backImage = `data:image/svg+xml,${encodeURIComponent(backSvg)}`;
 
 export default function KnowMeClient() {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  // The cardScale and anchor depend on viewport. Catch initial state too.
+  const cardScale = isMobile ? 1 : 2;
   const [lanyard, setLanyard] = useState<{
     anchor: [number, number];
     fraction: number;
@@ -41,14 +45,22 @@ export default function KnowMeClient() {
       const rect = wrap.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
       let fraction = 0.68;
-      // trailingSlash export renders href="/knowme/"
-      for (const a of document.querySelectorAll('a[href^="/knowme"]')) {
-        const r = a.getBoundingClientRect();
-        if (r.top < 100 && r.width > 0) {
-          fraction = (r.left + r.width / 2 - rect.left) / rect.width;
-          break;
+      if (isMobile) {
+        // On mobile the KNOWME nav link is behind a hamburger menu, so fall
+        // back to a fixed fraction that keeps the card inside the viewport.
+        fraction = 0.72;
+      } else {
+        // trailingSlash export renders href="/knowme/"
+        for (const a of document.querySelectorAll('a[href^="/knowme"]')) {
+          const r = a.getBoundingClientRect();
+          if (r.top < 100 && r.width > 0) {
+            fraction = (r.left + r.width / 2 - rect.left) / rect.width;
+            break;
+          }
         }
       }
+      // Clamp fraction so the FULL card (scaled) sits inside the viewport
+      fraction = Math.min(fraction, 0.78);
       const visH = 2 * CAM_Z * Math.tan((CAM_FOV * Math.PI) / 360);
       const visW = visH * (rect.width / rect.height);
       setLanyard({
@@ -68,7 +80,8 @@ export default function KnowMeClient() {
       clearTimeout(t);
       window.removeEventListener("resize", onResize);
     };
-  }, []);
+    // Re-compute when mobile state changes (the hook flips on first mount)
+  }, [isMobile]);
 
   return (
     <>
@@ -80,7 +93,7 @@ export default function KnowMeClient() {
             backImage={backImage}
             anchor={lanyard.anchor}
             anchorFraction={lanyard.fraction}
-            cardScale={2}
+            cardScale={cardScale}
           />
         )}
       </div>
