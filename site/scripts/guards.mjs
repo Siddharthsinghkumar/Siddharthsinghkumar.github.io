@@ -190,7 +190,7 @@ existsSync(posterOut)
 // INVENTORY mode for m7: list all occurrences so Sid can prioritize mass-fix
 // in m8. The guard does NOT fail yet — only 2 critical cases fixed this batch
 // (menu backdrop + knowme text panel). Sid rules on mass-fix scope at STOP.
-const BRACKET_VAR_BASELINE = 240; // pre-m7 baseline; 2 fixed this batch
+const BRACKET_VAR_BASELINE = 158; // actual count from live tree; F12 corrected
 console.log("[9] Tailwind v4 bracket-var inventory");
 try {
   const deadLines = execSync(
