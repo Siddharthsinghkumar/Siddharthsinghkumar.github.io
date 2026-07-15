@@ -46,9 +46,9 @@ export default function KnowMeClient() {
       if (rect.width === 0 || rect.height === 0) return;
       let fraction = 0.68;
       if (isMobile) {
-        // On mobile the KNOWME nav link is behind a hamburger menu, so fall
-        // back to a fixed fraction that keeps the card inside the viewport.
-        fraction = 0.72;
+        // On mobile: center the card — the KNOWME nav link is in the hamburger
+        // menu and the 280px fallback image must sit fully inside the viewport.
+        fraction = 0.5;
       } else {
         // trailingSlash export renders href="/knowme/"
         for (const a of document.querySelectorAll('a[href^="/knowme"]')) {
@@ -59,14 +59,15 @@ export default function KnowMeClient() {
           }
         }
       }
-      // Clamp fraction so the FULL card (scaled) sits inside the viewport
-      fraction = Math.min(fraction, 0.78);
       const visH = 2 * CAM_Z * Math.tan((CAM_FOV * Math.PI) / 360);
       const visW = visH * (rect.width / rect.height);
+      // Include cardScale in the key so the R3F scene remounts when the prop
+      // changes — without this the physics bodies keep their birth-position
+      // layout while the prop says a different scale (fallback latch, R3).
       setLanyard({
         anchor: [(fraction - 0.5) * visW, visH / 2 + 0.3],
         fraction,
-        key: `${Math.round(rect.width)}x${Math.round(rect.height)}`,
+        key: `${Math.round(rect.width)}x${Math.round(rect.height)}-${cardScale}`,
       });
     };
     compute();

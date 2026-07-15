@@ -17,7 +17,7 @@ export default function KnowMeBackground() {
   }, []);
 
   return (
-    <div className="absolute inset-0 pointer-events-none select-none z-0" aria-hidden="true">
+    <div className="fixed inset-0 pointer-events-none select-none z-0" aria-hidden="true">
       <FlutedGlass
         width={dimensions.width}
         height={dimensions.height}
