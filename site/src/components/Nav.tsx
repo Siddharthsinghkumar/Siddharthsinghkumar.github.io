@@ -44,11 +44,6 @@ function NavContent({ pathname, isHome }: { pathname: string; isHome: boolean })
     return () => clearTimeout(timer);
   }, [canDecrypt]);
 
-  // Close mobile menu on route change (remount also resets state, but guard for safety)
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
   // Escape key closes mobile menu
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
