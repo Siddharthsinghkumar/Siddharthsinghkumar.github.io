@@ -42,8 +42,13 @@ jobs:
         working-directory: site
       - run: npx playwright test
         working-directory: site
+      # Sid 2026-07-15 (m7plan §18.4-Q3): nightly cron is a data refresh —
+      # lighthouse reports scores but only BLOCKS on real pushes. Runner
+      # variance (28–36 on identical commits) must not strand the site on
+      # stale GitHub data.
       - run: node scripts/lighthouse-gate.mjs
         working-directory: site
+        continue-on-error: ${{ github.event_name == 'schedule' }}
       - run: node scripts/visual-gate.mjs
         working-directory: site
       - uses: actions/upload-pages-artifact@v3
