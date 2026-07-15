@@ -183,6 +183,32 @@ existsSync(posterOut)
   ? ok("out/poster-home.webp shipped")
   : fail("out/poster-home.webp missing (build did not copy poster to out/)");
 
+// ── 9. Tailwind v4 bracket-var discipline (Sid-authorized, 2026-07-15) ────
+// bg-[--surface] compiles to background-color:--surface (no var()) which is
+// dead in the browser. Use @theme-mapped utilities (bg-surface) or paren
+// syntax (bg-(--surface)) instead.
+// INVENTORY mode for m7: list all occurrences so Sid can prioritize mass-fix
+// in m8. The guard does NOT fail yet — only 2 critical cases fixed this batch
+// (menu backdrop + knowme text panel). Sid rules on mass-fix scope at STOP.
+const BRACKET_VAR_BASELINE = 240; // pre-m7 baseline; 2 fixed this batch
+console.log("[9] Tailwind v4 bracket-var inventory");
+try {
+  const deadLines = execSync(
+    `grep -rnE 'className.*\\[-{2}' src --include='*.tsx' --include='*.ts' || true`,
+    { cwd: root, encoding: "utf-8" },
+  ).trim().split("\n").filter(Boolean);
+  if (deadLines.length > BRACKET_VAR_BASELINE) {
+    const excess = deadLines.length - BRACKET_VAR_BASELINE;
+    fail(`${excess} NEW bracket-var pattern(s) detected (baseline ${BRACKET_VAR_BASELINE})`);
+    deadLines.slice(-excess).forEach((l) => console.error(`    new violation: ${l.trim()}`));
+  } else {
+    ok(`${deadLines.length} occurrences — within m7 baseline (no new bracket-vars)`);
+  }
+  if (deadLines.length) {
+    console.log(`    Inventory (file:line): ${deadLines.length} patterns in src/`);
+  }
+} catch { /* grep unavailable — skip */ }
+
 // ────────────────────────────────────────────────────────────────────────────
 console.log(failures ? `\nGUARDS FAILED: ${failures} violation(s)` : "\nAll guards passed.");
 process.exit(failures ? 1 : 0);

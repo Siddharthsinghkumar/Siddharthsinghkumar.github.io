@@ -193,7 +193,7 @@ function NavContent({ pathname, isHome }: { pathname: string; isHome: boolean })
         <>
           {/* Backdrop — closes menu on tap/click */}
           <div
-            className="fixed inset-0 top-16 z-40 md:hidden bg-[--bg]/80"
+            className="fixed inset-0 top-16 z-40 md:hidden bg-bg/80"
             onClick={() => setMenuOpen(false)}
             aria-hidden="true"
           />
@@ -203,7 +203,7 @@ function NavContent({ pathname, isHome }: { pathname: string; isHome: boolean })
             role="dialog"
             aria-modal="true"
             aria-label="Navigation"
-            className="fixed top-16 left-0 right-0 z-50 md:hidden bg-[--surface] border-b border-[--line] px-4 py-4 shadow-lg"
+            className="fixed top-16 left-0 right-0 z-50 md:hidden bg-surface border-b border-[--line] px-4 py-4 shadow-lg"
           >
             <nav className="flex flex-col">
               {links.map(({ href, label }) => {
