@@ -9,3 +9,6 @@ references_research_paper/
 docs/qa/m*/
 docs/qa/t*/
 **/fonts/Inter.ttf
+.mcp.json
+site/lighthouse*.json
+test-results/
