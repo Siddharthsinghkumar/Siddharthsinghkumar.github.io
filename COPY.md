@@ -274,6 +274,7 @@ router", "SSE streaming agent", + name.
 - Grid: **4 cards** — Sindhey, Firefighting Robot, MTK Unlock, TrueNAS ZFS.
 - Claims V1–V8: resolved per register at top of file.
 - Contributions counter: build-time computed, "N00+" ballpark, DecryptedText render.
+- Mobile nav (m7 F1, 2026-07-15): hamburger button aria-labels `"Menu"` / `"Close"` registered here; panel links use existing page labels verbatim.
 
 ## PAGE: `/knowme`
 
