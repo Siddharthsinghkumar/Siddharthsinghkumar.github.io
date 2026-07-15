@@ -220,3 +220,87 @@ the fallback latch BEFORE fixing; one full green suite; evidence in docs/qa/m7/b
 threshold edits, no attribution trailers, NEVER push. STOP COMPLETELY at ⛔ STOP M7-B and
 wait for Sid. Address the user as Sid.
 ```
+
+## 14. STOP M7-B — check-verify verdict (Claude, 2026-07-15)
+
+| claim | evidence checked | verdict |
+|---|---|---|
+| F5 desktop nav restored, tests adapted | db672e7 diff: `hidden md:flex` back; desktop-1440-nav.png matches live pre-m7 | REAL |
+| F6 dead bracket-var backgrounds fixed | f5cb3d5 diff; compiled CSS emits `background-color:var(--surface)` (1l4znxsw4zsg8.css); menu-open-375.png panel OPAQUE | REAL |
+| F7 card renders + remounts on cardScale | 6bbfa68: key includes cardScale, fraction 0.5; knowme-pixel7.png shows REAL 3D card | REAL |
+| F7 card "centered, **not covering bio**" | knowme-pixel7.png: card + strap hang DEAD-CENTER OVER the H1 and bio text | **FALSE — evidence contradicts claim** |
+| F8 black bar gone | KnowMeBackground `fixed inset-0`; knowme-bottom-375.png bottom clean | REAL |
+| F9 DPR raised to [0.75,1.25] | EngineCanvas.tsx:363 confirmed — but the code change landed inside **c483f1e (the docs commit)**, not 6bbfa68 which claims it | REAL, wrong commit (hygiene breach-lite, logged) |
+| Gates: playwright 48/48, guards, tsc, lint, visual | pasted output + gate scripts diffed: lighthouse-gate/visual-gate/thresholds UNTOUCHED (N18 intact); guard [9] is additive-only, plan-specified | REAL |
+| Lighthouse home 48 < 55 → STOP honored | reported against interest; ⛔ marker respected | REAL — correct STOP discipline |
+| Guard [9] baseline | code hardcodes 240; actual `grep` count is **158** — 82 new dead classes could slip through; commit msg says 158 (msg/code mismatch) | DEFECT → F12 |
+
+Net: 4 of 5 defects fixed and proven. Two remain: **home perf 48** (F9's cost) and
+**knowme card occluding the bio on mobile** (F7 half-done — renders, but sits on the text).
+
+## 15. Batch 3 — F10–F12 (the remaining hour; desktop stays FROZEN)
+
+**F10 — home perf: progressive DPR (recover ≥55, keep sharp lines).**
+`EngineCanvas.tsx:363`: revert initial coarse dpr to `[0.45, 0.6]`, add a tiny in-canvas
+helper (`useThree(s => s.setDpr)`) that raises to `[0.75, 1.25]` on the FIRST of:
+`pointerdown` / `touchstart` / `wheel` / `scroll` (window, `{once:true, passive:true}`)
+OR ~5s after `load` via double `requestIdleCallback`. Lighthouse (headless = software GL)
+pays the full DPR cost during its trace; real phones raise after/outside it.
+Measure-first ladder — first rung that hits home ≥55 AND sharp-line screenshot wins:
+ 1. idle-timer 5s + interaction triggers (preferred — sharpens without any touch)
+ 2. interaction/scroll triggers only
+ 3. static middle dpr `[0.6, 1.0]`
+If NO rung reaches 55 with visually clean lines: ⛔ STOP with the numbers. N18 — the
+floor does not move.
+Evidence: lighthouse home/prospect/travel numbers; globe close-up at 412×915 AFTER the
+raise fires (no interaction — wait out the timer), md5-unique.
+
+**F11 — knowme mobile: card band ABOVE the text, zero occlusion.**
+`KnowMeClient.tsx:102`: the lanyard wrapper is `z-[60]` over the `z-[2]` panel, and
+fraction 0.5 centers the card exactly where the single-column text lives. Fix: on <md the
+panel starts BELOW the card's rest position — replace `justify-center min-h-[80svh]` with
+mobile-first `pt-[62svh] justify-start min-h-[100svh] md:pt-0 md:justify-center
+md:min-h-[80svh]` (62svh is a starting value — MEASURE the real card bottom at 375×812
+and 412×915 and set clearance ≥16px). Card stays fraction 0.5, scale 1; desktop path
+untouched. The canvas is absolute-in-container so the card scrolls away with the band.
+Exit probes (all three, prod :4173):
+ - occlusion: `elementFromPoint` at H1 corners + first-paragraph corners returns
+   text/panel, NEVER canvas
+ - full-page screenshots 375×812 + 412×915 (Pixel 7): card in its own band, text below
+ - scrolled-to-bottom screenshot: no black bar regression (F8 stays green)
+
+**F12 — guard [9] baseline correction (Sid-authorized via this plan).**
+`guards.mjs`: `BRACKET_VAR_BASELINE = 240` → `158` (the actual count) so NEW dead
+bracket-vars fail the build. One line; guard remains additive-only.
+
+**Also in the suite run:** mobile-responsive-check probes on all 6 pages at 375×812 —
+overflow walk (zero elements past viewport), tap targets ≥24px, occlusion on key CTAs.
+Report numbers, not adjectives.
+
+## 16. Batch-3 runbook
+
+1. F10 → F11 → F12, ONE commit each — code changes never ride in docs commits (c483f1e
+   taught us why).
+2. ONE full suite (deadline waiver of 3× continues, logged). All floors met or ⛔ STOP.
+3. Evidence → docs/qa/m7/batch3/ (force-add): globe-after-raise-412.png,
+   knowme-pixel7-clear.png, knowme-375-clear.png, knowme-bottom-375.png, lighthouse
+   numbers in the report, probe outputs pasted. md5-unique, :4173, ≥5s settle.
+4. ⛔ STOP M7-C — Sid judges on devtools Pixel 7 + his real phone.
+5. Accept ⇒ re-archive snapshot (m6plan T3 verbatim) → N17 grep zero hits (incl. raw
+   banned strings) → **Sid pushes** `git push --force …github.io.git HEAD:main`.
+
+## 17. KICKOFF PROMPT — Batch 3, DeepSeek v4 Pro @ MAX
+
+```
+Read /home/sidd/project/freelance/portfolio-website/CLAUDE.md, site/AGENTS.md, then
+docs/plans/m7plan.md §14–§16 in full (§8–§13 for context). Execute F10→F11→F12 strictly
+in order, one commit each — never bundle code into docs commits. F10 is measure-first:
+walk the ladder, report every lighthouse number, floor stays 55 (N18). F11 exit is the
+occlusion probe + full-page screenshots — "renders" is not "fixed"; the card must sit in
+its own band above the text at 375 AND 412. One full green suite; evidence in
+docs/qa/m7/batch3/ (force-add, dir gitignored), md5-unique from :4173. Also run the
+overflow/tap-target/occlusion probes on all 6 pages at 375 and paste the numbers. No new
+dependencies, no gate threshold edits beyond the F12 one-liner (Sid-authorized in §15),
+no attribution trailers, NEVER push. STOP COMPLETELY at ⛔ STOP M7-C and wait for Sid.
+Address the user as Sid.
+```
