@@ -87,7 +87,12 @@ test("(c) menu opens/closes/locks scroll", async ({ page }) => {
 
 test("(d) knowme: bio text not occluded by canvas at 375x812", async ({ page }) => {
   await page.goto("/knowme");
-  await page.waitForTimeout(3000);
+
+  // Wait for the intro overlay to dismiss — lanyard region can take up to
+  // 10 s to settle (6 s watchdog + 1 s hold + retry). Once the overlay is
+  // detached the bio text is rendered and unoccluded.
+  await page.locator('[role="status"][aria-label="Loading"]').waitFor({ state: "detached", timeout: 15000 }).catch(() => {});
+
   // The bio text is in the paragraph after the h1. Probe 4 corners via
   // elementFromPoint: the canvas region is pointer-events-none, so the hits
   // should be the text elements, not the canvas.
@@ -113,17 +118,20 @@ test("(d) knowme: bio text not occluded by canvas at 375x812", async ({ page }) 
     expect(tag, `probe (${px},${py}) occluded by canvas`).not.toBe("canvas");
   }
 
-  // Verify the bio text is actually rendered and visible
-  const bio = page.locator("p.text-\\[--muted\\]").first();
+  // Verify the bio text is actually rendered and visible —
+  // use the knowme section paragraph, not the intro eyebrow.
+  const bio = page.locator(".max-w-\\[60ch\\] p.text-\\[--muted\\]").first();
   await expect(bio).toBeVisible();
-  const text = await bio.textContent();
-  expect(text).toContain("Siddharth");
+  await expect(bio).toContainText("Siddharth");
 });
 
 test("(e) mobile buttons and CTA links have adequate tap targets", async ({ page }) => {
   for (const route of PAGES) {
     await page.goto(route);
-    await page.waitForTimeout(2000);
+
+    // Wait for the intro overlay to dismiss — hard navigations retrigger it.
+    await page.locator('[role="status"][aria-label="Loading"]').waitFor({ state: "detached", timeout: 15000 }).catch(() => {});
+
     // Check buttons and known CTA links. The wordmark logo link uses
     // expanded-hit-area pseudo-element for its visible tap zone even though
     // its rendered bounding box is small — exclude via nav-link class selector.
