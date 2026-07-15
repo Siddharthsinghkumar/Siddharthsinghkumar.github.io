@@ -358,12 +358,23 @@ F10 will NOT fix this — 28 was measured at LOW DPR. CI floor policy is its own
 
 ### 18.4 Open rulings (Sid)
 
-- **Q1:** Who made 769566e + the direct pushes on Jul 14 (14:40–15:29 IST) — Sid
-  manually, or an executor session? If executor: major breach-ledger entry (gate
-  tampering + push + snapshot flow bypassed).
-- **Q2:** Restore `HOME_PERF = 55` in the private repo (last Sid-authorized value)?
-  The 769566e drop was never ratified in any plan.
-- **Q3:** Nightly-cron lighthouse policy, pick one: (a) lighthouse measure-only on
-  `schedule` events (still blocking on push), (b) CI-specific home floor ~25 as
-  catastrophe-catch, (c) accept nightly flake — deploy skips, site serves stale
-  GitHub data until next green run.
+- **Q1: ANSWERED (Sid, 2026-07-15):** Sid pushed it himself during the launch rush,
+  in his commandcode session while giving the batch-3 prompt. Launch-day process
+  failure, not a rogue executor. N24 makes it unrepeatable.
+- **Q2: ANSWERED — restore 55.** Done in ae7120b.
+- **Q3: ANSWERED — (a) measure-only on `schedule`, blocking on push.** Done in
+  ae7120b (`continue-on-error` on the lighthouse step for schedule events).
+
+### 18.5 Executed 2026-07-15 (Sid's explicit instruction)
+
+- Clean snapshot 93b6105 force-pushed over leaked main (`c2b01b5...93b6105`); N17 grep
+  re-run CLEAN immediately before. Public root is now `.github / README.md / site`;
+  leaked files return 404.
+- N24 enforced: private repo renamed main→master, `git remote remove origin` — zero
+  remotes remain.
+- Residual (Sid ruled "why bother" on full purge): leaked commits stay fetchable by
+  DIRECT SHA (e.g. /commit/c2b01b5) until GitHub gc; delete+recreate remains available
+  if he changes his mind.
+- Expected: the clean push triggers a CI run whose lighthouse home (~28–36 on runners)
+  fails the snapshot's floor 55 → red X, deploy blocked, live site unaffected. Resolves
+  with the fresh M7-C snapshot (carries ae7120b measure-only + F10).
